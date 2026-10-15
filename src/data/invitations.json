@@ -1,0 +1,38 @@
+[
+  {
+    "id": "mohamed-zainab",
+    "groomName": "محمد",
+    "brideName": "زينب",
+    "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+    "eventDate": "2026-10-15T19:00:00Z",
+    "location": {
+      "venueName": "قاعة الملكات، فندق الريتز كارلتون",
+      "googleMapsUrl": "https://maps.app.goo.gl/placeholder1"
+    },
+    "story": "بدأت قصتنا في ليلة من ليالي الخريف الجميلة، حيث التقت الأرواح وتآلفت القلوب، واليوم نكلل هذا الحب بحضوركم لتشاركونا أسعد لحظات حياتنا.",
+    "dressCode": "رسمي",
+    "features": {
+      "showCountdown": true,
+      "showStory": true,
+      "enableRSVP": true
+    }
+  },
+  {
+    "id": "ahmed-sara",
+    "groomName": "أحمد",
+    "brideName": "سارة",
+    "coverImage": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+    "eventDate": "2026-11-20T20:00:00Z",
+    "location": {
+      "venueName": "فندق الفورسيزونز، قاعة النور",
+      "googleMapsUrl": "https://maps.app.goo.gl/placeholder2"
+    },
+    "story": "منذ اللقاء الأول أدركنا أن حياتنا معاً ستكون قصة لا تُنسى. نتشرف بدعوتكم لمشاركتنا فرحتنا وأن تكونوا جزءاً من بدايتنا الجديدة.",
+    "dressCode": "رسمي / فساتين سهرة",
+    "features": {
+      "showCountdown": false,
+      "showStory": true,
+      "enableRSVP": false
+    }
+  }
+]

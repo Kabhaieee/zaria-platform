@@ -1,0 +1,29 @@
+{
+  "name": "zaria-platform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@studio-freight/react-lenis": "^0.0.47",
+    "@tailwindcss/postcss": "^4.3.3",
+    "framer-motion": "^13.0.0",
+    "gsap": "^3.12.5",
+    "lucide-react": "^1.30.0",
+    "next": "latest",
+    "qrcode.react": "^4.2.0",
+    "react": "latest",
+    "react-confetti": "^6.4.0",
+    "react-dom": "latest",
+    "react-player": "^3.4.0",
+    "sonner": "^2.0.8"
+  },
+  "devDependencies": {
+    "autoprefixer": "latest",
+    "postcss": "latest",
+    "tailwindcss": "latest"
+  }
+}

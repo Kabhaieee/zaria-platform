@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" width="800" height="400">
+  <!-- Background (Optional: uncomment if you want a dark background, otherwise transparent) -->
+  <!-- <rect width="400" height="200" fill="#000000" /> -->
+
+  <g transform="translate(200, 70)">
+    <!-- Top Decorative Line with Star -->
+    <g transform="translate(0, 0)">
+      <!-- Left Line -->
+      <line x1="-30" y1="0" x2="-10" y2="0" stroke="#C49A6C" stroke-width="1.5" />
+      
+      <!-- Star -->
+      <path d="M0 -6 L1.5 -1.5 L6 0 L1.5 1.5 L0 6 L-1.5 1.5 L-6 0 L-1.5 -1.5 Z" fill="#C49A6C" />
+      
+      <!-- Right Line -->
+      <line x1="10" y1="0" x2="30" y2="0" stroke="#C49A6C" stroke-width="1.5" />
+    </g>
+
+    <!-- Main ZARIA Text -->
+    <text x="0" y="50" font-family="Georgia, serif" font-size="48" fill="#C49A6C" font-weight="normal" letter-spacing="14" text-anchor="middle">ZARIA</text>
+
+    <!-- Subtitle -->
+    <text x="0" y="80" font-family="Arial, sans-serif" font-size="12" fill="#C49A6C" font-weight="normal" letter-spacing="6" text-anchor="middle">E-INVITATIONS</text>
+  </g>
+</svg>

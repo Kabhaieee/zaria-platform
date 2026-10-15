@@ -1,0 +1,19 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# build & cache
+/.next/
+/out/
+/build
+/__pycache__/
+
+# executables & local tooling
+ngrok.exe
+.ngrok.exe.old
+*.exe
+
+# env & logs
+.env*.local
+*.log
