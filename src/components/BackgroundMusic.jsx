@@ -2,80 +2,158 @@
 
 /**
  * @file src/components/BackgroundMusic.jsx
- * @description Floating background audio controller backed by `react-player`.
- * Listens for the custom `start-wedding-music` window event dispatched when the
- * guest opens the invitation door, and provides a floating mute/unmute toggle button.
+ * @description Floating background audio controller powered by the YouTube IFrame JS API.
+ * Preloads the YouTube embed iframe in the background so that when the guest opens
+ * the invitation door (`start-wedding-music` event) or interacts with a direct template
+ * (`autoPlay={true}`), playback starts seamlessly across desktop and mobile browsers.
  */
 
 // 1. React and Next.js core modules
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 // 2. Third-party libraries
 import { Music } from 'lucide-react';
-import ReactPlayer from 'react-player';
+
+/**
+ * Extracts the 11-character YouTube video ID from a standard YouTube URL.
+ *
+ * @param {string} url - Full YouTube watch or short URL.
+ * @returns {string} The extracted video ID, or a fallback ID if parsing fails.
+ */
+const extractVideoId = (url) => {
+  if (!url) return 'Hp8WTVqR_0U';
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?/\s]{11})/);
+  return match ? match[1] : 'Hp8WTVqR_0U';
+};
 
 /**
  * BackgroundMusic Component
  *
  * @param {Object} props - Component props.
  * @param {string} props.youtubeUrl - YouTube video/audio URL to stream in the background.
- * @returns {JSX.Element | null} The hidden player and floating toggle button once mounted.
+ * @param {boolean} [props.autoPlay=false] - Whether to auto-start on load / first interaction for templates without a door preloader.
+ * @returns {JSX.Element | null} The offscreen YouTube player and floating mute/unmute toggle button.
  */
-export default function BackgroundMusic({ youtubeUrl }) {
+export default function BackgroundMusic({ youtubeUrl, autoPlay = false }) {
   const [playing, setPlaying] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const iframeRef = useRef(null);
+  const playingRef = useRef(false);
+  const userToggledRef = useRef(false);
+  const buttonRef = useRef(null);
+
+  const videoId = extractVideoId(youtubeUrl);
+
+  /**
+   * Sends a YouTube IFrame Player API command via `postMessage`.
+   *
+   * @param {string} func - The YouTube player command name (e.g., 'playVideo', 'pauseVideo').
+   * @param {Array<unknown>} [args=[]] - Optional command arguments.
+   */
+  const sendPlayerCommand = useCallback((func, args = []) => {
+    if (iframeRef.current && iframeRef.current.contentWindow) {
+      iframeRef.current.contentWindow.postMessage(
+        JSON.stringify({ event: 'command', func, args }),
+        '*'
+      );
+    }
+  }, []);
+
+  /**
+   * Starts audio playback and sets a comfortable background volume level.
+   */
+  const startPlayback = useCallback(() => {
+    playingRef.current = true;
+    setPlaying(true);
+    sendPlayerCommand('unMute');
+    sendPlayerCommand('setVolume', [60]);
+    sendPlayerCommand('playVideo');
+  }, [sendPlayerCommand]);
+
+  /**
+   * Pauses audio playback.
+   */
+  const pausePlayback = useCallback(() => {
+    playingRef.current = false;
+    setPlaying(false);
+    sendPlayerCommand('pauseVideo');
+  }, [sendPlayerCommand]);
 
   useEffect(() => {
     setMounted(true);
 
     /**
-     * Starts audio playback automatically when the invitation envelope/door is opened.
+     * Automatically starts music playback when the invitation door is opened.
      */
     const handleStartMusic = () => {
-      setPlaying(true);
+      startPlayback();
+      setTimeout(() => {
+        if (playingRef.current) {
+          startPlayback();
+        }
+      }, 600);
     };
 
     window.addEventListener('start-wedding-music', handleStartMusic);
-    return () => window.removeEventListener('start-wedding-music', handleStartMusic);
-  }, []);
+
+    // For templates without a door preloader, start music on the first user interaction
+    const handleFirstInteraction = (e) => {
+      if (!autoPlay || userToggledRef.current || playingRef.current) return;
+      if (buttonRef.current && buttonRef.current.contains(e.target)) return;
+      startPlayback();
+    };
+
+    if (autoPlay) {
+      window.addEventListener('click', handleFirstInteraction, { passive: true });
+      window.addEventListener('touchstart', handleFirstInteraction, { passive: true });
+    }
+
+    return () => {
+      window.removeEventListener('start-wedding-music', handleStartMusic);
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('touchstart', handleFirstInteraction);
+    };
+  }, [autoPlay, startPlayback]);
 
   /**
    * Toggles background music playback state between playing and paused.
    */
   const toggleMusic = () => {
-    setPlaying(!playing);
+    userToggledRef.current = true;
+    if (playing) {
+      pausePlayback();
+    } else {
+      startPlayback();
+    }
   };
 
   // Prevent hydration mismatch by rendering only on the client
   if (!mounted) return null;
 
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?enablejsapi=1${autoPlay ? '&autoplay=1' : ''}&playsinline=1&loop=1&playlist=${videoId}&controls=0&rel=0&showinfo=0`;
+
   return (
     <>
-      {/* Hidden YouTube Audio Stream Player */}
-      <div className="hidden opacity-0 pointer-events-none fixed top-0 left-0 w-0 h-0">
-        <ReactPlayer
-          url={youtubeUrl}
-          playing={playing}
-          loop={true}
-          width="1px"
-          height="1px"
-          volume={0.5}
-          playsinline={true}
-          config={{
-            youtube: {
-              playerVars: {
-                autoplay: 0,
-                controls: 0,
-                showinfo: 0,
-                rel: 0,
-              },
-            },
+      {/* Offscreen YouTube Audio Stream Player (kept 1x1px so browsers allow audio playback) */}
+      <div className="opacity-0 pointer-events-none fixed -bottom-10 -left-10 w-1 h-1 overflow-hidden">
+        <iframe
+          ref={iframeRef}
+          src={embedUrl}
+          title="Background Music"
+          width="1"
+          height="1"
+          allow="autoplay; encrypted-media"
+          onLoad={() => {
+            if (playingRef.current || (autoPlay && !userToggledRef.current)) {
+              startPlayback();
+            }
           }}
         />
       </div>
 
       {/* Floating Audio Toggle Control Button */}
       <button
+        ref={buttonRef}
         onClick={toggleMusic}
         aria-label="Toggle Music"
         className="fixed bottom-6 right-6 w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full shadow-[0_8px_22px_rgba(0,0,0,0.15)] border border-gray-100 flex items-center justify-center z-[100] transition-all duration-300 hover:scale-105"

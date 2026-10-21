@@ -820,8 +820,8 @@ export default function NewbornCute() {
         </div>
       </div>
 
-      {/* Background Audio Stream Player */}
-      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=Hp8WTVqR_0U" />
+      {/* Background Audio Stream Player (Newborn Celebration Song) */}
+      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=yl7a-5yxEAI" autoPlay={true} />
 
       {/* Celebratory Confetti Overlay */}
       {showConfetti && (

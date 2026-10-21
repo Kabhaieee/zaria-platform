@@ -840,8 +840,8 @@ END:VCALENDAR`;
         </div>
       </div>
 
-      {/* Background Audio Stream Player */}
-      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=Hp8WTVqR_0U" />
+      {/* Background Audio Stream Player (Humood AlKhudher - Ya Hala Bil Helm) */}
+      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=3AWAGo8NhfE" autoPlay={true} />
 
       {/* Celebratory Confetti Overlay */}
       {showConfetti && (

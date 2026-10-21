@@ -19,6 +19,9 @@ import { MapPin, Minus, Phone, Plus } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import Confetti from 'react-confetti';
 
+// 3. Internal components, hooks, and utility functions
+import BackgroundMusic from '../../BackgroundMusic';
+
 // Configure playful Arabic display and body typography
 const aref = Baloo_Bhaijaan_2({ subsets: ['arabic'], weight: ['400', '700', '800'] });
 const amiri = Cairo({ subsets: ['arabic'], weight: ['400', '700', '900'] });
@@ -828,6 +831,9 @@ export default function BirthdayFun() {
           ))}
         </div>
       </div>
+
+      {/* Background Audio Stream Player (Happy Birthday - Sana Helwa Ya Gamil) */}
+      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=UHP2ECjbTWM" autoPlay={true} />
 
       {/* Celebratory Confetti Overlay */}
       {showConfetti && (

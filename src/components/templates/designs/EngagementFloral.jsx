@@ -263,6 +263,7 @@ export default function EngagementFloral() {
                 aria-label="فتح الدعوة"
                 onClick={() => {
                   setDoorState('opening');
+                  window.dispatchEvent(new Event('start-wedding-music'));
                   if (videoRef.current) {
                     const playPromise = videoRef.current.play();
                     if (playPromise !== undefined) {
@@ -840,8 +841,8 @@ export default function EngagementFloral() {
         </div>
       </div>
 
-      {/* Floating Background Music Controller */}
-      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=Hp8WTVqR_0U" />
+      {/* Floating Background Music Controller (Mabrouk Al Khoutube) */}
+      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=7oouSAlrzbY" />
 
       {/* Celebratory Confetti Overlay */}
       {showConfetti && (

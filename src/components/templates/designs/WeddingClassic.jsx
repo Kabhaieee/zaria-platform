@@ -253,6 +253,7 @@ export default function WeddingClassic() {
                 aria-label="فتح الدعوة"
                 onClick={() => {
                   setDoorState('opening');
+                  window.dispatchEvent(new Event('start-wedding-music'));
                   if (videoRef.current) {
                     const playPromise = videoRef.current.play();
                     if (playPromise !== undefined) {

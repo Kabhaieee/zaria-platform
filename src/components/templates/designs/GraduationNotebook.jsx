@@ -14,6 +14,9 @@ import { Amiri, Aref_Ruqaa } from 'next/font/google';
 // 2. Third-party libraries
 import { Camera, ChevronLeft, ChevronRight, Send } from 'lucide-react';
 
+// 3. Internal components, hooks, and utility functions
+import BackgroundMusic from '../../BackgroundMusic';
+
 // Configure Arabic typography fonts
 const aref = Aref_Ruqaa({ subsets: ['arabic'], weight: ['400', '700'] });
 const amiri = Amiri({ subsets: ['arabic'], weight: ['400', '700'] });
@@ -468,6 +471,9 @@ export default function GraduationNotebook() {
           <ChevronLeft className="w-5 h-5 md:w-7 md:h-7" />
         </button>
       </div>
+
+      {/* Background Audio Stream Player (Rashed AlMajid - Mabrouk Al Najah) */}
+      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=ZCg3kKN7VQs" autoPlay={true} />
 
       {/* Scoped 3D Perspective & Custom Scrollbar Utilities */}
       <style

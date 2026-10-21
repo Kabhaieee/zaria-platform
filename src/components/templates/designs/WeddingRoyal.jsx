@@ -245,6 +245,7 @@ export default function WeddingRoyal() {
                 aria-label="فتح الدعوة"
                 onClick={() => {
                   setDoorState('opening');
+                  window.dispatchEvent(new Event('start-wedding-music'));
                   if (videoRef.current) {
                     const playPromise = videoRef.current.play();
                     if (playPromise !== undefined) {
@@ -821,8 +822,8 @@ export default function WeddingRoyal() {
         </div>
       </div>
 
-      {/* Floating Background Music Controller */}
-      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=Hp8WTVqR_0U" />
+      {/* Floating Background Music Controller (Hussain Al Jassmi - Royal Zaffa) */}
+      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=YCJET0fGGDU" />
 
       {/* Celebratory Confetti Overlay */}
       {showConfetti && (
