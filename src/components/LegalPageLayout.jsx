@@ -150,8 +150,8 @@ export default function LegalPageLayout({ contentKey }) {
               {language === 'ar' ? 'راسلنا على واتساب' : 'Message us on WhatsApp'}
             </a>
             {' • '}
-            <a href="mailto:hello@zaria.com?subject=استفسار%20عن%20منصة%20ZARIA" className="hover:text-[#C49A6C] transition-colors">
-              zaria.com
+            <a href="mailto:info@zaria-zov.com?subject=استفسار%20عن%20منصة%20ZARIA" className="hover:text-[#C49A6C] transition-colors">
+              info@zaria-zov.com
             </a>
           </div>
         </motion.div>
