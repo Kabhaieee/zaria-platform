@@ -248,7 +248,7 @@ export default function NewbornCute() {
               
               <p className="text-[#0369A1] text-[12px] mb-2 tracking-wide">الداعون</p>
               <p className="leading-relaxed text-[#0C4A6E] text-[15px] mb-1">الدكتور سهيل أبو زين وحرمه</p>
-              <p className="text-[#0369A1] text-[12px] font-medium">وعموم عائلة السخن وعائلة قبها</p>
+              <p className="text-[#0369A1] text-[12px] font-medium">وعموم عائلة العمري وعائلة الخطيب</p>
             </div>
 
             {/* Separator */}
@@ -311,13 +311,24 @@ export default function NewbornCute() {
             {/* Location */}
             <div className="w-full flex flex-col items-center">
               <h3 className={`text-4xl text-[#0EA5E9] mb-8 font-bold ${aref.className}`}>الموقع</h3>
-              <a href="https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman" target="_blank" rel="noopener noreferrer" className="w-full max-w-[300px] h-48 bg-[#E0F2FE] rounded-xl mb-6 border border-[#0EA5E9]/30 shadow-sm relative overflow-hidden group block cursor-pointer">
-                <img src="/images/hotel-cover.png" alt="فندق فور سيزونز عمان" className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0C4A6E]/60 to-transparent"></div>
-                <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg group-hover:bg-white transition-colors">
+              <div className="w-full max-w-[300px] h-48 bg-[#E0F2FE] rounded-xl mb-6 border border-[#0EA5E9]/30 shadow-sm relative overflow-hidden group">
+                <iframe
+                  title="موقع الحفل - فندق فور سيزونز عمان"
+                  src="https://maps.google.com/maps?q=Four%20Seasons%20Hotel%20Amman&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="فتح في خرائط جوجل"
+                  className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-white hover:scale-105 transition-all"
+                >
                   <MapPin size={18} className="text-[#0EA5E9]" />
-                </div>
-              </a>
+                </a>
+              </div>
               <div className="text-center font-bold text-[14px] leading-relaxed mb-8 text-[#0C4A6E]">
                 <p className="mb-3">يوم الأحد، 29 تشرين الثاني 2026</p>
                 <p className="text-[#0369A1] mb-6 text-[12px]">الساعة السادسة مساءً</p>
@@ -375,7 +386,7 @@ export default function NewbornCute() {
                   </a>
                 </div>
                 
-                <p className="text-[13px] text-[#0C4A6E] mb-8">عائلة السخن & عائلة قبها</p>
+                <p className="text-[13px] text-[#0C4A6E] mb-8">عائلة العمري & عائلة الخطيب</p>
               </div>
             </div>
             

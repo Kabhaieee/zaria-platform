@@ -269,13 +269,13 @@ export default function WeddingRoyal() {
 
 
 
-  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('حفل زفاف المهندس أحمد السخن والدكتورة سارة قبها')}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent('نتشرف بحضوركم حفل زفافنا')}&location=${encodeURIComponent('فندق فور سيزونز عمان')}`;
+  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('حفل زفاف المهندس أحمد محمد والدكتورة سارة خالد')}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent('نتشرف بحضوركم حفل زفافنا')}&location=${encodeURIComponent('فندق فور سيزونز عمان')}`;
 
 
 
   const handleAppleCalendar = () => {
 
-    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Wedding//AR\nBEGIN:VEVENT\nSUMMARY:حفل زفاف المهندس أحمد السخن والدكتورة سارة قبها\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:فندق فور سيزونز عمان\nDESCRIPTION:نتشرف بحضوركم حفل زفافنا\nEND:VEVENT\nEND:VCALENDAR`;
+    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Wedding//AR\nBEGIN:VEVENT\nSUMMARY:حفل زفاف المهندس أحمد محمد والدكتورة سارة خالد\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:فندق فور سيزونز عمان\nDESCRIPTION:نتشرف بحضوركم حفل زفافنا\nEND:VEVENT\nEND:VCALENDAR`;
 
     const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
 
@@ -919,19 +919,23 @@ export default function WeddingRoyal() {
 
               <h3 className={`text-4xl text-[#D1B06B] mb-8 font-bold ${aref.className}`}>الموقع</h3>
 
-              <a href="https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman" target="_blank" rel="noopener noreferrer" className="w-full max-w-[300px] h-48 bg-[#1A1A1A] rounded-xl mb-6 border border-[#D1B06B]/30 shadow-sm relative overflow-hidden group block cursor-pointer">
+              <div className="w-full max-w-[300px] h-48 bg-[#1A1A1A] rounded-xl mb-6 border border-[#D1B06B]/30 shadow-sm relative overflow-hidden group">
 
-                <img src="/images/hotel-cover.png" alt="فندق فور سيزونز عمان" className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" />
+                <iframe
+                  title="موقع الحفل - فندق فور سيزونز عمان"
+                  src="https://maps.google.com/maps?q=Four%20Seasons%20Hotel%20Amman&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-[#FDFBF9]/60 to-transparent"></div>
-
-                <div className="absolute bottom-3 right-3 bg-[#1A1A1A]/90 backdrop-blur-sm rounded-full p-2 shadow-lg group-hover:bg-[#1A1A1A] transition-colors">
+                <a href="https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman" target="_blank" rel="noopener noreferrer" aria-label="فتح في خرائط جوجل" className="absolute bottom-3 right-3 bg-[#1A1A1A]/90 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-[#1A1A1A] hover:scale-105 transition-all">
 
                   <MapPin size={18} className="text-[#D1B06B]" />
 
-                </div>
+                </a>
 
-              </a>
+              </div>
 
               <div className="text-center font-bold text-[14px] leading-relaxed mb-8 text-[#FDFBF9]">
 

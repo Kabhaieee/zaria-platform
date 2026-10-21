@@ -278,13 +278,13 @@ export default function EngagementFloral() {
 
 
 
-  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('حفل خطوبة المهندس عمر السخن والدكتورة آيات قبها')}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent('نتشرف بحضوركم حفل خطوبتنا')}&location=${encodeURIComponent('فندق فور سيزونز عمان')}`;
+  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('حفل خطوبة المهندس عمر العمري والدكتورة آيات الخطيب')}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent('نتشرف بحضوركم حفل خطوبتنا')}&location=${encodeURIComponent('فندق فور سيزونز عمان')}`;
 
 
 
   const handleAppleCalendar = () => {
 
-    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Wedding//AR\nBEGIN:VEVENT\nSUMMARY:حفل خطوبة المهندس عمر السخن والدكتورة آيات قبها\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:فندق فور سيزونز عمان\nDESCRIPTION:نتشرف بحضوركم حفل خطوبتنا\nEND:VEVENT\nEND:VCALENDAR`;
+    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Wedding//AR\nBEGIN:VEVENT\nSUMMARY:حفل خطوبة المهندس عمر العمري والدكتورة آيات الخطيب\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:فندق فور سيزونز عمان\nDESCRIPTION:نتشرف بحضوركم حفل خطوبتنا\nEND:VEVENT\nEND:VCALENDAR`;
 
     const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
 
@@ -783,7 +783,7 @@ export default function EngagementFloral() {
 
                 <p className="leading-relaxed text-[#5A4F46] mb-5">الدكتور سهيل أبو عمر<br/>وعائلته الكريمة</p>
 
-                <p className={`text-[22px] text-[#9A7EAC] font-bold leading-tight ${aref.className}`}>المهندس<br/>عمر السخن</p>
+                <p className={`text-[22px] text-[#9A7EAC] font-bold leading-tight ${aref.className}`}>المهندس<br/>عمر العمري</p>
 
               </div>
 
@@ -795,7 +795,7 @@ export default function EngagementFloral() {
 
                 <p className="leading-relaxed text-[#5A4F46] mb-5">المهندس علي أبو نضال<br/>وعائلته الكريمة</p>
 
-                <p className={`text-[22px] text-[#9A7EAC] font-bold leading-tight ${aref.className}`}>الدكتورة<br/>آيات قبها</p>
+                <p className={`text-[22px] text-[#9A7EAC] font-bold leading-tight ${aref.className}`}>الدكتورة<br/>آيات الخطيب</p>
 
               </div>
 
@@ -931,7 +931,17 @@ export default function EngagementFloral() {
 
               <h3 className={`text-4xl text-[#9A7EAC] mb-8 font-bold ${aref.className}`}>الموقع</h3>
 
-              
+              <div className="w-full max-w-[300px] h-48 bg-[#F3EEF5] rounded-xl mb-6 border border-[#9A7EAC]/30 shadow-sm relative overflow-hidden group mx-auto">
+
+                <iframe
+                  title="موقع الحفل - فندق فور سيزونز عمان"
+                  src="https://maps.google.com/maps?q=Four%20Seasons%20Hotel%20Amman&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+
+              </div>
 
               <div className="text-center font-bold text-[14px] leading-relaxed mb-8 text-[#5A4F46]">
 
@@ -1043,7 +1053,7 @@ export default function EngagementFloral() {
 
                 
 
-                <p className="text-[13px] text-[#5A4F46] mb-8">عائلة السخن & عائلة قبها</p>
+                <p className="text-[13px] text-[#5A4F46] mb-8">عائلة العمري & عائلة الخطيب</p>
 
               </div>
 
