@@ -106,10 +106,10 @@ export default function NewbornCute() {
     return () => clearInterval(timer);
   }, []);
 
-  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('حفل استقبال المولود زين')}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent('نتشرف بحضوركم حفل استقبال مولودنا زين')}&location=${encodeURIComponent('فندق فور سيزونز عمان')}`;
+  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('حفل استقبال المولود زين')}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent('نتشرف بحضوركم حفل استقبال مولودنا زين')}&location=${encodeURIComponent('بيت العائلة - دابوق، عمان')}`;
 
   const handleAppleCalendar = () => {
-    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Newborn//AR\nBEGIN:VEVENT\nSUMMARY:حفل استقبال المولود زين\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:فندق فور سيزونز عمان\nDESCRIPTION:نتشرف بحضوركم حفل استقبال مولودنا زين\nEND:VEVENT\nEND:VCALENDAR`;
+    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Newborn//AR\nBEGIN:VEVENT\nSUMMARY:حفل استقبال المولود زين\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:بيت العائلة - دابوق، عمان\nDESCRIPTION:نتشرف بحضوركم حفل استقبال مولودنا زين\nEND:VEVENT\nEND:VCALENDAR`;
     const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
@@ -313,14 +313,14 @@ export default function NewbornCute() {
               <h3 className={`text-4xl text-[#0EA5E9] mb-8 font-bold ${aref.className}`}>الموقع</h3>
               <div className="w-full max-w-[300px] h-48 bg-[#E0F2FE] rounded-xl mb-6 border border-[#0EA5E9]/30 shadow-sm relative overflow-hidden group">
                 <iframe
-                  title="موقع الحفل - فندق فور سيزونز عمان"
-                  src="https://maps.google.com/maps?q=Four%20Seasons%20Hotel%20Amman&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  title="موقع الاستقبال - بيت العائلة"
+                  src="https://maps.google.com/maps?q=31.9965,35.8335&t=&z=15&ie=UTF8&iwloc=&output=embed"
                   className="w-full h-full border-0"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
                 <a
-                  href="https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman"
+                  href="https://www.google.com/maps/search/?api=1&query=31.9965,35.8335"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="فتح في خرائط جوجل"
@@ -332,10 +332,10 @@ export default function NewbornCute() {
               <div className="text-center font-bold text-[14px] leading-relaxed mb-8 text-[#0C4A6E]">
                 <p className="mb-3">يوم الأحد، 29 تشرين الثاني 2026</p>
                 <p className="text-[#0369A1] mb-6 text-[12px]">الساعة السادسة مساءً</p>
-                <p className={`text-[#0EA5E9] mb-3 font-normal text-2xl ${aref.className}`}>فندق فور سيزونز</p>
-                <p className="text-[#0369A1] text-[13px]">عمان — الأردن</p>
+                <p className={`text-[#0EA5E9] mb-3 font-normal text-2xl ${aref.className}`}>بيت العائلة</p>
+                <p className="text-[#0369A1] text-[13px]">دابوق — عمان</p>
               </div>
-              <a href="https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman" target="_blank" rel="noopener noreferrer" className="bg-[#0EA5E9] text-white px-8 py-2.5 rounded-full text-[13px] font-bold shadow-md hover:bg-[#0284C7] transition-all inline-block mb-4">
+              <a href="https://www.google.com/maps/search/?api=1&query=31.9965,35.8335" target="_blank" rel="noopener noreferrer" className="bg-[#0EA5E9] text-white px-8 py-2.5 rounded-full text-[13px] font-bold shadow-md hover:bg-[#0284C7] transition-all inline-block mb-4">
                 الخريطة
               </a>
             </div>
