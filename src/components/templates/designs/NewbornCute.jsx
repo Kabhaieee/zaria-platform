@@ -64,11 +64,11 @@ export default function NewbornCute() {
   const [showQRModal, setShowQRModal] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [guestbookMessages, setGuestbookMessages] = useState([
-    { name: 'أم محمد', message: 'ألف مبروك 🤍 بالرفاه والبنين إن شاء الله، فرحتكم فرحتنا', avatarColor: 'bg-[#38BDF8]', avatarLetter: 'أ' },
-    { name: 'سارة', message: 'عقبال ما نفرح بيكم بأحلى المناسبات، دعوة بغاية الذوق 🤩', avatarColor: 'bg-[#818CF8]', avatarLetter: 'س' },
-    { name: 'حيدر', message: 'بورك لكم في الموهوب وشكرتم الواهب 👶🤍', avatarColor: 'bg-[#A78BFA]', avatarLetter: 'ح' },
-    { name: 'نور الهدى', message: 'بيت جديد عامر بالمحبة إن شاء الله، ألف مبروك', avatarColor: 'bg-[#F472B6]', avatarLetter: 'ن' },
-    { name: 'أبو علي', message: 'اللهم اجعله من الصالحين واحفظه من كل سوء 🤲', avatarColor: 'bg-[#94A3B8]', avatarLetter: 'أ' },
+    { name: 'أم محمد', message: 'ألف مبروك قدوم الغالي زين 🤍 يتربى بعزكم ودلالكم إن شاء الله', avatarColor: 'bg-[#38BDF8]', avatarLetter: 'أ' },
+    { name: 'سارة', message: 'الحمد لله على السلامة، جعله الله من مواليد السعادة وقرة عين لوالديه 👶💙', avatarColor: 'bg-[#818CF8]', avatarLetter: 'س' },
+    { name: 'حيدر', message: 'بورك لكم في الموهوب وشكرتم الواهب، وبلغ أشده ورزقتم بره 👶🤍', avatarColor: 'bg-[#A78BFA]', avatarLetter: 'ح' },
+    { name: 'نور الهدى', message: 'أهلاً بقدوم أحلى زين، نورت الدنيا بوجوده، ألف مبروك للعائلة الكريمة 🍼✨', avatarColor: 'bg-[#F472B6]', avatarLetter: 'ن' },
+    { name: 'أبو علي', message: 'اللهم أنبته نباتاً حسناً واجعله من الصالحين واحفظه من كل سوء 🤲', avatarColor: 'bg-[#94A3B8]', avatarLetter: 'أ' },
   ]);
   
   const handleRSVPSubmit = (e) => {
@@ -106,14 +106,14 @@ export default function NewbornCute() {
     return () => clearInterval(timer);
   }, []);
 
-  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('حفل استقبال المولود زين')}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent('نتشرف بحضوركم حفل استقبال مولودنا')}&location=${encodeURIComponent('فندق فور سيزونز عمان')}`;
+  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('حفل استقبال المولود زين')}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent('نتشرف بحضوركم حفل استقبال مولودنا زين')}&location=${encodeURIComponent('فندق فور سيزونز عمان')}`;
 
   const handleAppleCalendar = () => {
-    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Wedding//AR\nBEGIN:VEVENT\nSUMMARY:حفل استقبال المولود زين\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:فندق فور سيزونز عمان\nDESCRIPTION:نتشرف بحضوركم حفل استقبال مولودنا\nEND:VEVENT\nEND:VCALENDAR`;
+    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Newborn//AR\nBEGIN:VEVENT\nSUMMARY:حفل استقبال المولود زين\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:فندق فور سيزونز عمان\nDESCRIPTION:نتشرف بحضوركم حفل استقبال مولودنا زين\nEND:VEVENT\nEND:VCALENDAR`;
     const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.setAttribute('download', 'wedding_invitation.ics');
+    link.setAttribute('download', 'newborn_zain_invitation.ics');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -165,55 +165,25 @@ export default function NewbornCute() {
           </div>
 
           <h1 
-            className="text-5xl md:text-7xl font-['Aref_Ruqaa'] text-white drop-shadow-[0_2px_15px_rgba(0,0,0,0.5)] mb-4"
-            
-            
-            
+            className="text-5xl md:text-7xl font-['Aref_Ruqaa'] text-white drop-shadow-[0_2px_15px_rgba(0,0,0,0.5)] mb-8 mt-4"
           >
-            زين
-          </h1>
-
-          <div 
-            className="text-2xl md:text-3xl font-light text-[#0EA5E9] mb-4 drop-shadow-md"
-            
-            
-            
-          >
-            &
-          </div>
-
-          <h1 
-            className="text-5xl md:text-7xl font-['Aref_Ruqaa'] text-white drop-shadow-[0_2px_15px_rgba(0,0,0,0.5)] mb-12"
-            
-            
-            
-          >
-            
+            المولود زين
           </h1>
 
           <p 
             className="text-lg md:text-xl font-['Aref_Ruqaa'] opacity-90 mb-8 max-w-sm mx-auto drop-shadow-md text-[#fdf8f5]"
-            
-            
-            
           >
             نتشرف بدعوتكم لمشاركتنا فرحة قدوم مولودنا
           </p>
 
           <p 
             className="text-sm md:text-base opacity-80 mb-4 tracking-widest font-mono"
-            
-            
-            
           >
             —
           </p>
           
           <p 
             className="text-lg md:text-xl font-['Aref_Ruqaa'] text-[#0EA5E9] drop-shadow-md"
-            
-            
-            
           >
             هبة من الرحمن
           </p>
@@ -222,11 +192,6 @@ export default function NewbornCute() {
         {/* Scroll Indicator */}
         <div 
           className="absolute bottom-8 z-20 flex flex-col items-center gap-2 text-white/80"
-          
-          
-          
-          
-          
         >
           <span className="text-[11px] font-medium tracking-widest bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10">مرّر للأسفل</span>
           <svg className="w-5 h-5 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -240,9 +205,6 @@ export default function NewbornCute() {
         
         {/* THE MAIN INVITATION FRAME */}
         <div 
-          
-          
-          
           className="relative w-full bg-[#F0F9FF] flex flex-col items-center pt-10 pb-12 px-2 shadow-sm border border-[#0EA5E9]/30"
         >
           {/* Frame Corners */}
@@ -253,12 +215,10 @@ export default function NewbornCute() {
 
           {/* Framed Content Wrapper */}
           <div className="relative z-20 flex flex-col items-center w-full">
-            
 
-
-            {/* Bismillah / Dua */}
+            {/* Quranic Verse / Dua */}
             <p className="text-[#0C4A6E] text-[18px] md:text-xl mb-10 leading-loose text-center px-4 font-medium">
-              اللّهُمَّ بارِكْ لهُما وبارِكْ عليهِما واجمَعْ بينهُما في خَيْرٍ
+              ﴿ الْمَالُ وَالْبَنُونَ زِينَةُ الْحَيَاةِ الدُّنْيَا ﴾
             </p>
 
             {/* Separator */}
@@ -272,23 +232,23 @@ export default function NewbornCute() {
             <h3 className={`text-4xl text-[#0EA5E9] mb-8 font-bold ${aref.className}`}>بطاقة دعوة</h3>
 
             {/* Text */}
-            <p className="text-[14px] leading-[2.2] mb-12 text-[#0C4A6E] text-center px-4 max-w-[300px]">
-              بقلوبٍ مفعمةٍ بالفرح والسرور، نتشرّف بدعوتكم لمشاركتنا أجمل لحظات حياتنا في حفل زفافنا. حضوركم شرفٌ لنا وبهجةٌ تكتمل بها فرحتنا.
+            <p className="text-[14px] leading-[2.2] mb-10 text-[#0C4A6E] text-center px-4 max-w-[310px]">
+              بقلوبٍ يغمرها الحمدُ والشكرُ لله، وبفرحةٍ ازدانَ بها بيتُنا، نتشرّف بدعوتكم لمشاركتنا بهجة قدوم مولودنا الغالي في حفل استقباله. حضوركم يزيد فرحتنا نوراً وسروراً.
             </p>
 
-            {/* Parents & Couple */}
-            <div className="flex justify-between items-start text-[14px] font-bold w-full px-2 mb-12 mt-4">
-              <div className="flex-1 text-center flex flex-col items-center">
-                <p className="text-[#0369A1] text-[11px] mb-3">والد العريس</p>
-                <p className="leading-relaxed text-[#0C4A6E] mb-5">الدكتور سهيل أبو زين<br/>وعائلته الكريمة</p>
-                <p className={`text-[22px] text-[#0EA5E9] font-bold leading-tight ${aref.className}`}>المولود<br/>زين</p>
+            {/* Baby & Parents Info */}
+            <div className="flex flex-col items-center text-[14px] font-bold w-full px-4 mb-12 mt-2 text-center">
+              <p className="text-[#0369A1] text-[12px] mb-2 tracking-wide">قدوم المولود الغالي</p>
+              <p className={`text-[36px] text-[#0EA5E9] font-bold leading-tight mb-4 ${aref.className}`}>زين</p>
+              <div className="bg-[#E0F2FE] border border-[#0EA5E9]/20 px-5 py-2 rounded-full mb-6">
+                <p className="text-[#0C4A6E] text-[13px] font-bold">بُورِكَ فِي الْمَوْهُوبِ وَشُكِرَ الْوَاهِبُ 👶💙</p>
               </div>
-              <div className="w-1.5 h-1.5 rotate-45 bg-[#0EA5E9] mt-7 mx-2 opacity-60"></div>
-              <div className="flex-1 text-center flex flex-col items-center">
-                <p className="text-[#0369A1] text-[11px] mb-3">والد العروس</p>
-                <p className="leading-relaxed text-[#0C4A6E] mb-5">المهندس علي أبو نضال<br/>وعائلته الكريمة</p>
-                <p className={`text-[22px] text-[#0EA5E9] font-bold leading-tight ${aref.className}`}></p>
-              </div>
+              
+              <div className="w-1.5 h-1.5 rotate-45 bg-[#0EA5E9] mb-6 opacity-60"></div>
+              
+              <p className="text-[#0369A1] text-[12px] mb-2 tracking-wide">الداعون</p>
+              <p className="leading-relaxed text-[#0C4A6E] text-[15px] mb-1">الدكتور سهيل أبو زين وحرمه</p>
+              <p className="text-[#0369A1] text-[12px] font-medium">وعموم عائلة السخن وعائلة قبها</p>
             </div>
 
             {/* Separator */}
@@ -300,7 +260,7 @@ export default function NewbornCute() {
 
             {/* Countdown */}
             <div className="w-full flex flex-col items-center">
-              <h3 className={`text-3xl text-[#0EA5E9] mb-8 font-bold ${aref.className}`}>يبدأ الاحتفال بعد</h3>
+              <h3 className={`text-3xl text-[#0EA5E9] mb-8 font-bold ${aref.className}`}>يبدأ الاستقبال بعد</h3>
               <div className="flex justify-center gap-3 mb-10 w-full px-4">
                 {[
                   { label: 'يوم', value: timeLeft.days },
@@ -325,16 +285,13 @@ export default function NewbornCute() {
 
             {/* Program Timeline */}
             <div className="w-full flex flex-col items-center">
-              <h3 className={`text-4xl text-[#0EA5E9] mb-10 font-bold ${aref.className}`}>برنامج الحفل</h3>
+              <h3 className={`text-4xl text-[#0EA5E9] mb-10 font-bold ${aref.className}`}>برنامج الاستقبال</h3>
               <div className="w-full flex flex-col px-4 max-w-sm">
                 {[
-                  { time: '9:00 – 9:20', event: 'استقبال الضيوف', desc: 'استقبال وترحيب بالضيوف مع موسيقى هادئة وضيافة خفيفة.' },
-                  { time: '9:20 – 9:35', event: 'دخول العروسين 🤍', desc: 'دخول العروسين وسط أجواء احتفالية وموسيقى خاصة.' },
-                  { time: '9:35 – 9:50', event: 'الرقصة الأولى', desc: 'لحظة رومانسية خاصة للعروسين.' },
-                  { time: '9:50 – 10:10', event: 'فرحة الأهل', desc: 'رقص واحتفال مع الأهل والمقرّبين.' },
-                  { time: '10:10 – 10:40', event: 'أجواء الحفل 💃🏻🕺🏻', desc: 'موسيقى ورقص واحتفال مع جميع الحضور.' },
-                  { time: '10:40 – 10:50', event: 'ضيافة ومشروبات ☕️', desc: 'تقديم الضيافة والمشروبات للضيوف.' },
-                  { time: '10:50 – 11:00', event: 'الختام 🤍', desc: 'آخر لحظات الاحتفال، صور جماعية، وتوديع الضيوف.' },
+                  { time: '6:00 – 6:30', event: 'استقبال الضيوف والمهنئين', desc: 'ترحيب بالأهل والأحبة مع أجواء هادئة وضيافة الاستقبال.' },
+                  { time: '6:30 – 7:15', event: 'تقديم الضيافة والحلويات 🍼', desc: 'تقديم المغلي والحلويات الخاصة بمناسبة قدوم المولود زين.' },
+                  { time: '7:15 – 8:00', event: 'المباركة والصور التذكارية 📸', desc: 'مشاركة الفرحة وتوثيق أجمل اللحظات مع المولود والعائلة.' },
+                  { time: '8:00 – 8:30', event: 'توزيع الهدايا التذكارية 🎁', desc: 'تقديم تذكارات المولود زين وتوديع الضيوف بكل محبة.' },
                 ].map((prog, idx) => (
                   <div key={idx} className="flex items-center justify-between py-5 border-b border-dashed border-[#0EA5E9]/30">
                     <div className="flex-1 text-right">
@@ -363,11 +320,11 @@ export default function NewbornCute() {
               </a>
               <div className="text-center font-bold text-[14px] leading-relaxed mb-8 text-[#0C4A6E]">
                 <p className="mb-3">يوم الأحد، 29 تشرين الثاني 2026</p>
-                <p className="text-[#0369A1] mb-6 text-[12px]">الساعة التاسعة مساءً</p>
+                <p className="text-[#0369A1] mb-6 text-[12px]">الساعة السادسة مساءً</p>
                 <p className={`text-[#0EA5E9] mb-3 font-normal text-2xl ${aref.className}`}>فندق فور سيزونز</p>
                 <p className="text-[#0369A1] text-[13px]">عمان — الأردن</p>
               </div>
-              <a href="https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman" target="_blank" rel="noopener noreferrer" className="bg-[#0EA5E9] text-white px-8 py-2.5 rounded-full text-[13px] font-bold shadow-md hover:bg-[#A88461] transition-all inline-block mb-4">
+              <a href="https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman" target="_blank" rel="noopener noreferrer" className="bg-[#0EA5E9] text-white px-8 py-2.5 rounded-full text-[13px] font-bold shadow-md hover:bg-[#0284C7] transition-all inline-block mb-4">
                 الخريطة
               </a>
             </div>
@@ -385,15 +342,15 @@ export default function NewbornCute() {
               <ul className="text-[14px] font-bold flex flex-col gap-6 text-right w-full px-6 text-[#0C4A6E]">
                 <li className="flex items-start justify-center gap-3 text-center">
                   <FlowerBullet className="w-3.5 h-3.5 mt-1 shrink-0 text-[#0EA5E9] opacity-70" />
-                  <span>يُرجى الحضور قبل الموعد بنصف ساعة</span>
+                  <span>نتشرّف بحضوركم ومشاركتنا فرحة قدوم مولودنا زين</span>
                 </li>
                 <li className="flex items-start justify-center gap-3 text-center">
                   <FlowerBullet className="w-3.5 h-3.5 mt-1 shrink-0 text-[#0EA5E9] opacity-70" />
-                  <span>نتشرّف بحضوركم بأبهى حلّة</span>
+                  <span>وجودكم بيننا ودعواتكم الصالحة أجمل هدية لمولودنا</span>
                 </li>
                 <li className="flex items-start justify-center gap-3 text-center">
                   <FlowerBullet className="w-3.5 h-3.5 mt-1 shrink-0 text-[#0EA5E9] opacity-70" />
-                  <span>الدعوة تشمل حاملها والعائلة الكريمة</span>
+                  <span>الدعوة تشمل الأهل والأحبة الكرام</span>
                 </li>
               </ul>
             </div>
@@ -428,26 +385,26 @@ export default function NewbornCute() {
         {/* Outside Frame Content */}
         <div className="w-full flex justify-center mt-12 mb-8">
           <h3 className={`text-4xl text-[#0EA5E9] font-bold ${aref.className} flex flex-col items-center gap-3`}>
-            بداية الحكاية
+            أجمل اللحظات
           </h3>
         </div>
         {/* Beautiful Gallery Grid */}
         <div className="px-6 mb-16 w-full">
           <div className="grid grid-cols-2 gap-3">
-            {[1, 2, 3, 4].map((i, idx) => (
+            {[
+              "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80",
+              "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80",
+              "https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&q=80",
+              "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80"
+            ].map((src, idx) => (
               <div 
-                key={i}
-                
-                
-                
-                
+                key={idx}
                 className={`relative rounded-xl overflow-hidden shadow-sm border border-[#0EA5E9]/20 ${idx === 0 || idx === 3 ? 'aspect-[4/5]' : 'aspect-square'}`}
               >
-                <Image 
-                  src={`/gallery-${i}.jpg`} 
-                  alt={`Memory ${i}`} 
-                  fill 
-                  className="object-cover hover:scale-105 transition-transform duration-700" 
+                <img 
+                  src={src} 
+                  alt={`Newborn Memory ${idx + 1}`} 
+                  className="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-700" 
                 />
               </div>
             ))}
@@ -456,9 +413,6 @@ export default function NewbornCute() {
 
         {/* Save the Date Section (Moved here and styled) */}
         <div
-          
-          
-          
           className="w-full flex flex-col items-center mt-12 mb-16 px-6"
         >
           <div className="flex items-center gap-2 mb-8">
@@ -468,7 +422,7 @@ export default function NewbornCute() {
             </h3>
           </div>
 
-          <div className="bg-[#F0F9FF] rounded-2xl shadow-[0_10px_30px_rgba(166,124,82,0.15)] w-full max-w-sm overflow-hidden border border-[#0EA5E9]/20 relative">
+          <div className="bg-[#F0F9FF] rounded-2xl shadow-[0_10px_30px_rgba(14,165,233,0.12)] w-full max-w-sm overflow-hidden border border-[#0EA5E9]/20 relative">
             <div className="absolute top-0 left-1/4 w-3 h-4 bg-gray-200 rounded-full border border-gray-300 -translate-y-1/2 z-10 shadow-sm"></div>
             <div className="absolute top-0 right-1/4 w-3 h-4 bg-gray-200 rounded-full border border-gray-300 -translate-y-1/2 z-10 shadow-sm"></div>
             
@@ -479,7 +433,7 @@ export default function NewbornCute() {
             <div className="p-6 flex flex-col items-center relative">
               <p className="text-[#0EA5E9] font-bold text-lg mb-1">الأحد</p>
               <p className="text-8xl text-[#0EA5E9] font-light mb-2 leading-none">29</p>
-              <p className="text-[#0C4A6E] font-bold text-sm">الساعة التاسعة مساءً</p>
+              <p className="text-[#0C4A6E] font-bold text-sm">الساعة السادسة مساءً</p>
             </div>
             
             <div className="border-t border-dashed border-[#0EA5E9]/30 px-6 py-5 bg-white/50">
@@ -514,12 +468,9 @@ export default function NewbornCute() {
         </div>
 
         <div 
-          
-          
-          
           className="w-full px-6 mb-24"
         >
-          <form onSubmit={handleRSVPSubmit} className="bg-[#F0F9FF] border border-[#0EA5E9]/40 rounded-[2rem] p-8 shadow-[0_10px_40px_rgba(196,154,108,0.1)] relative overflow-hidden">
+          <form onSubmit={handleRSVPSubmit} className="bg-[#F0F9FF] border border-[#0EA5E9]/40 rounded-[2rem] p-8 shadow-[0_10px_40px_rgba(14,165,233,0.1)] relative overflow-hidden">
             {/* Decorative corners removed as per image */}
             
             <div className="mb-5 mt-2">
@@ -555,9 +506,6 @@ export default function NewbornCute() {
             
               {rsvpData.status !== 'not_attending' && (
                 <div 
-                  
-                  
-                  
                   className="mb-8"
                 >
                   <label className="block text-[#0C4A6E] mb-4 text-xs font-bold text-center w-full">عدد المرافقين (عدا حضورك - 0 إن كنت وحدك)</label>
@@ -575,11 +523,11 @@ export default function NewbornCute() {
             
 
             <div className="mb-8">
-              <label className="block text-[#0C4A6E] mb-2 text-xs font-bold flex items-center gap-2">كلمة للعروسين 💌</label>
+              <label className="block text-[#0C4A6E] mb-2 text-xs font-bold flex items-center gap-2">كلمة وتهنئة للمولود ووالديه 👶💙</label>
               <textarea 
                 value={rsvpData.message}
                 onChange={(e) => setRsvpData({...rsvpData, message: e.target.value})}
-                placeholder="اكتب تهنئتك للعروسين..."
+                placeholder="اكتب تهنئتك ودعواتك للمولود زين..."
                 rows="3"
                 className="w-full border border-[#0EA5E9]/30 rounded-xl px-4 py-3 bg-white text-[#0C4A6E] text-sm focus:outline-none focus:border-[#0EA5E9] transition-colors resize-none placeholder-[#0369A1]/50"
               ></textarea>
@@ -594,7 +542,7 @@ export default function NewbornCute() {
       {/* Guestbook Section (كلمات المهنئين) */}
         <div className="w-full flex justify-center mt-12 mb-8">
           <div className="bg-white/60 backdrop-blur-sm border border-[#0EA5E9]/30 rounded-full px-8 py-3 shadow-sm flex items-center justify-center gap-3">
-             <span className="text-[20px] drop-shadow-sm">🌹</span>
+             <span className="text-[20px] drop-shadow-sm">🍼</span>
              <h3 className={`text-2xl text-[#0C4A6E] font-bold ${aref.className}`}>
                كلمات المهنئين
              </h3>
@@ -604,13 +552,8 @@ export default function NewbornCute() {
         <div className="w-full px-6 mb-24 flex flex-col gap-4">
           {guestbookMessages.map((msg, idx) => (
             <div 
-
               key={idx}
-              
-              
-              
-              
-              className="bg-white/80 backdrop-blur-sm border border-[#0EA5E9]/20 rounded-2xl p-5 shadow-[0_4px_20px_rgba(196,154,108,0.05)] flex items-center gap-4 relative overflow-hidden"
+              className="bg-white/80 backdrop-blur-sm border border-[#0EA5E9]/20 rounded-2xl p-5 shadow-[0_4px_20px_rgba(14,165,233,0.05)] flex items-center gap-4 relative overflow-hidden"
             >
               <div className={`w-14 h-14 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xl font-bold ${msg.avatarColor} shadow-inner`}>
                 {msg.avatarLetter}
@@ -648,9 +591,6 @@ export default function NewbornCute() {
         {showQRModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" dir="rtl">
             <div 
-              
-              
-              
               className="bg-[#F0F9FF] border-2 border-[#0EA5E9] rounded-2xl p-8 max-w-sm w-full flex flex-col items-center shadow-2xl relative"
             >
               <button 
@@ -665,12 +605,12 @@ export default function NewbornCute() {
               {rsvpData.status === 'attending' ? (
                 <>
                   <p className="text-[#0C4A6E] text-center mb-6 text-[14px] leading-relaxed">
-                    نحن متحمسون جداً لرؤيتك في حفل زفافنا. يُرجى الاحتفاظ ببطاقة الدخول الذكية (QR Code) وإبرازها لموظفي الاستقبال.
+                    نسعد جداً بحضوركم حفل استقبال مولودنا زين. يُرجى الاحتفاظ ببطاقة الدخول الذكية (QR Code) وإبرازها عند الاستقبال.
                   </p>
                   
-                  <div className="bg-white p-2 rounded-xl shadow-[0_5px_15px_rgba(196,154,108,0.2)] border border-[#0EA5E9]/20 mb-6 flex justify-center items-center">
+                  <div className="bg-white p-2 rounded-xl shadow-[0_5px_15px_rgba(14,165,233,0.2)] border border-[#0EA5E9]/20 mb-6 flex justify-center items-center">
                     <QRCodeCanvas 
-                      value={`BEGIN:VCARD\nVERSION:3.0\nFN:${rsvpData.name || 'ضيف'}\nORG:بطاقة دعوة - استقبال زين\nNOTE:عدد المرافقين: ${rsvpData.guests}\nEND:VCARD`} 
+                      value={`BEGIN:VCARD\nVERSION:3.0\nFN:${rsvpData.name || 'ضيف'}\nORG:بطاقة دعوة - استقبال المولود زين\nNOTE:عدد المرافقين: ${rsvpData.guests}\nEND:VCARD`} 
                       size={180} 
                       fgColor="#000000" 
                       level="H"
