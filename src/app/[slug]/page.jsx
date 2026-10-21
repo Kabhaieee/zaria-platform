@@ -1,5 +1,7 @@
 import invitations from '@/data/invitations.json';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import GSAPAnimations from '@/components/GSAPAnimations';
 
 export default async function InvitationPage({ params }) {
@@ -28,6 +30,16 @@ export default async function InvitationPage({ params }) {
   return (
     <div dir="rtl" className="min-h-screen bg-[#0a0a0a] text-[#e0e0e0] font-sans selection:bg-[#d4af37] selection:text-black overflow-hidden">
       <GSAPAnimations />
+
+      {/* Floating Back Button */}
+      <Link
+        href="/templates"
+        aria-label="رجوع"
+        className="fixed top-5 right-5 z-[200] flex items-center gap-2 px-4 py-2.5 rounded-full bg-black/75 hover:bg-black/90 text-white backdrop-blur-md border border-[#C49A6C]/50 shadow-[0_8px_25px_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-105 hover:border-[#C49A6C] group"
+      >
+        <ArrowRight className="w-4 h-4 text-[#C49A6C] transition-transform duration-300 group-hover:translate-x-1" />
+        <span className="text-sm font-medium tracking-wide">رجوع</span>
+      </Link>
       
       {/* Hero Section */}
       <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
