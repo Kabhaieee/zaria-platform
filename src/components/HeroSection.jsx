@@ -23,10 +23,13 @@ export default function HeroSection() {
 
       {/* Left-Edge Vertical Accent (physical left in RTL = CSS left) */}
       <div className="absolute left-8 lg:left-12 top-1/2 -translate-y-1/2 z-20 hidden lg:flex flex-col items-center gap-5">
-        {/* Golden Sparkle (Centered above Z) */}
+        {/* Golden Crown (Centered above Z) */}
         <div className="flex flex-col items-center justify-center w-full mb-1">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#C49A6C" stroke="none" className="opacity-100">
-            <path d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z" />
+          <svg width="18" height="15" viewBox="0 0 24 20" fill="#C49A6C" stroke="none" className="opacity-100">
+            <path d="M2 15L4.5 6L9.5 11L12 3L14.5 11L19.5 6L22 15H2ZM3 17H21V18.5H3V17Z" />
+            <circle cx="12" cy="1.5" r="1.5" />
+            <circle cx="4" cy="4.5" r="1.2" />
+            <circle cx="20" cy="4.5" r="1.2" />
           </svg>
         </div>
 

@@ -50,13 +50,16 @@ export default function LegalPageLayout({ contentKey }) {
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center mb-10"
         >
-          {/* Top Decorative Line with Star */}
+          {/* Top Decorative Line with Crown */}
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-4 h-[1px] bg-[#C49A6C]"></div>
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="#C49A6C" stroke="none">
-              <path d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z" />
+            <div className="w-5 h-[1px] bg-[#C49A6C]"></div>
+            <svg width="13" height="11" viewBox="0 0 24 20" fill="#C49A6C" stroke="none">
+              <path d="M2 15L4.5 6L9.5 11L12 3L14.5 11L19.5 6L22 15H2ZM3 17H21V18.5H3V17Z" />
+              <circle cx="12" cy="1.5" r="1.5" />
+              <circle cx="4" cy="4.5" r="1.2" />
+              <circle cx="20" cy="4.5" r="1.2" />
             </svg>
-            <div className="w-4 h-[1px] bg-[#C49A6C]"></div>
+            <div className="w-5 h-[1px] bg-[#C49A6C]"></div>
           </div>
 
           {/* Main ZARIA Text */}
