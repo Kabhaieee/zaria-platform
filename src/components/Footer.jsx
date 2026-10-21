@@ -32,7 +32,7 @@ export default function Footer() {
                   { label: t('footer.link_templates'), href: '/templates' },
                   { label: t('footer.link_pricing'), href: '/#pricing' },
                   { label: t('footer.link_blog'), href: '#' },
-                  { label: t('footer.link_about'), href: '#' }
+                  { label: t('footer.link_about'), href: '/about' }
                 ].map((link, idx) => (
                   <li key={idx}>
                     <a href={link.href} className="text-[#F5EFEA]/50 font-light text-sm hover:text-[#C49A6C] transition-colors duration-300">

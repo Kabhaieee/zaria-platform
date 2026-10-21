@@ -18,6 +18,7 @@ export default function Navbar() {
     { label: t('nav.templates'), href: '/templates' },
     { label: t('nav.pricing'), href: '/#pricing' },
     { label: t('nav.testimonials'), href: '/#testimonials' },
+    { label: t('footer.link_about'), href: '/about' },
     { label: t('nav.contact'), href: '/#contact' },
   ];
 
