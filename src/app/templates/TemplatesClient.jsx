@@ -1,18 +1,40 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useLanguage } from '@/contexts/LanguageContext';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import Link from 'next/link';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { toast } from 'sonner';
+/**
+ * @file src/app/templates/TemplatesClient.jsx
+ * @description Interactive client component for the ZARIA Templates Collection page.
+ * Allows visitors to filter invitation templates by occasion category (Wedding, Graduation,
+ * Engagement, Special Events) and navigate directly to each live interactive demo.
+ */
 
+// 1. React and Next.js core modules
+import { useState } from 'react';
+import Link from 'next/link';
+
+// 2. Third-party libraries
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+
+// 3. Internal components, hooks, and utility functions
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+/**
+ * TemplatesClient Component
+ *
+ * State Variables:
+ * - `activeFilter` {import('@/types/zaria').TemplateCategory}: Currently selected category filter tab.
+ *
+ * @returns {JSX.Element} The rendered filterable template gallery page.
+ */
 export default function TemplatesClient() {
   const { t, language } = useLanguage();
+
+  /** @type {[import('@/types/zaria').TemplateCategory, React.Dispatch<React.SetStateAction<import('@/types/zaria').TemplateCategory>>]} */
   const [activeFilter, setActiveFilter] = useState('all');
 
+  // Category filter definitions localized via translation keys
   const filters = [
     { id: 'all', label: t('templates_page.filters.all') },
     { id: 'wedding', label: t('templates_page.filters.wedding') },
@@ -21,6 +43,10 @@ export default function TemplatesClient() {
     { id: 'special', label: t('templates_page.filters.special') },
   ];
 
+  /**
+   * Catalog of available digital invitation templates with visual card styling.
+   * @type {import('@/types/zaria').TemplateCardItem[]}
+   */
   const templates = [
     {
       id: 'wedding-classic',
@@ -28,7 +54,7 @@ export default function TemplatesClient() {
       name: 'كلاسيكي',
       style: 'bg-gradient-to-br from-[#FDFBF9] to-[#F5EFEA] text-[#111111] border-[#C49A6C]',
       innerStyle: 'border-[#C49A6C]/40',
-      icon: '🤍'
+      icon: '🤍',
     },
     {
       id: 'wedding-royal',
@@ -36,7 +62,7 @@ export default function TemplatesClient() {
       name: 'الملكي',
       style: 'bg-gradient-to-br from-[#1A1A1A] to-[#111111] text-[#C49A6C] border-[#C49A6C]',
       innerStyle: 'border-[#C49A6C]/30',
-      icon: '♔'
+      icon: '♔',
     },
     {
       id: 'engagement-floral',
@@ -44,7 +70,7 @@ export default function TemplatesClient() {
       name: 'خطوبة وردية',
       style: 'bg-gradient-to-br from-[#FDFBF9] to-[#F3EEF5] text-[#8B6CA8] border-[#9A7EAC]',
       innerStyle: 'border-[#9A7EAC]/40',
-      icon: '❀'
+      icon: '❀',
     },
     {
       id: 'graduation-notebook',
@@ -52,7 +78,7 @@ export default function TemplatesClient() {
       name: 'دفتر الذكريات',
       style: 'bg-[#FFFFFF] text-[#1E3A8A] border-[#E5E7EB]',
       innerStyle: 'border-[#1E3A8A]/20',
-      icon: '📓'
+      icon: '📓',
     },
     {
       id: 'graduation-modern',
@@ -60,7 +86,7 @@ export default function TemplatesClient() {
       name: 'تخرج',
       style: 'bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-[#F8FAFC] border-[#1E3A8A]',
       innerStyle: 'border-[#1E3A8A]/40',
-      icon: '🎓'
+      icon: '🎓',
     },
     {
       id: 'birthday-fun',
@@ -68,7 +94,7 @@ export default function TemplatesClient() {
       name: 'ميلاد (سينمائي)',
       style: 'bg-gradient-to-br from-[#FCE7F3] to-[#FDF2F8] text-[#831843] border-[#EC4899]',
       innerStyle: 'border-[#EC4899]/40',
-      icon: '🎈'
+      icon: '🎈',
     },
     {
       id: 'newborn-cute',
@@ -76,30 +102,28 @@ export default function TemplatesClient() {
       name: 'مولود (سينمائي)',
       style: 'bg-gradient-to-br from-[#E0F2FE] to-[#F0F9FF] text-[#0C4A6E] border-[#0EA5E9]',
       innerStyle: 'border-[#0EA5E9]/40',
-      icon: '🍼'
-    }
+      icon: '🍼',
+    },
   ];
 
-  const filteredTemplates = activeFilter === 'all' 
-    ? templates 
-    : templates.filter(t => Array.isArray(t.category) ? t.category.includes(activeFilter) : t.category === activeFilter);
-
-  const handlePreview = (e, templateName) => {
-    e.preventDefault();
-    toast.success(`${t('templates_page.coming_soon')}!`, {
-      description: `سيتم إطلاق "${templateName}" قريباً.`,
-      icon: '⏳',
-    });
-  };
+  // Filter templates based on the active category tab (supports single or multi-category items)
+  const filteredTemplates =
+    activeFilter === 'all'
+      ? templates
+      : templates.filter((item) =>
+          Array.isArray(item.category)
+            ? item.category.includes(activeFilter)
+            : item.category === activeFilter
+        );
 
   return (
     <main className="min-h-screen bg-[#FDFBF9] font-sans" dir="rtl">
       <Navbar />
 
-      {/* Hero Section */}
+      {/* Hero Header Section */}
       <section className="pt-40 pb-20 px-4 relative overflow-hidden">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#C49A6C]/10 rounded-full blur-[100px]" />
-        
+
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -120,9 +144,9 @@ export default function TemplatesClient() {
         </div>
       </section>
 
-      {/* Filters & Grid Section */}
+      {/* Category Filter Tabs & Template Cards Grid Section */}
       <section className="pb-32 px-4 md:px-8 max-w-7xl mx-auto">
-        {/* Filters */}
+        {/* Category Filter Buttons */}
         <div className="flex flex-wrap justify-center gap-3 mb-16 relative z-10">
           {filters.map((filter) => (
             <button
@@ -139,8 +163,8 @@ export default function TemplatesClient() {
           ))}
         </div>
 
-        {/* Grid */}
-        <motion.div 
+        {/* Animated Template Cards Grid */}
+        <motion.div
           layout
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12"
         >
@@ -155,51 +179,63 @@ export default function TemplatesClient() {
                 transition={{ duration: 0.4 }}
                 className="group relative"
               >
-                <Link 
+                <Link
                   href={`/demo/${template.id}`}
                   className="block w-full h-full"
                 >
-                  {/* CSS Luxury Card */}
-                  <div className={`w-full aspect-[3/4] rounded-[2rem] p-4 shadow-xl border ${template.style} transition-transform duration-500 group-hover:-translate-y-3 cursor-pointer overflow-hidden relative`}>
-                    
-                    {/* Subtle Light effect on hover */}
+                  {/* Luxury Preview Card */}
+                  <div
+                    className={`w-full aspect-[3/4] rounded-[2rem] p-4 shadow-xl border ${template.style} transition-transform duration-500 group-hover:-translate-y-3 cursor-pointer overflow-hidden relative`}
+                  >
+                    {/* Subtle Shimmer Highlight on Hover */}
                     <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 transform -translate-x-full group-hover:translate-x-full" />
 
-                    <div className={`w-full h-full rounded-[1.5rem] border-[1.5px] ${template.innerStyle} flex flex-col items-center justify-center p-8 text-center relative`}>
-                      
-                      
-
+                    <div
+                      className={`w-full h-full rounded-[1.5rem] border-[1.5px] ${template.innerStyle} flex flex-col items-center justify-center p-8 text-center relative`}
+                    >
                       <div className="text-4xl mb-6 opacity-80">{template.icon}</div>
-                      
+
                       <h3 className="font-serif text-3xl font-bold mb-3 z-10 leading-tight">
                         {template.name}
                       </h3>
-                      
+
                       <p className="text-sm font-medium opacity-60 tracking-widest uppercase mt-4">
-                        {Array.isArray(template.category) ? template.category.map(c => t(`templates_page.filters.${c}`)).join(' و ') : t(`templates_page.filters.${template.category}`)}
+                        {Array.isArray(template.category)
+                          ? template.category.map((c) => t(`templates_page.filters.${c}`)).join(' و ')
+                          : t(`templates_page.filters.${template.category}`)}
                       </p>
                     </div>
                   </div>
 
-                  {/* Hover Action Button */}
+                  {/* Hover Action Overlay Button */}
                   <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
                     <div className="bg-white text-[#111111] px-6 py-3 rounded-full font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 pointer-events-auto">
                       {t('templates_page.preview_btn')}
-                      {language === 'ar' ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
+                      {language === 'ar' ? (
+                        <ArrowLeft className="w-4 h-4" />
+                      ) : (
+                        <ArrowRight className="w-4 h-4" />
+                      )}
                     </div>
                   </div>
                 </Link>
-
               </motion.div>
             ))}
           </AnimatePresence>
         </motion.div>
       </section>
 
-      {/* Back to Home CTA */}
+      {/* Back to Home Call-to-Action */}
       <section className="py-20 text-center border-t border-[#EAD1C6]/30">
-        <Link href="/" className="inline-flex items-center gap-3 text-[#111111] font-bold text-lg hover:text-[#C49A6C] transition-colors group">
-          {language === 'ar' ? <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /> : <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-3 text-[#111111] font-bold text-lg hover:text-[#C49A6C] transition-colors group"
+        >
+          {language === 'ar' ? (
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          ) : (
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+          )}
           {t('nav.home')}
         </Link>
       </section>

@@ -1,3 +1,14 @@
+/**
+ * @file src/utils/translations.js
+ * @description Centralized bilingual (Arabic `ar` and English `en`) translation dictionary
+ * for the ZARIA platform. Consumed by `LanguageContext` to resolve dot-notated keys
+ * across navigation, hero, template gallery, pricing, FAQ, legal pages, and demo templates.
+ */
+
+/**
+ * Master dictionary mapping language codes (`ar`, `en`) to nested translation namespaces.
+ * @type {Record<import('@/types/zaria').LanguageCode, Record<string, any>>}
+ */
 export const translations = {
   ar: {
     nav: {

@@ -1,12 +1,29 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { ArrowRight, ArrowLeft, Sparkles } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+/**
+ * @file AboutClient.jsx
+ * @description Client-side interactive view for the "About Us" (`/about`) page.
+ * Presents ZARIA's brand philosophy, luxury emblem, mission statement, and quick
+ * navigation links to the templates gallery and pricing packages.
+ */
 
+// 1. React and Next.js core modules
+import Link from 'next/link';
+
+// 2. Third-party libraries
+import { motion } from 'framer-motion';
+import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
+
+// 3. Internal components, hooks, and utility functions
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+/**
+ * Renders the About Us page content with entrance animations and RTL/LTR direction support.
+ *
+ * @returns {JSX.Element} The rendered About Us page layout.
+ */
 export default function AboutClient() {
   const { language } = useLanguage();
 
@@ -14,13 +31,13 @@ export default function AboutClient() {
     <main className="min-h-screen bg-[#FAF6F3] font-sans relative overflow-hidden" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <Navbar />
 
-      {/* Decorative background gradients */}
+      {/* Decorative ambient background gradients */}
       <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-white/50 to-transparent pointer-events-none" />
       <div className="absolute -top-32 -right-32 w-96 h-96 bg-[#C49A6C]/10 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-40 -left-32 w-80 h-80 bg-[#EAD1C6]/30 rounded-full blur-[100px] pointer-events-none" />
 
       <section className="pt-36 pb-24 px-5 relative z-10 max-w-4xl mx-auto flex flex-col items-center">
-        {/* Back to Home Button */}
+        {/* Back to Home navigation link */}
         <div className="w-full flex justify-start mb-6">
           <Link href="/" className="inline-flex items-center gap-2 text-[#C49A6C] hover:text-[#A88461] transition-colors font-medium text-sm group">
             <span className="bg-[#C49A6C]/10 p-2 rounded-full border border-[#C49A6C]/30 group-hover:bg-[#C49A6C]/20 transition-colors">
@@ -30,7 +47,7 @@ export default function AboutClient() {
           </Link>
         </div>
 
-        {/* Logo Emblem */}
+        {/* ZARIA Royal Crown Logo Emblem */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -57,7 +74,7 @@ export default function AboutClient() {
           </div>
         </motion.div>
 
-        {/* Page Title */}
+        {/* Page Heading */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -69,7 +86,7 @@ export default function AboutClient() {
           </h1>
         </motion.div>
 
-        {/* Main Luxury Content Card */}
+        {/* Main Luxury Brand Story Card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -84,6 +101,7 @@ export default function AboutClient() {
               في زاريا (<span className="text-[#C49A6C] font-serif font-bold">ZARIA</span>)، نؤمن بأن كل مناسبة سعيدة تبدأ من لحظة الدعوة. نحن منصة متخصصة في تصميم وابتكار الدعوات الإلكترونية الفاخرة، نسعى لتحويل تفاصيل فرحتكم إلى تجربة رقمية استثنائية تبقى في الذاكرة.
             </p>
 
+            {/* Decorative Sparkle Divider */}
             <div className="flex items-center justify-center gap-3 py-2 opacity-60">
               <div className="w-12 h-[1px] bg-[#C49A6C]/50" />
               <Sparkles className="w-4 h-4 text-[#C49A6C]" />
@@ -95,7 +113,7 @@ export default function AboutClient() {
             </p>
           </div>
 
-          {/* CTA inside card */}
+          {/* Action Buttons inside Card */}
           <div className="mt-12 pt-8 border-t border-[#EAD1C6]/30 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/templates"

@@ -1,11 +1,30 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+/**
+ * @file src/components/Preloader.jsx
+ * @description Luxury full-screen initial splash screen displaying the animated
+ * ZARIA wordmark, golden crown insignia, and progress shimmer line on marketing routes.
+ */
+
+// 1. React and Next.js core modules
+import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
+// 2. Third-party libraries
+import { AnimatePresence, motion } from 'framer-motion';
+
+// Module-scoped flag ensuring the splash screen plays only once per browser session load
 let isInitialLoad = true;
 
+/**
+ * Preloader Component
+ *
+ * State Variables:
+ * - `isLoading` {boolean}: Controls whether the preloader overlay is actively visible.
+ * - `shouldRender` {boolean}: Retains the component in the DOM until the exit fade finishes.
+ *
+ * @returns {JSX.Element | null} The animated splash screen overlay or null on non-marketing routes.
+ */
 export default function Preloader() {
   const pathname = usePathname();
   const isMarketingRoute = ['/', '/templates', '/privacy', '/terms', '/refund'].includes(pathname);
@@ -19,17 +38,17 @@ export default function Preloader() {
       return;
     }
 
-    // Disable scrolling while preloader is active
+    // Lock document scrolling while the splash screen is active
     document.body.style.overflow = 'hidden';
-    
+
     const timer = setTimeout(() => {
       setIsLoading(false);
       isInitialLoad = false;
       document.body.style.overflow = 'unset';
-      
-      // Give time for exit animation to finish before removing from DOM
+
+      // Allow the 1s exit transition to complete before unmounting
       setTimeout(() => setShouldRender(false), 1000);
-    }, 4000); // 4 seconds total loading time
+    }, 4000);
 
     return () => {
       clearTimeout(timer);
@@ -39,20 +58,22 @@ export default function Preloader() {
 
   if (!shouldRender || !isMarketingRoute) return null;
 
+  // Staggered parent animation variants for the ZARIA letters
   const letterContainer = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
         staggerChildren: 0.25,
-        delayChildren: 0.3
-      }
-    }
+        delayChildren: 0.3,
+      },
+    },
   };
 
+  // Individual letter reveal animation variants
   const letterAnim = {
     hidden: { opacity: 0, y: 15 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
   };
 
   return (
@@ -60,10 +81,10 @@ export default function Preloader() {
       {isLoading && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 1, ease: "easeInOut" } }}
+          exit={{ opacity: 0, transition: { duration: 1, ease: 'easeInOut' } }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#111111]"
         >
-          {/* Main ZARIA Text */}
+          {/* Animated ZARIA Wordmark + Golden Crown */}
           <motion.div
             variants={letterContainer}
             initial="hidden"
@@ -76,18 +97,18 @@ export default function Preloader() {
                 {letter}
               </motion.span>
             ))}
-            
-            {/* Animated Golden Crown */}
-            <motion.svg 
-              width="24" 
-              height="20" 
-              viewBox="0 0 24 20" 
-              fill="#C49A6C" 
+
+            {/* Animated Golden Crown Above Center Letter */}
+            <motion.svg
+              width="24"
+              height="20"
+              viewBox="0 0 24 20"
+              fill="#C49A6C"
               stroke="none"
               className="absolute -top-8 left-1/2 -translate-x-1/2"
               initial={{ opacity: 0, scale: 0, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1.8, type: "spring" }}
+              transition={{ duration: 1, delay: 1.8, type: 'spring' }}
             >
               <path d="M2 15L4.5 6L9.5 11L12 3L14.5 11L19.5 6L22 15H2ZM3 17H21V18.5H3V17Z" />
               <circle cx="12" cy="1.5" r="1.5" />
@@ -95,8 +116,8 @@ export default function Preloader() {
               <circle cx="20" cy="4.5" r="1.2" />
             </motion.svg>
           </motion.div>
-          
-          {/* Subtitle */}
+
+          {/* Brand Subtitle */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -106,15 +127,13 @@ export default function Preloader() {
             E-INVITATIONS
           </motion.div>
 
-          {/* Golden Loading Line */}
-          <motion.div 
-            className="absolute bottom-16 w-32 h-[1px] bg-white/10 overflow-hidden"
-          >
-            <motion.div 
+          {/* Bottom Shimmering Progress Bar */}
+          <motion.div className="absolute bottom-16 w-32 h-[1px] bg-white/10 overflow-hidden">
+            <motion.div
               className="w-full h-full bg-gradient-to-r from-transparent via-[#C49A6C] to-transparent"
-              initial={{ x: "-100%" }}
-              animate={{ x: "100%" }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+              initial={{ x: '-100%' }}
+              animate={{ x: '100%' }}
+              transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
             />
           </motion.div>
         </motion.div>

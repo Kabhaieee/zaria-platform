@@ -1,11 +1,28 @@
 'use client';
-import { motion } from 'framer-motion';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { Sparkles, Building2, Crown, Camera, HeartPulse, ArrowLeft } from 'lucide-react';
 
+/**
+ * @file src/components/Partners.jsx
+ * @description Infinite horizontal marquee section showcasing upcoming exclusive
+ * partner perks and vendor discounts (wedding halls, bridal suites, photography, spa)
+ * available to ZARIA clients.
+ */
+
+// 1. Third-party libraries
+import { motion } from 'framer-motion';
+import { Building2, Camera, Crown, HeartPulse, Sparkles } from 'lucide-react';
+
+// 2. Internal components, hooks, and utility functions
+import { useLanguage } from '@/contexts/LanguageContext';
+
+/**
+ * Partners Component
+ *
+ * @returns {JSX.Element} The animated partner offers marquee section.
+ */
 export default function Partners() {
   const { t, language } = useLanguage();
 
+  // Partner privilege cards displayed in the scrolling marquee
   const partners = [
     {
       name: language === 'ar' ? 'قريباً' : 'Coming Soon',
@@ -34,11 +51,9 @@ export default function Partners() {
     },
   ];
 
-  // Duplicate the array to create a seamless infinite loop
-  const marqueeItems = [...partners, ...partners];
-
   return (
     <section className="py-20 md:py-28 bg-[#F5EFEA] overflow-hidden relative border-t border-[#C49A6C]/20">
+      {/* Section Header */}
       <div className="max-w-7xl mx-auto px-5 mb-16 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -59,6 +74,7 @@ export default function Partners() {
         </motion.div>
       </div>
 
+      {/* Continuous Horizontal Marquee Track */}
       <div className="relative flex overflow-x-hidden group" dir="rtl">
         <style>{`
           @keyframes marquee-unified-partners {
@@ -75,7 +91,7 @@ export default function Partners() {
           }
         `}</style>
 
-        {/* Left/Right Fade Gradients */}
+        {/* Left & Right Edge Soft Fade Gradients */}
         <div className="absolute top-0 left-0 w-24 md:w-48 h-full bg-gradient-to-r from-[#F5EFEA] to-transparent z-10 pointer-events-none" />
         <div className="absolute top-0 right-0 w-24 md:w-48 h-full bg-gradient-to-l from-[#F5EFEA] to-transparent z-10 pointer-events-none" />
 
