@@ -32,13 +32,19 @@ export default function RSVPForm({ whatsappNumber }) {
   });
 
   /**
-   * Handles RSVP form submission by building a localized Arabic message
-   * and launching WhatsApp in a new browser tab.
+   * Handles RSVP form submission by validating/trimming inputs, building a localized
+   * Arabic message, and launching WhatsApp in a new browser tab with `noopener,noreferrer`.
    *
    * @param {React.FormEvent<HTMLFormElement>} e - Form submission event.
    */
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const sanitizedName = formData.name.trim().slice(0, 80);
+    if (!sanitizedName) return;
+
+    const validGuests = Math.min(5, Math.max(1, Number(formData.guests) || 1));
+    const safePhone = String(whatsappNumber || '').replace(/[^\d]/g, '');
 
     // Format attendance confirmation or apology line
     const statusText =
@@ -46,15 +52,15 @@ export default function RSVPForm({ whatsappNumber }) {
         ? 'يسعدني تلبية دعوتكم وحضور الحفل'
         : 'أعتذر عن الحضور، وأتمنى لكم السعادة';
     const guestsText =
-      formData.status === 'attending' ? `\nعدد الحضور: ${formData.guests}` : '';
+      formData.status === 'attending' ? `\nعدد الحضور: ${validGuests}` : '';
 
-    const message = `مرحباً،\nأنا ${formData.name}\n${statusText}${guestsText}`;
+    const message = `مرحباً،\nأنا ${sanitizedName}\n${statusText}${guestsText}`;
 
-    // URL-encode the message payload and open WhatsApp Web/App
+    // URL-encode the message payload and open WhatsApp Web/App safely
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/${safePhone}?text=${encodedMessage}`;
 
-    window.open(whatsappUrl, '_blank');
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -68,6 +74,7 @@ export default function RSVPForm({ whatsappNumber }) {
         <input
           type="text"
           required
+          maxLength={80}
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           className="w-full bg-black/40 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#C49A6C] transition-colors"

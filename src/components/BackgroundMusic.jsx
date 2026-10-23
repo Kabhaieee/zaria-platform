@@ -45,7 +45,7 @@ export default function BackgroundMusic({ youtubeUrl, autoPlay = false }) {
   const videoId = extractVideoId(youtubeUrl);
 
   /**
-   * Sends a YouTube IFrame Player API command via `postMessage`.
+   * Sends a YouTube IFrame Player API command via `postMessage` restricted to the YouTube origin.
    *
    * @param {string} func - The YouTube player command name (e.g., 'playVideo', 'pauseVideo').
    * @param {Array<unknown>} [args=[]] - Optional command arguments.
@@ -54,7 +54,7 @@ export default function BackgroundMusic({ youtubeUrl, autoPlay = false }) {
     if (iframeRef.current && iframeRef.current.contentWindow) {
       iframeRef.current.contentWindow.postMessage(
         JSON.stringify({ event: 'command', func, args }),
-        '*'
+        'https://www.youtube.com'
       );
     }
   }, []);
@@ -143,6 +143,8 @@ export default function BackgroundMusic({ youtubeUrl, autoPlay = false }) {
           width="1"
           height="1"
           allow="autoplay; encrypted-media"
+          referrerPolicy="strict-origin-when-cross-origin"
+          sandbox="allow-scripts allow-same-origin allow-presentation"
           onLoad={() => {
             if (playingRef.current || (autoPlay && !userToggledRef.current)) {
               startPlayback();

@@ -80,13 +80,14 @@ export default function GraduationNotebook() {
   };
 
   /**
-   * Handles local photo file selection and creates an in-memory Object URL for preview.
+   * Handles local photo file selection, validates image MIME type and size (max 5MB),
+   * and creates an in-memory Object URL for preview.
    *
    * @param {React.ChangeEvent<HTMLInputElement>} e - File input change event.
    */
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('image/') && file.size <= 5 * 1024 * 1024) {
       const imageUrl = URL.createObjectURL(file);
       setPreviewImage(imageUrl);
       setFormData({ ...formData, image: imageUrl });
@@ -94,19 +95,21 @@ export default function GraduationNotebook() {
   };
 
   /**
-   * Handles submission of a new graduation wish/photo entry, prepends it to the
-   * notebook feed, resets the form, and flips open to the first spread if needed.
+   * Handles submission of a new graduation wish/photo entry, validates and trims inputs,
+   * prepends the entry to the notebook feed, resets the form, and flips open to the first spread if needed.
    *
    * @param {React.FormEvent<HTMLFormElement>} e - Form submission event.
    */
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.message) return;
+    const sanitizedName = formData.name.trim().slice(0, 80);
+    const sanitizedMessage = formData.message.trim().slice(0, 500);
+    if (!sanitizedName || !sanitizedMessage) return;
 
     const newEntry = {
       id: Date.now(),
-      name: formData.name,
-      message: formData.message,
+      name: sanitizedName,
+      message: sanitizedMessage,
       image: formData.image,
       date: new Date().toISOString().split('T')[0],
     };
@@ -213,6 +216,7 @@ export default function GraduationNotebook() {
           type="text"
           placeholder="اسمك..."
           required
+          maxLength={80}
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           className="w-full bg-gray-50/50 border-b md:border-b-2 border-gray-300 px-2 md:px-4 py-1 md:py-3 text-[10px] md:text-base focus:outline-none focus:border-[#5B1E2B] transition-colors rounded-t-lg"
@@ -221,6 +225,7 @@ export default function GraduationNotebook() {
         <textarea
           placeholder="اكتب رسالة..."
           required
+          maxLength={500}
           rows="3"
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -476,9 +481,7 @@ export default function GraduationNotebook() {
       <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=ZCg3kKN7VQs" autoPlay={true} />
 
       {/* Scoped 3D Perspective & Custom Scrollbar Utilities */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
+      <style>{`
         .perspective-[2000px] { perspective: 2000px; }
         .perspective-[2500px] { perspective: 2500px; }
         .transform-style-3d { transform-style: preserve-3d; }
@@ -486,9 +489,7 @@ export default function GraduationNotebook() {
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-      `,
-        }}
-      />
+      `}</style>
     </div>
   );
 }

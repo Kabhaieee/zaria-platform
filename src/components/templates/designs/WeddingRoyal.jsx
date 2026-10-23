@@ -161,20 +161,31 @@ export default function WeddingRoyal() {
   const handleRSVPSubmit = (e) => {
     e.preventDefault();
 
+    const sanitizedName = rsvpData.name.trim().slice(0, 80);
+    const sanitizedMessage = rsvpData.message.trim().slice(0, 500);
+    const boundedGuests = Math.min(20, Math.max(0, Number(rsvpData.guests) || 0));
+
+    if (!sanitizedName) return;
+
     // 1. Add greeting message to the guestbook if provided
-    if (rsvpData.message.trim()) {
+    if (sanitizedMessage) {
       const colors = ['bg-[#A888B5]', 'bg-[#6B4B75]', 'bg-[#BE955C]', 'bg-[#7D8F69]', 'bg-[#B399D4]'];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      const firstLetter = rsvpData.name ? rsvpData.name.trim().charAt(0) : 'ز';
+      const firstLetter = sanitizedName.charAt(0) || 'ز';
 
       setGuestbookMessages((prev) => [
-        { name: rsvpData.name || 'ضيف', message: rsvpData.message, avatarColor: randomColor, avatarLetter: firstLetter },
+        { name: sanitizedName || 'ضيف', message: sanitizedMessage, avatarColor: randomColor, avatarLetter: firstLetter },
         ...prev,
       ]);
-
-      // Clear the message input while retaining the guest's name for the QR pass
-      setRsvpData((prev) => ({ ...prev, message: '' }));
     }
+
+    // Store sanitized values in state while clearing the message input
+    setRsvpData((prev) => ({
+      ...prev,
+      name: sanitizedName,
+      guests: boundedGuests,
+      message: '',
+    }));
 
     // 2. Trigger celebratory confetti and display the QR pass modal
     if (rsvpData.status === 'attending') {
@@ -721,6 +732,7 @@ export default function WeddingRoyal() {
               <input
                 type="text"
                 required
+                maxLength={80}
                 value={rsvpData.name}
                 onChange={(e) => setRsvpData({ ...rsvpData, name: e.target.value })}
                 placeholder="أدخل اسمك هنا..."
@@ -762,7 +774,7 @@ export default function WeddingRoyal() {
                       <Minus size={16} strokeWidth={1.5} />
                     </button>
                     <span className="text-[#FDFBF9] font-bold text-lg w-4 text-center">{rsvpData.guests}</span>
-                    <button type="button" onClick={() => setRsvpData({ ...rsvpData, guests: (Number(rsvpData.guests) || 0) + 1 })} className="w-10 h-10 rounded-full border border-[#D1B06B]/40 bg-[#1A1A1A] flex items-center justify-center text-[#9CA3AF] hover:bg-[#0A0A0A] hover:text-[#D1B06B] transition-colors">
+                    <button type="button" onClick={() => setRsvpData({ ...rsvpData, guests: Math.min(20, (Number(rsvpData.guests) || 0) + 1) })} className="w-10 h-10 rounded-full border border-[#D1B06B]/40 bg-[#1A1A1A] flex items-center justify-center text-[#9CA3AF] hover:bg-[#0A0A0A] hover:text-[#D1B06B] transition-colors">
                       <Plus size={16} strokeWidth={1.5} />
                     </button>
                   </div>
@@ -774,6 +786,7 @@ export default function WeddingRoyal() {
             <div className="mb-8">
               <label className="block text-[#FDFBF9] mb-2 text-xs font-bold flex items-center gap-2">كلمة للعروسين 💌</label>
               <textarea
+                maxLength={500}
                 value={rsvpData.message}
                 onChange={(e) => setRsvpData({ ...rsvpData, message: e.target.value })}
                 placeholder="اكتب تهنئتك للعروسين..."

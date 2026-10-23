@@ -159,8 +159,14 @@ export default function BirthdayFun() {
   const handleRSVPSubmit = (e) => {
     e.preventDefault();
 
+    const sanitizedName = rsvpData.name.trim().slice(0, 80);
+    const sanitizedMessage = rsvpData.message.trim().slice(0, 500);
+    const boundedGuests = Math.min(20, Math.max(0, Number(rsvpData.guests) || 0));
+
+    if (!sanitizedName) return;
+
     // 1. Prepend new greeting to "كلمات المهنئين" if message is non-empty
-    if (rsvpData.message.trim()) {
+    if (sanitizedMessage) {
       const colors = [
         'bg-[#F472B6]',
         'bg-[#E879F9]',
@@ -169,21 +175,26 @@ export default function BirthdayFun() {
         'bg-[#34D399]',
       ];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      const firstLetter = rsvpData.name ? rsvpData.name.trim().charAt(0) : 'ز';
+      const firstLetter = sanitizedName.charAt(0) || 'ز';
 
       setGuestbookMessages((prev) => [
         {
-          name: rsvpData.name || 'ضيف',
-          message: rsvpData.message,
+          name: sanitizedName || 'ضيف',
+          message: sanitizedMessage,
           avatarColor: randomColor,
           avatarLetter: firstLetter,
         },
         ...prev,
       ]);
-
-      // Clear the message textarea while retaining guest name for the QR pass
-      setRsvpData((prev) => ({ ...prev, message: '' }));
     }
+
+    // Store sanitized values in state while clearing the message textarea
+    setRsvpData((prev) => ({
+      ...prev,
+      name: sanitizedName,
+      guests: boundedGuests,
+      message: '',
+    }));
 
     // 2. Launch celebratory confetti if attending and display the QR modal
     if (rsvpData.status === 'attending') {
@@ -676,6 +687,7 @@ export default function BirthdayFun() {
               <input
                 type="text"
                 required
+                maxLength={80}
                 value={rsvpData.name}
                 onChange={(e) => setRsvpData({ ...rsvpData, name: e.target.value })}
                 placeholder="أدخل اسمك هنا..."
@@ -768,7 +780,10 @@ export default function BirthdayFun() {
                   <button
                     type="button"
                     onClick={() =>
-                      setRsvpData({ ...rsvpData, guests: (Number(rsvpData.guests) || 0) + 1 })
+                      setRsvpData({
+                        ...rsvpData,
+                        guests: Math.min(20, (Number(rsvpData.guests) || 0) + 1),
+                      })
                     }
                     className="w-10 h-10 rounded-full border border-[#EC4899]/40 bg-white flex items-center justify-center text-[#BE185D] hover:bg-[#FCE7F3] hover:text-[#EC4899] transition-colors"
                   >
@@ -784,6 +799,7 @@ export default function BirthdayFun() {
                 كلمة للعروسين 💌
               </label>
               <textarea
+                maxLength={500}
                 value={rsvpData.message}
                 onChange={(e) => setRsvpData({ ...rsvpData, message: e.target.value })}
                 placeholder="اكتب تهنئتك للعروسين..."

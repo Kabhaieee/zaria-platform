@@ -13,7 +13,12 @@
 ngrok.exe
 .ngrok.exe.old
 *.exe
+.gemini/
 
-# env & logs
+# environment variables, secrets & logs
+.env
+.env.*
 .env*.local
+*.pem
+*.key
 *.log

@@ -178,8 +178,14 @@ export default function GraduationModern() {
   const handleRSVPSubmit = (e) => {
     e.preventDefault();
 
+    const sanitizedName = rsvpData.name.trim().slice(0, 80);
+    const sanitizedMessage = rsvpData.message.trim().slice(0, 500);
+    const boundedGuests = Math.min(20, Math.max(0, Number(rsvpData.guests) || 0));
+
+    if (!sanitizedName) return;
+
     // 1. Prepend new greeting to "كلمات المهنئين" if message is non-empty
-    if (rsvpData.message.trim()) {
+    if (sanitizedMessage) {
       const colors = [
         'bg-[#3B82F6]',
         'bg-[#1D4ED8]',
@@ -188,21 +194,26 @@ export default function GraduationModern() {
         'bg-[#94A3B8]',
       ];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      const firstLetter = rsvpData.name ? rsvpData.name.trim().charAt(0) : 'ز';
+      const firstLetter = sanitizedName.charAt(0) || 'ز';
 
       setGuestbookMessages((prev) => [
         {
-          name: rsvpData.name || 'ضيف',
-          message: rsvpData.message,
+          name: sanitizedName || 'ضيف',
+          message: sanitizedMessage,
           avatarColor: randomColor,
           avatarLetter: firstLetter,
         },
         ...prev,
       ]);
-
-      // Clear the message textarea while retaining guest name for the QR pass
-      setRsvpData((prev) => ({ ...prev, message: '' }));
     }
+
+    // Store sanitized values in state while clearing the message textarea
+    setRsvpData((prev) => ({
+      ...prev,
+      name: sanitizedName,
+      guests: boundedGuests,
+      message: '',
+    }));
 
     // 2. Launch celebratory confetti if attending and display the QR modal
     if (rsvpData.status === 'attending') {
@@ -684,6 +695,7 @@ END:VCALENDAR`;
               <input
                 type="text"
                 required
+                maxLength={80}
                 value={rsvpData.name}
                 onChange={(e) => setRsvpData({ ...rsvpData, name: e.target.value })}
                 placeholder="أدخل اسمك هنا..."
@@ -776,7 +788,10 @@ END:VCALENDAR`;
                   <button
                     type="button"
                     onClick={() =>
-                      setRsvpData({ ...rsvpData, guests: (Number(rsvpData.guests) || 0) + 1 })
+                      setRsvpData({
+                        ...rsvpData,
+                        guests: Math.min(20, (Number(rsvpData.guests) || 0) + 1),
+                      })
                     }
                     className="w-10 h-10 rounded-full border border-[#1E3A8A]/40 bg-white flex items-center justify-center text-[#475569] hover:bg-[#E2E8F0] hover:text-[#1E3A8A] transition-colors"
                   >
@@ -792,6 +807,7 @@ END:VCALENDAR`;
                 كلمة وتهنئة 💌
               </label>
               <textarea
+                maxLength={500}
                 value={rsvpData.message}
                 onChange={(e) => setRsvpData({ ...rsvpData, message: e.target.value })}
                 placeholder="اكتب تهنئتك..."
