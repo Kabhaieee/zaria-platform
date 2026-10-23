@@ -1,0 +1,74 @@
+{
+  "invitations": [
+    {
+      "slug": "ahmad-sara",
+      "templateId": "wedding-royal",
+      "hostNames": "أحمد & سارة",
+      "coupleNames": "أحمد & سارة",
+      "welcomeMessage": "بقلوبٍ مفعمةٍ بالفرح والسرور، نتشرّف بدعوتكم لمشاركتنا أجمل لحظات حياتنا في حفل زفافنا الملكي. حضوركم شرفٌ لنا وبهجةٌ تكتمل بها فرحتنا.",
+      "invitationText": "بقلوبٍ مفعمةٍ بالفرح والسرور، نتشرّف بدعوتكم لمشاركتنا أجمل لحظات حياتنا في حفل زفافنا الملكي. حضوركم شرفٌ لنا وبهجةٌ تكتمل بها فرحتنا.",
+      "eventDate": "2026-11-29",
+      "eventTime": "21:00",
+      "venueName": "فندق فور سيزونز عمان",
+      "locationUrl": "https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman",
+      "youtubeVideoId": "",
+      "customNote": "يُرجى الحضور قبل الموعد بنصف ساعة\nجنة الأطفال منازلهم\nالدعوة خاصة وتُبرز عند الاستقبال",
+      "createdAt": "2026-10-20T12:00:00.000Z",
+      "updatedAt": "2026-10-20T12:00:00.000Z"
+    },
+    {
+      "slug": "omar-ayat",
+      "templateId": "wedding-classic",
+      "hostNames": "عمر & آيات",
+      "coupleNames": "عمر & آيات",
+      "welcomeMessage": "بقلوبٍ مفعمةٍ بالمحبة والمودة، يسرّنا دعوتكم لمشاركتنا فرحة العمر في حفل زفافنا. بحضوركم تكتمل سعادتنا.",
+      "invitationText": "بقلوبٍ مفعمةٍ بالمحبة والمودة، يسرّنا دعوتكم لمشاركتنا فرحة العمر في حفل زفافنا. بحضوركم تكتمل سعادتنا.",
+      "eventDate": "2026-12-15",
+      "eventTime": "20:30",
+      "venueName": "فندق سانت ريجيس عمان",
+      "locationUrl": "https://www.google.com/maps/search/?api=1&query=The+St.+Regis+Amman",
+      "youtubeVideoId": "",
+      "customNote": "يُرجى الحضور قبل الموعد بنصف ساعة\nنتشرّف بحضوركم بأبهى حلّة\nجنة الأطفال منازلهم",
+      "createdAt": "2026-10-21T15:30:00.000Z",
+      "updatedAt": "2026-10-21T15:30:00.000Z"
+    }
+  ],
+  "rsvps": [
+    {
+      "id": "rsvp-seed-1",
+      "slug": "ahmad-sara",
+      "name": "المهندس طارق العبدالله",
+      "status": "attending",
+      "guests": 2,
+      "message": "ألف مبروك للعروسين أحمد وسارة، بارك الله لكما وبارك عليكما وجمع بينكما في خير 🤍",
+      "createdAt": "2026-10-22T18:10:00.000Z"
+    },
+    {
+      "id": "rsvp-seed-2",
+      "slug": "ahmad-sara",
+      "name": "د. ريم الخطيب",
+      "status": "attending",
+      "guests": 1,
+      "message": "مبارك الزفاف الملكي الجميل، أتمنى لكما حياة مليئة بالسعادة والحب ✨",
+      "createdAt": "2026-10-22T19:45:00.000Z"
+    },
+    {
+      "id": "rsvp-seed-3",
+      "slug": "ahmad-sara",
+      "name": "خالد المنصور",
+      "status": "not_attending",
+      "guests": 0,
+      "message": "أعتذر عن الحضور لظروف السفر، ألف مبروك وبالرفاه والبنين!",
+      "createdAt": "2026-10-23T09:15:00.000Z"
+    },
+    {
+      "id": "rsvp-seed-4",
+      "slug": "omar-ayat",
+      "name": "عائلة الأستاذ سامر العمري",
+      "status": "attending",
+      "guests": 3,
+      "message": "ألف مبروك لعمر وآيات، فرحتنا فيكم كبيرة والله يتمم على خير 🌹",
+      "createdAt": "2026-10-23T11:20:00.000Z"
+    }
+  ]
+}

@@ -21,6 +21,14 @@ import Confetti from 'react-confetti';
 
 // 3. Internal components, hooks, and utility functions
 import BackgroundMusic from '../../BackgroundMusic';
+import { useInvitationRSVPs } from '@/hooks/useInvitationRSVPs';
+import {
+  resolveCustomNotes,
+  resolveEventDateTime,
+  resolveSingleHostName,
+  resolveWelcomeMessage,
+  resolveYoutubeUrl,
+} from '@/lib/masterTemplates';
 
 // Configure Arabic calligraphy and body typography
 const aref = Aref_Ruqaa({ subsets: ['arabic'], weight: ['400', '700'] });
@@ -75,20 +83,89 @@ const GradCapIcon = ({ className = 'w-4 h-4', color = ZARIA_GOLD }) => (
   </svg>
 );
 
+const DEFAULT_GRAD_WISHES = [
+  {
+    name: 'أم محمد',
+    message: 'ألف مبروك 🤍 التخرج ومنها للمراتب العليا، فرحتكم فرحتنا',
+    avatarColor: 'bg-[#3B82F6]',
+    avatarLetter: 'أ',
+  },
+  {
+    name: 'سارة',
+    message: 'عقبال ما نفرح بيكم بأحلى المناسبات، دعوة بغاية الذوق 🤩',
+    avatarColor: 'bg-[#1D4ED8]',
+    avatarLetter: 'س',
+  },
+  {
+    name: 'حيدر',
+    message: 'مبارك التخرج، الله يجعل أيامك كلها نجاح وتفوق',
+    avatarColor: 'bg-[#64748B]',
+    avatarLetter: 'ح',
+  },
+  {
+    name: 'نور الهدى',
+    message: 'منها للأعلى إن شاء الله، ألف مبروك',
+    avatarColor: 'bg-[#0F172A]',
+    avatarLetter: 'ن',
+  },
+  {
+    name: 'أبو علي',
+    message: 'ما شاء الله تبارك الرحمن، فخورين جداً بنجاحك',
+    avatarColor: 'bg-[#94A3B8]',
+    avatarLetter: 'أ',
+  },
+];
+
+const GRAD_AVATAR_COLORS = [
+  'bg-[#3B82F6]',
+  'bg-[#1D4ED8]',
+  'bg-[#64748B]',
+  'bg-[#0F172A]',
+  'bg-[#94A3B8]',
+];
+
 /**
  * GraduationModern Component ("تخرج أحمد خالد")
  *
- * State Variables:
- * - `timeLeft` {import('@/types/zaria').CountdownTimeLeft}: Remaining days, hours, minutes, and seconds until the graduation party.
- * - `rsvpData` {import('@/types/zaria').TemplateRSVPState}: Form state for guest name, companion count, attendance status, and greeting message.
- * - `showConfetti` {boolean}: Triggers celebratory confetti burst upon confirming attendance.
- * - `showQRModal` {boolean}: Controls visibility of the post-submission VIP QR Code modal.
- * - `windowSize` {import('@/types/zaria').ViewportSize}: Current viewport width and height for sizing the Confetti canvas.
- * - `guestbookMessages` {import('@/types/zaria').GuestbookEntry[]}: List of congratulatory messages displayed in "كلمات المهنئين".
- *
+ * @param {Object} [props] - Component props.
+ * @param {import('@/types/zaria').CustomInvitationData} [props.customData] - Optional custom client invitation overrides.
  * @returns {JSX.Element} The complete modern graduation digital invitation experience.
  */
-export default function GraduationModern() {
+export default function GraduationModern({ customData } = {}) {
+  const graduateName = resolveSingleHostName(customData, 'أحمد خالد');
+  const welcomeMessage = resolveWelcomeMessage(
+    customData,
+    'بقلوبٍ مفعمةٍ بالفرح والسرور، وعطري الإنجاز والنجاح، أتشرف بدعوتكم لمشاركتي فرحة التخرج. حضوركم شرفٌ لي وتكتمل به فرحتي.'
+  );
+  const {
+    isoTarget,
+    arabicDate,
+    arabicTime,
+    calendarMonthYear,
+    calendarDay,
+    calendarWeekday,
+  } = resolveEventDateTime(customData, {
+    isoTarget: '2026-11-29T21:00:00',
+    arabicDate: 'يوم الأحد، 29 تشرين الثاني 2026',
+    arabicTime: 'الساعة التاسعة مساءً',
+    calendarMonthYear: 'تشرين الثاني 2026',
+    calendarDay: '29',
+    calendarWeekday: 'الأحد',
+  });
+  const venueName = customData?.venueName?.trim() || 'فندق فور سيزونز';
+  const locationUrl =
+    customData?.locationUrl?.trim() ||
+    'https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman';
+  const youtubeUrl = resolveYoutubeUrl(
+    customData?.youtubeVideoId,
+    'https://www.youtube.com/watch?v=3AWAGo8NhfE'
+  );
+  const notesList = resolveCustomNotes(customData?.customNote, [
+    'يُرجى الحضور قبل الموعد بنصف ساعة',
+    'نتشرّف بحضوركم بأبهى حلّة',
+    'الدعوة تشمل حاملها العائلة الكريمة',
+  ]);
+
   // Scroll-linked progress tracker for the animated graduation cap along the program timeline
   const timelineRef = useRef(null);
   const { scrollYProgress: timelineScroll } = useScroll({
@@ -98,12 +175,12 @@ export default function GraduationModern() {
   const capTop = useTransform(timelineScroll, [0, 1], ['5%', '95%']);
 
   /**
-   * Computes the remaining time until the graduation celebration date (`2026-11-29T21:00:00`).
+   * Computes the remaining time until the graduation celebration date.
    *
    * @returns {import('@/types/zaria').CountdownTimeLeft} Remaining time breakdown.
    */
   const calculateTimeLeft = () => {
-    const difference = +new Date('2026-11-29T21:00:00') - +new Date();
+    const difference = +new Date(isoTarget) - +new Date();
     let timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
 
     if (difference > 0) {
@@ -133,43 +210,16 @@ export default function GraduationModern() {
   const [showQRModal, setShowQRModal] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
-  // Wishes & Greetings state ("كلمات المهنئين")
-  const [guestbookMessages, setGuestbookMessages] = useState([
-    {
-      name: 'أم محمد',
-      message: 'ألف مبروك 🤍 التخرج ومنها للمراتب العليا، فرحتكم فرحتنا',
-      avatarColor: 'bg-[#3B82F6]',
-      avatarLetter: 'أ',
-    },
-    {
-      name: 'سارة',
-      message: 'عقبال ما نفرح بيكم بأحلى المناسبات، دعوة بغاية الذوق 🤩',
-      avatarColor: 'bg-[#1D4ED8]',
-      avatarLetter: 'س',
-    },
-    {
-      name: 'حيدر',
-      message: 'مبارك التخرج، الله يجعل أيامك كلها نجاح وتفوق',
-      avatarColor: 'bg-[#64748B]',
-      avatarLetter: 'ح',
-    },
-    {
-      name: 'نور الهدى',
-      message: 'منها للأعلى إن شاء الله، ألف مبروك',
-      avatarColor: 'bg-[#0F172A]',
-      avatarLetter: 'ن',
-    },
-    {
-      name: 'أبو علي',
-      message: 'ما شاء الله تبارك الرحمن، فخورين جداً بنجاحك',
-      avatarColor: 'bg-[#94A3B8]',
-      avatarLetter: 'أ',
-    },
-  ]);
+  // Isolated Wishes & RSVPs hook
+  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(
+    customData?.slug,
+    DEFAULT_GRAD_WISHES,
+    GRAD_AVATAR_COLORS
+  );
 
   /**
    * Handles submission of the RSVP form ("تأكيد الحضور"):
-   * 1. Prepends any congratulatory wish to the "كلمات المهنئين" guestbook list.
+   * 1. Submits RSVP and optional congratulatory wish (isolated per client slug).
    * 2. Triggers an 8-second confetti celebration when attending.
    * 3. Opens the VIP QR Code entry pass modal.
    *
@@ -184,28 +234,12 @@ export default function GraduationModern() {
 
     if (!sanitizedName) return;
 
-    // 1. Prepend new greeting to "كلمات المهنئين" if message is non-empty
-    if (sanitizedMessage) {
-      const colors = [
-        'bg-[#3B82F6]',
-        'bg-[#1D4ED8]',
-        'bg-[#64748B]',
-        'bg-[#0F172A]',
-        'bg-[#94A3B8]',
-      ];
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      const firstLetter = sanitizedName.charAt(0) || 'ز';
-
-      setGuestbookMessages((prev) => [
-        {
-          name: sanitizedName || 'ضيف',
-          message: sanitizedMessage,
-          avatarColor: randomColor,
-          avatarLetter: firstLetter,
-        },
-        ...prev,
-      ]);
-    }
+    submitRSVP({
+      name: sanitizedName,
+      status: rsvpData.status,
+      guests: boundedGuests,
+      message: sanitizedMessage,
+    });
 
     // Store sanitized values in state while clearing the message textarea
     setRsvpData((prev) => ({
@@ -231,10 +265,10 @@ export default function GraduationModern() {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [isoTarget]);
 
   // Pre-encoded Google Calendar event template URL
-  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('حفل تخرج أحمد خالد')}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent('نتشرف بحضوركم حفل التخرج')}&location=${encodeURIComponent('فندق فور سيزونز عمان')}`;
+  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`حفل تخرج ${graduateName}`)}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent(welcomeMessage)}&location=${encodeURIComponent(venueName)}`;
 
   /**
    * Generates and downloads an `.ics` iCalendar file for Apple Calendar / Outlook.
@@ -244,11 +278,11 @@ export default function GraduationModern() {
 VERSION:2.0
 PRODID:-//Zaria//Graduation//AR
 BEGIN:VEVENT
-SUMMARY:حفل تخرج أحمد خالد
+SUMMARY:حفل تخرج ${graduateName}
 DTSTART:20261129T180000Z
 DTEND:20261129T210000Z
-LOCATION:فندق فور سيزونز عمان
-DESCRIPTION:نتشرف بحضوركم حفل التخرج
+LOCATION:${venueName}
+DESCRIPTION:${welcomeMessage}
 END:VEVENT
 END:VCALENDAR`;
     const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
@@ -294,7 +328,7 @@ END:VCALENDAR`;
           </div>
 
           <h1 className="text-5xl md:text-7xl font-['Aref_Ruqaa'] text-white drop-shadow-[0_2px_15px_rgba(0,0,0,0.5)] mb-8 mt-4">
-            أحمد خالد
+            {graduateName}
           </h1>
 
           <p className="text-lg md:text-xl font-['Aref_Ruqaa'] opacity-90 mb-8 max-w-sm mx-auto drop-shadow-md text-[#fdf8f5]">
@@ -362,8 +396,7 @@ END:VCALENDAR`;
             </h3>
 
             <p className="text-[14px] leading-[2.2] mb-12 text-[#0F172A] text-center px-4 max-w-[300px]">
-              بقلوبٍ مفعمةٍ بالفرح والسرور، وعطري الإنجاز والنجاح، أتشرف بدعوتكم لمشاركتي فرحة
-              التخرج. حضوركم شرفٌ لي وتكتمل به فرحتي.
+              {welcomeMessage}
             </p>
 
             {/* Graduate Academic Details */}
@@ -372,7 +405,7 @@ END:VCALENDAR`;
               <p
                 className={`text-[32px] text-[#1E3A8A] font-bold leading-tight mb-2 ${aref.className}`}
               >
-                أحمد خالد
+                {graduateName}
               </p>
               <div className="bg-[#E2E8F0] px-4 py-2 rounded-full mb-6">
                 <p className="text-[#0F172A] text-[14px] mb-0.5 font-bold">
@@ -510,15 +543,15 @@ END:VCALENDAR`;
               </h3>
 
               <div className="text-center font-bold text-[14px] leading-relaxed mb-8 text-[#0F172A]">
-                <p className="mb-3">يوم الأحد، 29 تشرين الثاني 2026</p>
-                <p className="text-[#475569] mb-6 text-[12px]">الساعة التاسعة مساءً</p>
+                <p className="mb-3">{arabicDate}</p>
+                <p className="text-[#475569] mb-6 text-[12px]">{arabicTime}</p>
                 <p className={`text-[#1E3A8A] mb-3 font-normal text-2xl ${aref.className}`}>
-                  فندق فور سيزونز
+                  {venueName}
                 </p>
                 <p className="text-[#475569] text-[13px]">عمان — الأردن</p>
               </div>
               <a
-                href="https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman"
+                href={locationUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-[#1E3A8A] text-white px-8 py-2.5 rounded-full text-[13px] font-bold shadow-md hover:bg-[#A88461] transition-all inline-block mb-4"
@@ -540,18 +573,12 @@ END:VCALENDAR`;
                 ملاحظات
               </h3>
               <ul className="text-[14px] font-bold flex flex-col gap-6 text-right w-full px-6 text-[#0F172A]">
-                <li className="flex items-start justify-center gap-3 text-center">
-                  <GradCapIcon className="w-4 h-4 mt-1 shrink-0 text-[#1E3A8A] opacity-80" />
-                  <span>يُرجى الحضور قبل الموعد بنصف ساعة</span>
-                </li>
-                <li className="flex items-start justify-center gap-3 text-center">
-                  <GradCapIcon className="w-4 h-4 mt-1 shrink-0 text-[#1E3A8A] opacity-80" />
-                  <span>نتشرّف بحضوركم بأبهى حلّة</span>
-                </li>
-                <li className="flex items-start justify-center gap-3 text-center">
-                  <GradCapIcon className="w-4 h-4 mt-1 shrink-0 text-[#1E3A8A] opacity-80" />
-                  <span>الدعوة تشمل حاملها العائلة الكريمة</span>
-                </li>
+                {notesList.map((note, idx) => (
+                  <li key={idx} className="flex items-start justify-center gap-3 text-center">
+                    <GradCapIcon className="w-4 h-4 mt-1 shrink-0 text-[#1E3A8A] opacity-80" />
+                    <span>{note}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -634,13 +661,13 @@ END:VCALENDAR`;
             <div className="absolute top-0 right-1/4 w-3 h-4 bg-gray-200 rounded-full border border-gray-300 -translate-y-1/2 z-10 shadow-sm"></div>
 
             <div className="bg-[#1E3A8A] text-white py-3 text-center font-bold text-lg pt-4">
-              تشرين الثاني 2026
+              {calendarMonthYear}
             </div>
 
             <div className="p-6 flex flex-col items-center relative">
-              <p className="text-[#1E3A8A] font-bold text-lg mb-1">الأحد</p>
-              <p className="text-8xl text-[#1E3A8A] font-light mb-2 leading-none">29</p>
-              <p className="text-[#0F172A] font-bold text-sm">الساعة التاسعة مساءً</p>
+              <p className="text-[#1E3A8A] font-bold text-lg mb-1">{calendarWeekday}</p>
+              <p className="text-8xl text-[#1E3A8A] font-light mb-2 leading-none">{calendarDay}</p>
+              <p className="text-[#0F172A] font-bold text-sm">{arabicTime}</p>
             </div>
 
             <div className="border-t border-dashed border-[#1E3A8A]/30 px-6 py-5 bg-white/50">
@@ -856,8 +883,8 @@ END:VCALENDAR`;
         </div>
       </div>
 
-      {/* Background Audio Stream Player (Humood AlKhudher - Ya Hala Bil Helm) */}
-      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=3AWAGo8NhfE" autoPlay={true} />
+      {/* Background Audio Stream Player */}
+      <BackgroundMusic youtubeUrl={youtubeUrl} autoPlay={true} />
 
       {/* Celebratory Confetti Overlay */}
       {showConfetti && (

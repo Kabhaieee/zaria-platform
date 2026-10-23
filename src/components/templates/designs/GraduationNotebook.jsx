@@ -5,10 +5,11 @@
  * @description Interactive 3D flip-book graduation memory notebook template ("دفتر الذكريات").
  * Features a burgundy & gold hardcover front/back, an interactive greeting & photo upload form
  * ("أضف تهنئتك"), and multi-page memory feed spreads ("سجل الذكريات").
+ * Supports optional `customData` overrides while keeping default showcase data immutable.
  */
 
 // 1. React and Next.js core modules
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Amiri, Aref_Ruqaa } from 'next/font/google';
 
 // 2. Third-party libraries
@@ -16,13 +17,18 @@ import { Camera, ChevronLeft, ChevronRight, Send } from 'lucide-react';
 
 // 3. Internal components, hooks, and utility functions
 import BackgroundMusic from '../../BackgroundMusic';
+import {
+  resolveSingleHostName,
+  resolveWelcomeMessage,
+  resolveYoutubeUrl,
+} from '@/lib/masterTemplates';
 
 // Configure Arabic typography fonts
 const aref = Aref_Ruqaa({ subsets: ['arabic'], weight: ['400', '700'] });
 const amiri = Amiri({ subsets: ['arabic'], weight: ['400', '700'] });
 
 /**
- * Initial pre-populated graduation memory notebook entries.
+ * Initial pre-populated graduation memory notebook entries for master preview mode.
  * @type {import('@/types/zaria').NotebookEntry[]}
  */
 const INITIAL_ENTRIES = [
@@ -47,23 +53,74 @@ const INITIAL_ENTRIES = [
 /**
  * GraduationNotebook Component ("دفتر الذكريات")
  *
- * State Variables:
- * - `currentPage` {number}: Current 3D leaf spread index (`0` = Closed Front Cover, `1` = Spread 1, `2` = Spread 2, `3` = Closed Back Cover).
- * - `entries` {import('@/types/zaria').NotebookEntry[]}: List of graduation greetings and polaroid photos.
- * - `formData` {{ name: string, message: string, image: string | null }}: Controlled input values for new greetings.
- * - `previewImage` {string | null}: Object URL preview for an uploaded image file.
- *
+ * @param {Object} [props] - Component props.
+ * @param {import('@/types/zaria').CustomInvitationData} [props.customData] - Optional client invitation overrides.
  * @returns {JSX.Element} The rendered 3D interactive graduation memory book.
  */
-export default function GraduationNotebook() {
+export default function GraduationNotebook({ customData } = {}) {
+  const isClientInvitation = Boolean(customData?.slug);
+  const cleanSlug = customData?.slug?.trim().toLowerCase() || '';
+
+  // Resolve customizable fields with fallback to immutable master showcase defaults
+  const graduateName = resolveSingleHostName(customData, 'شهد الزوايدة');
+  const welcomeMessage = resolveWelcomeMessage(
+    customData,
+    'في كتاب ذكريات تخرجي. وجودكم وكلماتكم تعني لي الكثير. تصفحوا الكتاب وشاركوني لحظاتكم وتهانيكم!'
+  );
+  const customSubtitle = customData?.customNote?.trim() || 'المحاسبة';
+  const customClassYear = customData?.eventDate?.trim()
+    ? `CLASS OF ${customData.eventDate.trim().slice(0, 4)}`
+    : 'CLASS OF 2026';
+  const youtubeUrl = resolveYoutubeUrl(
+    customData?.youtubeVideoId,
+    'https://www.youtube.com/watch?v=ZCg3kKN7VQs'
+  );
+
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = 3; // 0: Cover, 1: Spread 1, 2: Spread 2, 3: Back Cover
 
   /** @type {[import('@/types/zaria').NotebookEntry[], React.Dispatch<React.SetStateAction<import('@/types/zaria').NotebookEntry[]>>]} */
-  const [entries, setEntries] = useState(INITIAL_ENTRIES);
+  const [entries, setEntries] = useState(() => (isClientInvitation ? [] : INITIAL_ENTRIES));
   const [formData, setFormData] = useState({ name: '', message: '', image: null });
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
+
+  // Load isolated wishes/entries when rendering a client invitation (`/invite/[slug]`)
+  useEffect(() => {
+    if (!isClientInvitation) {
+      setEntries(INITIAL_ENTRIES);
+      return;
+    }
+
+    let isMounted = true;
+    async function loadClientEntries() {
+      try {
+        const res = await fetch(`/api/invitations/${encodeURIComponent(cleanSlug)}/rsvps`, {
+          cache: 'no-store',
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const serverRsvps = Array.isArray(data?.rsvps) ? data.rsvps : [];
+          const mapped = serverRsvps
+            .filter((r) => r.message && r.message.trim())
+            .map((r, idx) => ({
+              id: idx + 1,
+              name: r.name,
+              message: r.message,
+              image: r.image || null,
+              date: (r.createdAt || new Date().toISOString()).split('T')[0],
+            }));
+          if (isMounted) setEntries(mapped);
+        }
+      } catch {
+        // Ignore network errors
+      }
+    }
+    loadClientEntries();
+    return () => {
+      isMounted = false;
+    };
+  }, [isClientInvitation, cleanSlug]);
 
   /**
    * Advances the 3D notebook to the next page spread.
@@ -96,11 +153,12 @@ export default function GraduationNotebook() {
 
   /**
    * Handles submission of a new graduation wish/photo entry, validates and trims inputs,
-   * prepends the entry to the notebook feed, resets the form, and flips open to the first spread if needed.
+   * prepends the entry to the notebook feed, persists to the client's `slug` if applicable,
+   * resets the form, and flips open to the first spread if needed.
    *
    * @param {React.FormEvent<HTMLFormElement>} e - Form submission event.
    */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const sanitizedName = formData.name.trim().slice(0, 80);
     const sanitizedMessage = formData.message.trim().slice(0, 500);
@@ -121,6 +179,24 @@ export default function GraduationNotebook() {
 
     // Automatically open to the memory feed spread
     if (currentPage < 1) setCurrentPage(1);
+
+    if (isClientInvitation) {
+      try {
+        await fetch(`/api/invitations/${encodeURIComponent(cleanSlug)}/rsvps`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: sanitizedName,
+            status: 'attending',
+            guests: 0,
+            message: sanitizedMessage,
+            image: formData.image || null,
+          }),
+        });
+      } catch {
+        // Ignore network errors
+      }
+    }
   };
 
   // ---------------- SUB-COMPONENTS FOR 3D BOOK PAGES ----------------
@@ -154,7 +230,7 @@ export default function GraduationNotebook() {
       <h1
         className={`text-3xl md:text-7xl font-bold mb-4 md:mb-8 text-[#d4af37] text-center ${aref.className} drop-shadow-md leading-tight`}
       >
-        شهد الزوايدة
+        {graduateName}
       </h1>
 
       <div className="w-full max-w-[100px] md:max-w-[200px] aspect-[3/4] relative mb-4 md:mb-8 overflow-hidden rounded-t-full border md:border-2 border-[#d4af37]/50">
@@ -167,8 +243,8 @@ export default function GraduationNotebook() {
       </div>
 
       <div className="text-center font-serif tracking-widest uppercase">
-        <p className="text-sm md:text-2xl text-[#d4af37] mb-1">المحاسبة</p>
-        <p className="text-[8px] md:text-xs text-white/70">CLASS OF 2026</p>
+        <p className="text-sm md:text-2xl text-[#d4af37] mb-1">{customSubtitle}</p>
+        <p className="text-[8px] md:text-xs text-white/70">{customClassYear}</p>
       </div>
     </div>
   );
@@ -186,9 +262,13 @@ export default function GraduationNotebook() {
           مرحباً بكم
         </h2>
         <p className="text-[#475569] text-xs md:text-lg leading-relaxed md:leading-loose">
-          في كتاب ذكريات تخرجي. وجودكم وكلماتكم تعني لي الكثير. تصفحوا الكتاب وشاركوني لحظاتكم
-          وتهانيكم!
+          {welcomeMessage}
         </p>
+        {customData?.venueName && (
+          <p className="text-[#5B1E2B] text-[10px] md:text-sm font-bold mt-3">
+            📍 {customData.venueName}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -210,6 +290,7 @@ export default function GraduationNotebook() {
 
       <form
         onSubmit={handleSubmit}
+        onClick={(e) => e.stopPropagation()}
         className="w-full max-w-sm mx-auto relative z-10 flex flex-col gap-1 md:gap-4 px-2"
       >
         <input
@@ -276,6 +357,12 @@ export default function GraduationNotebook() {
         >
           سجل الذكريات
         </h3>
+
+        {entries.length === 0 && (
+          <p className="text-center text-gray-400 text-[10px] md:text-base my-auto">
+            كن أول من يكتب تهنئة في دفتر الذكريات 🎓🤍
+          </p>
+        )}
 
         {entries.slice(0, 2).map((entry) => (
           <div key={entry.id} className="border-b border-gray-100 pb-2 md:pb-6">
@@ -477,8 +564,8 @@ export default function GraduationNotebook() {
         </button>
       </div>
 
-      {/* Background Audio Stream Player (Rashed AlMajid - Mabrouk Al Najah) */}
-      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=ZCg3kKN7VQs" autoPlay={true} />
+      {/* Background Audio Stream Player */}
+      <BackgroundMusic youtubeUrl={youtubeUrl} autoPlay={true} />
 
       {/* Scoped 3D Perspective & Custom Scrollbar Utilities */}
       <style>{`

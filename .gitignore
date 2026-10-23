@@ -8,6 +8,8 @@
 /out/
 /build
 /__pycache__/
+next-env.d.ts
+*.tsbuildinfo
 
 # executables & local tooling
 ngrok.exe

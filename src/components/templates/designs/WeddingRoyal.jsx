@@ -23,6 +23,15 @@ import Confetti from 'react-confetti';
 
 // 3. Internal components, hooks, and utility functions
 import BackgroundMusic from '../../BackgroundMusic';
+import { useInvitationRSVPs } from '@/hooks/useInvitationRSVPs';
+import {
+  resolveCoupleNames,
+  resolveCustomNotes,
+  resolveEventDateTime,
+  resolveMapEmbedUrl,
+  resolveWelcomeMessage,
+  resolveYoutubeUrl,
+} from '@/lib/masterTemplates';
 
 // Configure Arabic typography fonts
 const aref = Aref_Ruqaa({ subsets: ['arabic'], weight: ['400', '700'] });
@@ -98,13 +107,70 @@ const GoldFlower = ({ className = 'w-6 h-6 text-[#D1B06B]' }) => (
   </svg>
 );
 
+const DEFAULT_ROYAL_WISHES = [
+  { name: 'أم محمد', message: 'ألف مبروك 🤍 بالرفاه والبنين إن شاء الله، فرحتكم فرحتنا', avatarColor: 'bg-[#A888B5]', avatarLetter: 'أ' },
+  { name: 'سارة', message: 'عقبال ما نفرح بيكم بأحلى المناسبات، دعوة بغاية الذوق 🤩', avatarColor: 'bg-[#6B4B75]', avatarLetter: 'س' },
+  { name: 'حيدر', message: 'مبارك الزواج، الله يجعل أيامكم كلها أفراح', avatarColor: 'bg-[#BE955C]', avatarLetter: 'ح' },
+  { name: 'نور الهدى', message: 'بيت جديد عامر بالمحبة إن شاء الله، ألف مبروك', avatarColor: 'bg-[#7D8F69]', avatarLetter: 'ن' },
+  { name: 'أبو علي', message: 'الله يبارك لكما ويبارك عليكما ويجمع بينكما في خير', avatarColor: 'bg-[#B399D4]', avatarLetter: 'أ' },
+];
+
+const ROYAL_AVATAR_COLORS = ['bg-[#A888B5]', 'bg-[#6B4B75]', 'bg-[#BE955C]', 'bg-[#7D8F69]', 'bg-[#B399D4]'];
+
 /**
  * WeddingRoyal Template Component.
  * Renders the complete interactive royal dark-themed wedding invitation experience.
  *
+ * @param {Object} [props] - Component props.
+ * @param {import('@/types/zaria').CustomInvitationData} [props.customData] - Optional custom client invitation overrides.
  * @returns {JSX.Element} The rendered WeddingRoyal template.
  */
-export default function WeddingRoyal() {
+export default function WeddingRoyal({ customData } = {}) {
+  // Resolve customizable client fields with automatic fallback to immutable master showcase defaults
+  const [groomFirst, brideFirst] = resolveCoupleNames(
+    customData?.hostNames || customData?.coupleNames,
+    'أحمد',
+    'سارة'
+  );
+  const groomFullDisplay = customData?.hostNames || customData?.coupleNames ? groomFirst : 'المهندس\nأحمد محمد';
+  const brideFullDisplay = customData?.hostNames || customData?.coupleNames ? brideFirst : 'الدكتورة\nسارة خالد';
+  const welcomeMessage = resolveWelcomeMessage(
+    customData,
+    'بقلوبٍ مفعمةٍ بالفرح والسرور، نتشرّف بدعوتكم لمشاركتنا أجمل لحظات حياتنا في حفل زفافنا. حضوركم شرفٌ لنا وبهجةٌ تكتمل بها فرحتنا.'
+  );
+  const {
+    isoTarget,
+    arabicDate,
+    arabicTime,
+    calendarMonthYear,
+    calendarDay,
+    calendarWeekday,
+  } = resolveEventDateTime(customData, {
+    isoTarget: '2026-11-29T21:00:00',
+    arabicDate: 'يوم الأحد، 29 تشرين الثاني 2026',
+    arabicTime: 'الساعة التاسعة مساءً',
+    calendarMonthYear: 'تشرين الثاني 2026',
+    calendarDay: '29',
+    calendarWeekday: 'الأحد',
+  });
+  const venueName = customData?.venueName?.trim() || 'فندق فور سيزونز';
+  const locationUrl =
+    customData?.locationUrl?.trim() ||
+    'https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman';
+  const mapEmbedUrl = resolveMapEmbedUrl(
+    customData?.venueName,
+    'https://maps.google.com/maps?q=Four%20Seasons%20Hotel%20Amman&t=&z=15&ie=UTF8&iwloc=&output=embed'
+  );
+  const youtubeUrl = resolveYoutubeUrl(
+    customData?.youtubeVideoId,
+    'https://www.youtube.com/watch?v=YCJET0fGGDU'
+  );
+  const notesList = resolveCustomNotes(customData?.customNote, [
+    'يُرجى الحضور قبل الموعد بنصف ساعة',
+    'نتشرّف بحضوركم بأبهى حلّة',
+    'الدعوة تشمل حاملها والعائلة الكريمة',
+  ]);
+
   // Reference and scroll progress binding for the vertical program timeline indicator
   const timelineRef = useRef(null);
   const { scrollYProgress: timelineScroll } = useScroll({
@@ -119,7 +185,7 @@ export default function WeddingRoyal() {
    * @returns {import('@/types/zaria').CountdownTimeLeft} Remaining days, hours, minutes, and seconds.
    */
   const calculateTimeLeft = () => {
-    const difference = +new Date('2026-11-29T21:00:00') - +new Date();
+    const difference = +new Date(isoTarget) - +new Date();
     let remaining = { days: 0, hours: 0, minutes: 0, seconds: 0 };
 
     if (difference > 0) {
@@ -142,18 +208,16 @@ export default function WeddingRoyal() {
   const [doorState, setDoorState] = useState('waiting'); // 'waiting' -> 'opening' -> 'done'
   const videoRef = useRef(null);
 
-  // Initial Wishes & Greetings ("كلمات المهنئين") displayed in the guestbook
-  const [guestbookMessages, setGuestbookMessages] = useState([
-    { name: 'أم محمد', message: 'ألف مبروك 🤍 بالرفاه والبنين إن شاء الله، فرحتكم فرحتنا', avatarColor: 'bg-[#A888B5]', avatarLetter: 'أ' },
-    { name: 'سارة', message: 'عقبال ما نفرح بيكم بأحلى المناسبات، دعوة بغاية الذوق 🤩', avatarColor: 'bg-[#6B4B75]', avatarLetter: 'س' },
-    { name: 'حيدر', message: 'مبارك الزواج، الله يجعل أيامكم كلها أفراح', avatarColor: 'bg-[#BE955C]', avatarLetter: 'ح' },
-    { name: 'نور الهدى', message: 'بيت جديد عامر بالمحبة إن شاء الله، ألف مبروك', avatarColor: 'bg-[#7D8F69]', avatarLetter: 'ن' },
-    { name: 'أبو علي', message: 'الله يبارك لكما ويبارك عليكما ويجمع بينكما في خير', avatarColor: 'bg-[#B399D4]', avatarLetter: 'أ' },
-  ]);
+  // Isolated Wishes & RSVPs hook (isolated per slug when customData.slug is present)
+  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(
+    customData?.slug,
+    DEFAULT_ROYAL_WISHES,
+    ROYAL_AVATAR_COLORS
+  );
 
   /**
    * Handles RSVP form submission:
-   * 1. Prepends the guest's greeting message to the guestbook if non-empty.
+   * 1. Submits RSVP and optional greeting message (isolated to client slug if applicable).
    * 2. Triggers confetti animation for attending guests and opens the QR code modal.
    *
    * @param {React.FormEvent<HTMLFormElement>} e - Form submission event.
@@ -167,17 +231,12 @@ export default function WeddingRoyal() {
 
     if (!sanitizedName) return;
 
-    // 1. Add greeting message to the guestbook if provided
-    if (sanitizedMessage) {
-      const colors = ['bg-[#A888B5]', 'bg-[#6B4B75]', 'bg-[#BE955C]', 'bg-[#7D8F69]', 'bg-[#B399D4]'];
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      const firstLetter = sanitizedName.charAt(0) || 'ز';
-
-      setGuestbookMessages((prev) => [
-        { name: sanitizedName || 'ضيف', message: sanitizedMessage, avatarColor: randomColor, avatarLetter: firstLetter },
-        ...prev,
-      ]);
-    }
+    submitRSVP({
+      name: sanitizedName,
+      status: rsvpData.status,
+      guests: boundedGuests,
+      message: sanitizedMessage,
+    });
 
     // Store sanitized values in state while clearing the message input
     setRsvpData((prev) => ({
@@ -203,16 +262,16 @@ export default function WeddingRoyal() {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [isoTarget]);
 
   // Google Calendar deep link URL for the wedding event
-  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('حفل زفاف المهندس أحمد محمد والدكتورة سارة خالد')}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent('نتشرف بحضوركم حفل زفافنا')}&location=${encodeURIComponent('فندق فور سيزونز عمان')}`;
+  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`حفل زفاف ${groomFirst} و ${brideFirst}`)}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent(welcomeMessage)}&location=${encodeURIComponent(venueName)}`;
 
   /**
    * Generates and triggers an `.ics` calendar file download for Apple/iOS Calendar.
    */
   const handleAppleCalendar = () => {
-    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Wedding//AR\nBEGIN:VEVENT\nSUMMARY:حفل زفاف المهندس أحمد محمد والدكتورة سارة خالد\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:فندق فور سيزونز عمان\nDESCRIPTION:نتشرف بحضوركم حفل زفافنا\nEND:VEVENT\nEND:VCALENDAR`;
+    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Wedding//AR\nBEGIN:VEVENT\nSUMMARY:حفل زفاف ${groomFirst} و ${brideFirst}\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:${venueName}\nDESCRIPTION:${welcomeMessage}\nEND:VEVENT\nEND:VCALENDAR`;
     const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
@@ -354,7 +413,7 @@ export default function WeddingRoyal() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1.6 }}
           >
-            أحمد
+            {groomFirst}
           </motion.h1>
 
           <motion.div
@@ -372,7 +431,7 @@ export default function WeddingRoyal() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 2.2 }}
           >
-            سارة
+            {brideFirst}
           </motion.h1>
 
           <motion.p
@@ -451,7 +510,7 @@ export default function WeddingRoyal() {
             {/* Invitation Heading & Welcome Text */}
             <h3 className={`text-4xl text-[#D1B06B] mb-8 font-bold ${aref.className}`}>بطاقة دعوة</h3>
             <p className="text-[14px] leading-[2.2] mb-12 text-[#FDFBF9] text-center px-4 max-w-[300px]">
-              بقلوبٍ مفعمةٍ بالفرح والسرور، نتشرّف بدعوتكم لمشاركتنا أجمل لحظات حياتنا في حفل زفافنا. حضوركم شرفٌ لنا وبهجةٌ تكتمل بها فرحتنا.
+              {welcomeMessage}
             </p>
 
             {/* Parents & Couple Names */}
@@ -459,13 +518,13 @@ export default function WeddingRoyal() {
               <div className="flex-1 text-center flex flex-col items-center">
                 <p className="text-[#9CA3AF] text-[11px] mb-3">والد العريس</p>
                 <p className="leading-relaxed text-[#FDFBF9] mb-5">السيد محمد أبو أحمد<br />وعائلته الكريمة</p>
-                <p className={`text-[22px] text-[#D1B06B] font-bold leading-tight ${aref.className}`}>المهندس<br />أحمد محمد</p>
+                <p className={`text-[22px] text-[#D1B06B] font-bold leading-tight whitespace-pre-line ${aref.className}`}>{groomFullDisplay}</p>
               </div>
               <div className="w-1.5 h-1.5 rotate-45 bg-[#D1B06B] mt-7 mx-2 opacity-60"></div>
               <div className="flex-1 text-center flex flex-col items-center">
                 <p className="text-[#9CA3AF] text-[11px] mb-3">والد العروس</p>
                 <p className="leading-relaxed text-[#FDFBF9] mb-5">السيد خالد أبو سارة<br />وعائلته الكريمة</p>
-                <p className={`text-[22px] text-[#D1B06B] font-bold leading-tight ${aref.className}`}>الدكتورة<br />سارة خالد</p>
+                <p className={`text-[22px] text-[#D1B06B] font-bold leading-tight whitespace-pre-line ${aref.className}`}>{brideFullDisplay}</p>
               </div>
             </div>
 
@@ -556,25 +615,25 @@ export default function WeddingRoyal() {
               <h3 className={`text-4xl text-[#D1B06B] mb-8 font-bold ${aref.className}`}>الموقع</h3>
               <div className="w-full max-w-[300px] h-48 bg-[#1A1A1A] rounded-xl mb-6 border border-[#D1B06B]/30 shadow-sm relative overflow-hidden group">
                 <iframe
-                  title="موقع الحفل - فندق فور سيزونز عمان"
-                  src="https://maps.google.com/maps?q=Four%20Seasons%20Hotel%20Amman&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  title={`موقع الحفل - ${venueName}`}
+                  src={mapEmbedUrl}
                   className="w-full h-full border-0"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
-                <a href="https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman" target="_blank" rel="noopener noreferrer" aria-label="فتح في خرائط جوجل" className="absolute bottom-3 right-3 bg-[#1A1A1A]/90 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-[#1A1A1A] hover:scale-105 transition-all">
+                <a href={locationUrl} target="_blank" rel="noopener noreferrer" aria-label="فتح في خرائط جوجل" className="absolute bottom-3 right-3 bg-[#1A1A1A]/90 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-[#1A1A1A] hover:scale-105 transition-all">
                   <MapPin size={18} className="text-[#D1B06B]" />
                 </a>
               </div>
 
               <div className="text-center font-bold text-[14px] leading-relaxed mb-8 text-[#FDFBF9]">
-                <p className="mb-3">يوم الأحد، 29 تشرين الثاني 2026</p>
-                <p className="text-[#9CA3AF] mb-6 text-[12px]">الساعة التاسعة مساءً</p>
-                <p className={`text-[#D1B06B] mb-3 font-normal text-2xl ${aref.className}`}>فندق فور سيزونز</p>
+                <p className="mb-3">{arabicDate}</p>
+                <p className="text-[#9CA3AF] mb-6 text-[12px]">{arabicTime}</p>
+                <p className={`text-[#D1B06B] mb-3 font-normal text-2xl ${aref.className}`}>{venueName}</p>
                 <p className="text-[#9CA3AF] text-[13px]">عمان — الأردن</p>
               </div>
 
-              <a href="https://www.google.com/maps/search/?api=1&query=Four+Seasons+Hotel+Amman" target="_blank" rel="noopener noreferrer" className="bg-[#D1B06B] text-white px-8 py-2.5 rounded-full text-[13px] font-bold shadow-md hover:bg-[#B59554] transition-all inline-block mb-4">
+              <a href={locationUrl} target="_blank" rel="noopener noreferrer" className="bg-[#D1B06B] text-white px-8 py-2.5 rounded-full text-[13px] font-bold shadow-md hover:bg-[#B59554] transition-all inline-block mb-4">
                 الخريطة
               </a>
             </FadeIn>
@@ -590,18 +649,12 @@ export default function WeddingRoyal() {
             <FadeIn>
               <h3 className={`text-4xl text-[#D1B06B] mb-10 font-bold ${aref.className}`}>ملاحظات</h3>
               <ul className="text-[14px] font-bold flex flex-col gap-6 text-right w-full px-6 text-[#FDFBF9]">
-                <li className="flex items-start justify-center gap-3 text-center">
-                  <GoldFlower className="w-3.5 h-3.5 mt-1 shrink-0 text-[#D1B06B] opacity-70" />
-                  <span>يُرجى الحضور قبل الموعد بنصف ساعة</span>
-                </li>
-                <li className="flex items-start justify-center gap-3 text-center">
-                  <GoldFlower className="w-3.5 h-3.5 mt-1 shrink-0 text-[#D1B06B] opacity-70" />
-                  <span>نتشرّف بحضوركم بأبهى حلّة</span>
-                </li>
-                <li className="flex items-start justify-center gap-3 text-center">
-                  <GoldFlower className="w-3.5 h-3.5 mt-1 shrink-0 text-[#D1B06B] opacity-70" />
-                  <span>الدعوة تشمل حاملها والعائلة الكريمة</span>
-                </li>
+                {notesList.map((note, idx) => (
+                  <li key={idx} className="flex items-start justify-center gap-3 text-center">
+                    <GoldFlower className="w-3.5 h-3.5 mt-1 shrink-0 text-[#D1B06B] opacity-70" />
+                    <span>{note}</span>
+                  </li>
+                ))}
               </ul>
             </FadeIn>
 
@@ -679,13 +732,13 @@ export default function WeddingRoyal() {
             <div className="absolute top-0 right-1/4 w-3 h-4 bg-gray-200 rounded-full border border-gray-300 -translate-y-1/2 z-10 shadow-sm"></div>
 
             <div className="bg-[#D1B06B] text-white py-3 text-center font-bold text-lg pt-4">
-              تشرين الثاني 2026
+              {calendarMonthYear}
             </div>
 
             <div className="p-6 flex flex-col items-center relative">
-              <p className="text-[#D1B06B] font-bold text-lg mb-1">الأحد</p>
-              <p className="text-8xl text-[#D1B06B] font-light mb-2 leading-none">29</p>
-              <p className="text-[#FDFBF9] font-bold text-sm">الساعة التاسعة مساءً</p>
+              <p className="text-[#D1B06B] font-bold text-lg mb-1">{calendarWeekday}</p>
+              <p className="text-8xl text-[#D1B06B] font-light mb-2 leading-none">{calendarDay}</p>
+              <p className="text-[#FDFBF9] font-bold text-sm">{arabicTime}</p>
             </div>
 
             <div className="border-t border-dashed border-[#D1B06B]/30 px-6 py-5 bg-[#1A1A1A]/50">
@@ -835,8 +888,8 @@ export default function WeddingRoyal() {
         </div>
       </div>
 
-      {/* Floating Background Music Controller (Hussain Al Jassmi - Royal Zaffa) */}
-      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=YCJET0fGGDU" />
+      {/* Floating Background Music Controller */}
+      <BackgroundMusic youtubeUrl={youtubeUrl} />
 
       {/* Celebratory Confetti Overlay */}
       {showConfetti && (

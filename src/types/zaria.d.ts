@@ -2,10 +2,11 @@
  * @file zaria.d.ts
  * @description Centralized TypeScript type definitions and interfaces for the ZARIA
  * Luxury Digital Invitations platform. Provides strict type safety across pages,
- * UI components, interactive invitation templates, RSVP forms, and localization utilities.
+ * UI components, interactive invitation templates, custom client invitations,
+ * RSVP submissions, and localization utilities.
  */
 
-import type { ReactNode, ComponentType } from 'react';
+import type { ReactNode } from 'react';
 
 /**
  * Supported application locales.
@@ -45,7 +46,7 @@ export type TemplateCategory = 'all' | 'wedding' | 'graduation' | 'engagement' |
  * Metadata item representing a template card in the Templates collection grid.
  */
 export interface TemplateCardItem {
-  /** Unique slug matching a route under `/demo/[slug]`. */
+  /** Unique slug matching a route under `/demo/[slug]` and `/preview/[templateId]`. */
   id: TemplateSlug;
   /** One or more category identifiers used for filtering. */
   category: TemplateCategory | TemplateCategory[];
@@ -226,6 +227,65 @@ export interface InvitationRecord {
     showStory: boolean;
     enableRSVP: boolean;
   };
+}
+
+/**
+ * Individual RSVP and/or wish entry submitted by a guest for a specific client invitation `slug`.
+ */
+export interface ClientRSVPEntry {
+  /** Unique RSVP identifier. */
+  id: string;
+  /** Client invitation slug this RSVP belongs to. */
+  slug: string;
+  /** Guest's full name ("الاسم الكريم"). */
+  name: string;
+  /** Attendance status ('attending', 'not_attending', or 'maybe'). */
+  status: RSVPAttendanceStatus;
+  /** Number of accompanying companions ("عدد المرافقين"). */
+  guests: number;
+  /** Optional congratulatory wish ("كلمة المهنئين"). */
+  message: string;
+  /** Optional photo data URL/URL (used in GraduationNotebook). */
+  image?: string | null;
+  /** ISO 8601 timestamp when the RSVP was submitted. */
+  createdAt: string;
+}
+
+/**
+ * Customizable client invitation record passed via `customData` to any of the 7 master templates.
+ * Any field left blank or undefined automatically falls back to the master template's showcase defaults.
+ */
+export interface CustomInvitationData {
+  /** Unique URL identifier for `/invite/[slug]` (e.g., 'ahmad-sara'). */
+  slug: string;
+  /** Which of the 7 master templates to use as the visual base. */
+  templateId: TemplateSlug;
+  /** Groom & Bride names (e.g., 'أحمد & سارة') or main celebrant/event title. */
+  hostNames?: string;
+  /** Alias for `hostNames` supporting couple invitations. */
+  coupleNames?: string;
+  /** Custom invitation wording, blessing, or welcome poem. */
+  welcomeMessage?: string;
+  /** Alias for `welcomeMessage`. */
+  invitationText?: string;
+  /** Custom event date in YYYY-MM-DD format (or custom Arabic date string). */
+  eventDate?: string;
+  /** Custom event time in HH:mm format (or custom Arabic time string). */
+  eventTime?: string;
+  /** Hall, hotel, or reception venue name. */
+  venueName?: string;
+  /** Google Maps location URL. */
+  locationUrl?: string;
+  /** Optional custom YouTube video ID or URL; falls back to template default song if empty. */
+  youtubeVideoId?: string;
+  /** Optional custom note(s) (e.g., 'جنة الأطفال منازلهم' or newline-separated notes). */
+  customNote?: string;
+  /** Creation timestamp. */
+  createdAt?: string;
+  /** Last update timestamp. */
+  updatedAt?: string;
+  /** Optional hydrated RSVPs list attached in the Admin Dashboard view. */
+  rsvps?: ClientRSVPEntry[];
 }
 
 /**

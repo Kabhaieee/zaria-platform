@@ -22,8 +22,11 @@
     "sonner": "^2.0.8"
   },
   "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
     "autoprefixer": "latest",
     "postcss": "latest",
-    "tailwindcss": "latest"
+    "tailwindcss": "latest",
+    "typescript": "^7.0.2"
   }
 }

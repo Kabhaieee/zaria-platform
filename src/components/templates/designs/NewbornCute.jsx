@@ -21,6 +21,15 @@ import Confetti from 'react-confetti';
 
 // 3. Internal components, hooks, and utility functions
 import BackgroundMusic from '../../BackgroundMusic';
+import { useInvitationRSVPs } from '@/hooks/useInvitationRSVPs';
+import {
+  resolveCustomNotes,
+  resolveEventDateTime,
+  resolveMapEmbedUrl,
+  resolveSingleHostName,
+  resolveWelcomeMessage,
+  resolveYoutubeUrl,
+} from '@/lib/masterTemplates';
 
 // Configure Arabic calligraphy and body typography
 const aref = Aref_Ruqaa({ subsets: ['arabic'], weight: ['400', '700'] });
@@ -88,14 +97,60 @@ const FlowerBullet = ({ className = 'w-3 h-3', color = ZARIA_GOLD }) => (
  *
  * @returns {JSX.Element} The complete newborn reception digital invitation experience.
  */
-export default function NewbornCute() {
+export default function NewbornCute({ customData } = {}) {
+  const babyName = resolveSingleHostName(customData, 'المولود زين');
+  const shortBabyName = babyName.replace(/^المولود\s+/, '');
+  const welcomeCopy = resolveWelcomeMessage(
+    customData,
+    'بقلوبٍ يغمرها الحمدُ والشكرُ لله، وبفرحةٍ ازدانَ بها بيتُنا، نتشرّف بدعوتكم لمشاركتنا بهجة قدوم مولودنا الغالي في حفل استقباله. حضوركم يزيد فرحتنا نوراً وسروراً.'
+  );
+  const {
+    isoTarget,
+    arabicDate: dateDisplay,
+    arabicTime: timeDisplay,
+    calendarWeekday: dayName,
+    calendarDay: dayNumber,
+    calendarMonthYear: monthYearDisplay,
+  } = resolveEventDateTime(customData, {
+    isoTarget: '2026-11-29T21:00:00',
+    arabicDate: 'يوم الأحد، 29 تشرين الثاني 2026',
+    arabicTime: 'الساعة السادسة مساءً',
+    calendarMonthYear: 'تشرين الثاني 2026',
+    calendarDay: '29',
+    calendarWeekday: 'الأحد',
+  });
+  const venueDisplay = customData?.venueName?.trim() || 'بيت العائلة';
+  const locationUrlDisplay =
+    customData?.locationUrl?.trim() ||
+    'https://www.google.com/maps/search/?api=1&query=31.9965,35.8335';
+  const mapEmbedSrc = resolveMapEmbedUrl(
+    customData?.venueName,
+    'https://maps.google.com/maps?q=31.9965,35.8335&t=&z=15&ie=UTF8&iwloc=&output=embed'
+  );
+  const youtubeUrl = resolveYoutubeUrl(
+    customData?.youtubeVideoId,
+    'https://www.youtube.com/watch?v=yl7a-5yxEAI'
+  );
+  const notesList = resolveCustomNotes(customData?.customNote, [
+    'نتشرّف بحضوركم ومشاركتنا فرحة قدوم مولودنا زين',
+    'وجودكم بيننا ودعواتكم الصالحة أجمل هدية لمولودنا',
+    'الدعوة تشمل الأهل والأحبة الكرام',
+  ]);
+  const avatarPalette = [
+    'bg-[#38BDF8]',
+    'bg-[#818CF8]',
+    'bg-[#A78BFA]',
+    'bg-[#F472B6]',
+    'bg-[#94A3B8]',
+  ];
+
   /**
    * Computes the remaining time until the newborn reception date (`2026-11-29T21:00:00`).
    *
    * @returns {import('@/types/zaria').CountdownTimeLeft} Remaining time breakdown.
    */
   const calculateTimeLeft = () => {
-    const difference = +new Date('2026-11-29T21:00:00') - +new Date();
+    const difference = +new Date(isoTarget) - +new Date();
     let timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
 
     if (difference > 0) {
@@ -126,7 +181,7 @@ export default function NewbornCute() {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
   // Wishes & Greetings state ("كلمات المهنئين")
-  const [guestbookMessages, setGuestbookMessages] = useState([
+  const defaultMessages = [
     {
       name: 'أم محمد',
       message: 'ألف مبروك قدوم الغالي زين 🤍 يتربى بعزكم ودلالكم إن شاء الله',
@@ -157,7 +212,12 @@ export default function NewbornCute() {
       avatarColor: 'bg-[#94A3B8]',
       avatarLetter: 'أ',
     },
-  ]);
+  ];
+  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(
+    customData?.slug,
+    defaultMessages,
+    avatarPalette
+  );
 
   /**
    * Handles submission of the RSVP form ("تأكيد الحضور"):
@@ -167,7 +227,7 @@ export default function NewbornCute() {
    *
    * @param {React.FormEvent<HTMLFormElement>} e - Form submission event.
    */
-  const handleRSVPSubmit = (e) => {
+  const handleRSVPSubmit = async (e) => {
     e.preventDefault();
 
     const sanitizedName = rsvpData.name.trim().slice(0, 80);
@@ -176,28 +236,12 @@ export default function NewbornCute() {
 
     if (!sanitizedName) return;
 
-    // 1. Prepend new greeting to "كلمات المهنئين" if message is non-empty
-    if (sanitizedMessage) {
-      const colors = [
-        'bg-[#38BDF8]',
-        'bg-[#818CF8]',
-        'bg-[#A78BFA]',
-        'bg-[#F472B6]',
-        'bg-[#94A3B8]',
-      ];
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      const firstLetter = sanitizedName.charAt(0) || 'ز';
-
-      setGuestbookMessages((prev) => [
-        {
-          name: sanitizedName || 'ضيف',
-          message: sanitizedMessage,
-          avatarColor: randomColor,
-          avatarLetter: firstLetter,
-        },
-        ...prev,
-      ]);
-    }
+    await submitRSVP({
+      name: sanitizedName,
+      status: rsvpData.status,
+      guests: boundedGuests,
+      message: sanitizedMessage,
+    });
 
     // Store sanitized values in state while clearing the message textarea
     setRsvpData((prev) => ({
@@ -223,16 +267,16 @@ export default function NewbornCute() {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [isoTarget]);
 
   // Pre-encoded Google Calendar event template URL
-  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('حفل استقبال المولود زين')}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent('نتشرف بحضوركم حفل استقبال مولودنا زين')}&location=${encodeURIComponent('بيت العائلة - دابوق، عمان')}`;
+  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`حفل استقبال ${babyName}`)}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent('نتشرف بحضوركم حفل استقبال مولودنا')}&location=${encodeURIComponent(venueDisplay)}`;
 
   /**
    * Generates and downloads an `.ics` iCalendar file for Apple Calendar / Outlook.
    */
   const handleAppleCalendar = () => {
-    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Newborn//AR\nBEGIN:VEVENT\nSUMMARY:حفل استقبال المولود زين\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:بيت العائلة - دابوق، عمان\nDESCRIPTION:نتشرف بحضوركم حفل استقبال مولودنا زين\nEND:VEVENT\nEND:VCALENDAR`;
+    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Newborn//AR\nBEGIN:VEVENT\nSUMMARY:حفل استقبال ${babyName}\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:${venueDisplay}\nDESCRIPTION:نتشرف بحضوركم حفل استقبال مولودنا\nEND:VEVENT\nEND:VCALENDAR`;
     const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
@@ -276,7 +320,7 @@ export default function NewbornCute() {
           </div>
 
           <h1 className="text-5xl md:text-7xl font-['Aref_Ruqaa'] text-white drop-shadow-[0_2px_15px_rgba(0,0,0,0.5)] mb-8 mt-4">
-            المولود زين
+            {babyName}
           </h1>
 
           <p className="text-lg md:text-xl font-['Aref_Ruqaa'] opacity-90 mb-8 max-w-sm mx-auto drop-shadow-md text-[#fdf8f5]">
@@ -344,8 +388,7 @@ export default function NewbornCute() {
             </h3>
 
             <p className="text-[14px] leading-[2.2] mb-10 text-[#0C4A6E] text-center px-4 max-w-[310px]">
-              بقلوبٍ يغمرها الحمدُ والشكرُ لله، وبفرحةٍ ازدانَ بها بيتُنا، نتشرّف بدعوتكم لمشاركتنا
-              بهجة قدوم مولودنا الغالي في حفل استقباله. حضوركم يزيد فرحتنا نوراً وسروراً.
+              {welcomeCopy}
             </p>
 
             {/* Newborn & Hosting Families Information */}
@@ -354,7 +397,7 @@ export default function NewbornCute() {
               <p
                 className={`text-[36px] text-[#0EA5E9] font-bold leading-tight mb-4 ${aref.className}`}
               >
-                زين
+                {shortBabyName}
               </p>
               <div className="bg-[#E0F2FE] border border-[#0EA5E9]/20 px-5 py-2 rounded-full mb-6">
                 <p className="text-[#0C4A6E] text-[13px] font-bold">
@@ -473,14 +516,14 @@ export default function NewbornCute() {
               </h3>
               <div className="w-full max-w-[300px] h-48 bg-[#E0F2FE] rounded-xl mb-6 border border-[#0EA5E9]/30 shadow-sm relative overflow-hidden group">
                 <iframe
-                  title="موقع الاستقبال - بيت العائلة"
-                  src="https://maps.google.com/maps?q=31.9965,35.8335&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  title={`موقع الاستقبال - ${venueDisplay}`}
+                  src={mapEmbedSrc}
                   className="w-full h-full border-0"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
                 <a
-                  href="https://www.google.com/maps/search/?api=1&query=31.9965,35.8335"
+                  href={locationUrlDisplay}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="فتح في خرائط جوجل"
@@ -490,15 +533,15 @@ export default function NewbornCute() {
                 </a>
               </div>
               <div className="text-center font-bold text-[14px] leading-relaxed mb-8 text-[#0C4A6E]">
-                <p className="mb-3">يوم الأحد، 29 تشرين الثاني 2026</p>
-                <p className="text-[#0369A1] mb-6 text-[12px]">الساعة السادسة مساءً</p>
+                <p className="mb-3">{dateDisplay}</p>
+                <p className="text-[#0369A1] mb-6 text-[12px]">{timeDisplay}</p>
                 <p className={`text-[#0EA5E9] mb-3 font-normal text-2xl ${aref.className}`}>
-                  بيت العائلة
+                  {venueDisplay}
                 </p>
                 <p className="text-[#0369A1] text-[13px]">دابوق — عمان</p>
               </div>
               <a
-                href="https://www.google.com/maps/search/?api=1&query=31.9965,35.8335"
+                href={locationUrlDisplay}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-[#0EA5E9] text-white px-8 py-2.5 rounded-full text-[13px] font-bold shadow-md hover:bg-[#0284C7] transition-all inline-block mb-4"
@@ -520,18 +563,12 @@ export default function NewbornCute() {
                 ملاحظات
               </h3>
               <ul className="text-[14px] font-bold flex flex-col gap-6 text-right w-full px-6 text-[#0C4A6E]">
-                <li className="flex items-start justify-center gap-3 text-center">
-                  <FlowerBullet className="w-3.5 h-3.5 mt-1 shrink-0 text-[#0EA5E9] opacity-70" />
-                  <span>نتشرّف بحضوركم ومشاركتنا فرحة قدوم مولودنا زين</span>
-                </li>
-                <li className="flex items-start justify-center gap-3 text-center">
-                  <FlowerBullet className="w-3.5 h-3.5 mt-1 shrink-0 text-[#0EA5E9] opacity-70" />
-                  <span>وجودكم بيننا ودعواتكم الصالحة أجمل هدية لمولودنا</span>
-                </li>
-                <li className="flex items-start justify-center gap-3 text-center">
-                  <FlowerBullet className="w-3.5 h-3.5 mt-1 shrink-0 text-[#0EA5E9] opacity-70" />
-                  <span>الدعوة تشمل الأهل والأحبة الكرام</span>
-                </li>
+                {notesList.map((note, idx) => (
+                  <li key={idx} className="flex items-start justify-center gap-3 text-center">
+                    <FlowerBullet className="w-3.5 h-3.5 mt-1 shrink-0 text-[#0EA5E9] opacity-70" />
+                    <span>{note}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -614,13 +651,13 @@ export default function NewbornCute() {
             <div className="absolute top-0 right-1/4 w-3 h-4 bg-gray-200 rounded-full border border-gray-300 -translate-y-1/2 z-10 shadow-sm"></div>
 
             <div className="bg-[#0EA5E9] text-white py-3 text-center font-bold text-lg pt-4">
-              تشرين الثاني 2026
+              {monthYearDisplay}
             </div>
 
             <div className="p-6 flex flex-col items-center relative">
-              <p className="text-[#0EA5E9] font-bold text-lg mb-1">الأحد</p>
-              <p className="text-8xl text-[#0EA5E9] font-light mb-2 leading-none">29</p>
-              <p className="text-[#0C4A6E] font-bold text-sm">الساعة السادسة مساءً</p>
+              <p className="text-[#0EA5E9] font-bold text-lg mb-1">{dayName}</p>
+              <p className="text-8xl text-[#0EA5E9] font-light mb-2 leading-none">{dayNumber}</p>
+              <p className="text-[#0C4A6E] font-bold text-sm">{timeDisplay}</p>
             </div>
 
             <div className="border-t border-dashed border-[#0EA5E9]/30 px-6 py-5 bg-white/50">
@@ -837,7 +874,7 @@ export default function NewbornCute() {
       </div>
 
       {/* Background Audio Stream Player (Newborn Celebration Song) */}
-      <BackgroundMusic youtubeUrl="https://www.youtube.com/watch?v=yl7a-5yxEAI" autoPlay={true} />
+      <BackgroundMusic youtubeUrl={youtubeUrl} autoPlay={true} />
 
       {/* Celebratory Confetti Overlay */}
       {showConfetti && (

@@ -13,7 +13,7 @@ import Link from 'next/link';
 
 // 2. Third-party libraries
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Copy } from 'lucide-react';
 
 // 3. Internal components, hooks, and utility functions
 import Footer from '@/components/Footer';
@@ -33,6 +33,27 @@ export default function TemplatesClient() {
 
   /** @type {[import('@/types/zaria').TemplateCategory, React.Dispatch<React.SetStateAction<import('@/types/zaria').TemplateCategory>>]} */
   const [activeFilter, setActiveFilter] = useState('all');
+  const [copiedTemplateId, setCopiedTemplateId] = useState('');
+
+  /**
+   * Copies the standalone preview URL (`/preview/[templateId]`) to the clipboard.
+   *
+   * @param {React.MouseEvent} e - Button click event.
+   * @param {string} templateId - Target template identifier.
+   */
+  const handleCopyPreviewUrl = async (e, templateId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (typeof window === 'undefined') return;
+    const previewUrl = `${window.location.origin}/preview/${templateId}`;
+    try {
+      await navigator.clipboard.writeText(previewUrl);
+      setCopiedTemplateId(templateId);
+      setTimeout(() => setCopiedTemplateId(''), 2500);
+    } catch {
+      // Fallback
+    }
+  };
 
   // Category filter definitions localized via translation keys
   const filters = [
@@ -207,9 +228,9 @@ export default function TemplatesClient() {
                     </div>
                   </div>
 
-                  {/* Hover Action Overlay Button */}
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
-                    <div className="bg-white text-[#111111] px-6 py-3 rounded-full font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 pointer-events-auto">
+                  {/* Hover Action Overlay Buttons */}
+                  <div className="absolute inset-0 bg-black/45 backdrop-blur-[2px] rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3 pointer-events-none px-4">
+                    <div className="bg-white text-[#111111] px-6 py-3 rounded-full font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 pointer-events-auto shadow-lg">
                       {t('templates_page.preview_btn')}
                       {language === 'ar' ? (
                         <ArrowLeft className="w-4 h-4" />
@@ -217,6 +238,23 @@ export default function TemplatesClient() {
                         <ArrowRight className="w-4 h-4" />
                       )}
                     </div>
+                    <button
+                      type="button"
+                      onClick={(e) => handleCopyPreviewUrl(e, template.id)}
+                      className="bg-[#111111]/90 text-[#F5EFEA] border border-[#C49A6C]/50 px-5 py-2.5 rounded-full text-xs font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-[#C49A6C] hover:text-[#111111] pointer-events-auto shadow-lg"
+                    >
+                      {copiedTemplateId === template.id ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>تم نسخ رابط المعاينة!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>نسخ رابط المعاينة</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 </Link>
               </motion.div>
