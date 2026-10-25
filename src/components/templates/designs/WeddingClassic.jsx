@@ -631,26 +631,6 @@ export default function WeddingClassic({ customData } = {}) {
 
             {/* Invitation Heading & Welcome Text */}
             <h3 className={`text-4xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-8 font-bold ${aref.className}`}>بطاقة دعوة</h3>
-
-            {customData?.featuredImage && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="relative w-48 h-64 md:w-56 md:h-72 mb-8 rounded-[2rem] overflow-hidden border-2 border-[#E6C79C]/80 shadow-[0_10px_30px_rgba(45,7,13,0.25)] bg-[#2D070D]"
-              >
-                <Image
-                  src={customData.featuredImage}
-                  alt={customData?.coupleNames || 'العروسان'}
-                  fill
-                  sizes="(max-width: 768px) 250px, 300px"
-                  className="object-cover object-top hover:scale-105 transition-transform duration-700"
-                  priority
-                />
-              </motion.div>
-            )}
-
             <p className={`text-[14px] leading-[2.2] mb-12 ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} text-center px-4 max-w-[300px]`}>
               {welcomeMessage}
             </p>
@@ -848,8 +828,8 @@ export default function WeddingClassic({ customData } = {}) {
           </h3>
         </div>
 
-        <div className="px-6 mb-16 w-full">
-          <div className="grid grid-cols-2 gap-3">
+        <div className="px-6 mb-16 w-full max-w-md mx-auto">
+          <div className="grid grid-cols-2 gap-3.5">
             {galleryPhotos.map((imgSrc, idx) => (
               <motion.div
                 key={idx}
@@ -858,14 +838,16 @@ export default function WeddingClassic({ customData } = {}) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
                 onClick={() => setActivePhoto(imgSrc)}
-                className={`relative rounded-xl overflow-hidden shadow-sm border cursor-pointer group ${isBurgundy ? 'border-[#E6C79C]/40 shadow-md' : 'border-[#C49A6C]/20'} ${idx === 0 || idx === 3 ? 'aspect-[4/5]' : 'aspect-square'}`}
+                className={`relative rounded-2xl overflow-hidden shadow-sm border cursor-pointer group ${
+                  isBurgundy ? 'border-[#E6C79C]/40 shadow-md' : 'border-[#C49A6C]/20'
+                } aspect-[3/4] bg-black/10`}
               >
                 <Image
                   src={imgSrc}
                   alt={`Memory ${idx + 1}`}
                   fill
                   sizes="(max-width: 768px) 50vw, 300px"
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                  className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
                 />
               </motion.div>
             ))}
