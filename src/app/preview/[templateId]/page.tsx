@@ -50,15 +50,16 @@ export async function generateMetadata({ params }: PreviewPageProps): Promise<Me
  */
 export default async function MasterTemplatePreviewPage({ params }: PreviewPageProps) {
   const { templateId } = await params;
+  const cleanId = decodeURIComponent(templateId || '').trim().toLowerCase();
 
-  if (!VALID_TEMPLATE_IDS.includes(templateId as TemplateSlug)) {
+  if (!VALID_TEMPLATE_IDS.includes(cleanId as TemplateSlug)) {
     notFound();
   }
 
   return (
     <div className="min-h-screen bg-black w-full" dir="rtl">
       <TemplateRenderer
-        templateId={templateId as TemplateSlug}
+        templateId={cleanId as TemplateSlug}
         showCopyPreviewButton={true}
       />
     </div>

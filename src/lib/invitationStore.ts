@@ -8,8 +8,10 @@
  */
 
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
-import seedStore from '@/data/clientInvitations.json';
+import seedStore from '@/data/clientInvitationsRuntime.json';
+import { CLIENT_INVITATIONS, getStaticInvitationBySlug } from '@/data/clientInvitations';
 import { VALID_TEMPLATE_IDS } from '@/lib/masterTemplates';
 import type { ClientRSVPEntry, CustomInvitationData, RSVPAttendanceStatus, TemplateSlug } from '@/types/zaria';
 
@@ -18,7 +20,8 @@ interface StoreSchema {
   rsvps: ClientRSVPEntry[];
 }
 
-const DATA_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'clientInvitations.json');
+const DATA_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'clientInvitationsRuntime.json');
+const TMP_FILE_PATH = path.join(os.tmpdir(), 'zaria-client-invitations.json');
 
 // Global in-memory store singleton (persists across hot-reloads and serverless invocations)
 const globalForStore = globalThis as unknown as {
@@ -26,9 +29,28 @@ const globalForStore = globalThis as unknown as {
 };
 
 /**
- * Reads the current store from disk or initializes from the bundled seed data.
+ * Reads the current store from disk (`/tmp` or `src/data`) or initializes from the bundled seed data.
  */
 function readLocalStore(): StoreSchema {
+  if (globalForStore.__zariaInvitationStore) {
+    return globalForStore.__zariaInvitationStore;
+  }
+
+  // 1. Check writable /tmp store first (used in serverless environments like Vercel)
+  try {
+    if (fs.existsSync(TMP_FILE_PATH)) {
+      const rawTmp = fs.readFileSync(TMP_FILE_PATH, 'utf-8');
+      const parsedTmp = JSON.parse(rawTmp) as StoreSchema;
+      if (Array.isArray(parsedTmp.invitations) && Array.isArray(parsedTmp.rsvps)) {
+        globalForStore.__zariaInvitationStore = parsedTmp;
+        return parsedTmp;
+      }
+    }
+  } catch {
+    // Ignore /tmp read errors
+  }
+
+  // 2. Check repository JSON file
   try {
     if (fs.existsSync(DATA_FILE_PATH)) {
       const raw = fs.readFileSync(DATA_FILE_PATH, 'utf-8');
@@ -39,15 +61,13 @@ function readLocalStore(): StoreSchema {
       }
     }
   } catch {
-    // Fallback to in-memory or seed store if filesystem is read-only
+    // Fallback to seed store if filesystem is read-only
   }
 
-  if (!globalForStore.__zariaInvitationStore) {
-    globalForStore.__zariaInvitationStore = {
-      invitations: (seedStore.invitations || []) as CustomInvitationData[],
-      rsvps: (seedStore.rsvps || []) as ClientRSVPEntry[],
-    };
-  }
+  globalForStore.__zariaInvitationStore = {
+    invitations: [...((seedStore.invitations || []) as CustomInvitationData[])],
+    rsvps: [...((seedStore.rsvps || []) as ClientRSVPEntry[])],
+  };
   return globalForStore.__zariaInvitationStore;
 }
 
@@ -56,10 +76,16 @@ function readLocalStore(): StoreSchema {
  */
 function writeLocalStore(store: StoreSchema): void {
   globalForStore.__zariaInvitationStore = store;
+  const serialized = JSON.stringify(store, null, 2);
   try {
-    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+    fs.writeFileSync(DATA_FILE_PATH, serialized, 'utf-8');
   } catch {
-    // Ignore write errors in read-only serverless environments; in-memory singleton remains updated
+    // Ignore write errors in read-only serverless environments (/var/task)
+  }
+  try {
+    fs.writeFileSync(TMP_FILE_PATH, serialized, 'utf-8');
+  } catch {
+    // Ignore /tmp write errors
   }
 }
 
@@ -98,6 +124,18 @@ export function sanitizeSlug(rawSlug: string): string {
  * Retrieves all custom client invitations.
  */
 export async function getAllClientInvitations(): Promise<CustomInvitationData[]> {
+  const dynamicList = await getAllDynamicInvitations();
+  const staticSlugs = new Set(CLIENT_INVITATIONS.map((inv) => inv.slug));
+  return [
+    ...CLIENT_INVITATIONS.map((inv) => ({ ...inv })),
+    ...dynamicList.filter((inv) => !staticSlugs.has(inv.slug)),
+  ];
+}
+
+/**
+ * Retrieves invitations from the runtime store (Supabase when configured, else local JSON/memory).
+ */
+async function getAllDynamicInvitations(): Promise<CustomInvitationData[]> {
   const supabase = getSupabaseConfig();
   if (supabase) {
     try {
@@ -130,6 +168,10 @@ export async function getClientInvitationBySlug(
 ): Promise<CustomInvitationData | null> {
   const cleanSlug = sanitizeSlug(slug);
   if (!cleanSlug) return null;
+
+  // Permanent source of truth: `src/data/clientInvitations.ts`
+  const staticInvitation = getStaticInvitationBySlug(cleanSlug);
+  if (staticInvitation) return { ...staticInvitation };
 
   const supabase = getSupabaseConfig();
   if (supabase) {
@@ -166,6 +208,9 @@ export async function upsertClientInvitation(
   const cleanSlug = sanitizeSlug(payload.slug);
   if (!cleanSlug) {
     throw new Error('يرجى إدخال معرف رابط (Slug) صالح للدعوة.');
+  }
+  if (getStaticInvitationBySlug(cleanSlug)) {
+    throw new Error('هذه الدعوة دائمة ويتم تعديلها من الملف src/data/clientInvitations.ts');
   }
 
   const templateId = VALID_TEMPLATE_IDS.includes(payload.templateId)
@@ -233,6 +278,7 @@ export async function upsertClientInvitation(
 export async function deleteClientInvitation(slug: string): Promise<boolean> {
   const cleanSlug = sanitizeSlug(slug);
   if (!cleanSlug) return false;
+  if (getStaticInvitationBySlug(cleanSlug)) return false;
 
   const supabase = getSupabaseConfig();
   if (supabase) {

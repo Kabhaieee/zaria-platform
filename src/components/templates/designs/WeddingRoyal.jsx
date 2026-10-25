@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 /**
  * @file WeddingRoyal.jsx
@@ -209,11 +209,7 @@ export default function WeddingRoyal({ customData } = {}) {
   const videoRef = useRef(null);
 
   // Isolated Wishes & RSVPs hook (isolated per slug when customData.slug is present)
-  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(
-    customData?.slug,
-    DEFAULT_ROYAL_WISHES,
-    ROYAL_AVATAR_COLORS
-  );
+  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(customData?.slug, DEFAULT_ROYAL_WISHES, ROYAL_AVATAR_COLORS, customData?.initialWishes);
 
   /**
    * Handles RSVP form submission:

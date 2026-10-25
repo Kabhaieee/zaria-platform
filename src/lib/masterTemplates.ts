@@ -422,3 +422,82 @@ export function resolveMapEmbedUrl(
   if (!trimmed) return defaultEmbedUrl;
   return `https://maps.google.com/maps?q=${encodeURIComponent(trimmed)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
 }
+
+/**
+ * Encodes a `CustomInvitationData` payload into a compact URL-safe Base64 string (`?d=...`)
+ * so custom invitations work across stateless serverless instances even without an external DB.
+ */
+export function encodeInvitationShareParam(inv: CustomInvitationData): string {
+  try {
+    const minimal: CustomInvitationData = {
+      slug: inv.slug,
+      templateId: inv.templateId,
+      hostNames: inv.hostNames || inv.coupleNames || '',
+      coupleNames: inv.coupleNames || inv.hostNames || '',
+      welcomeMessage: inv.welcomeMessage || inv.invitationText || '',
+      eventDate: inv.eventDate || '',
+      eventTime: inv.eventTime || '',
+      venueName: inv.venueName || '',
+      locationUrl: inv.locationUrl || '',
+      youtubeVideoId: inv.youtubeVideoId || '',
+      customNote: inv.customNote || '',
+    };
+    const json = JSON.stringify(minimal);
+    if (typeof window !== 'undefined' && typeof window.btoa === 'function') {
+      const bytes = new TextEncoder().encode(json);
+      let binary = '';
+      bytes.forEach((b) => {
+        binary += String.fromCharCode(b);
+      });
+      return window
+        .btoa(binary)
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+    }
+    return Buffer.from(json, 'utf-8').toString('base64url');
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Decodes a URL-safe Base64 `?d=...` parameter back into `CustomInvitationData`.
+ */
+export function decodeInvitationShareParam(
+  encoded: string | undefined,
+  fallbackSlug: string
+): CustomInvitationData | null {
+  if (!encoded || typeof encoded !== 'string') return null;
+  try {
+    const normalized = encoded.replace(/-/g, '+').replace(/_/g, '/');
+    let json = '';
+    if (typeof window !== 'undefined' && typeof window.atob === 'function') {
+      const binary = window.atob(normalized);
+      const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+      json = new TextDecoder().decode(bytes);
+    } else {
+      json = Buffer.from(normalized, 'base64').toString('utf-8');
+    }
+    const parsed = JSON.parse(json) as Partial<CustomInvitationData>;
+    if (!parsed || !parsed.templateId || !VALID_TEMPLATE_IDS.includes(parsed.templateId)) {
+      return null;
+    }
+    return {
+      slug: parsed.slug || fallbackSlug,
+      templateId: parsed.templateId,
+      hostNames: parsed.hostNames || parsed.coupleNames || '',
+      coupleNames: parsed.coupleNames || parsed.hostNames || '',
+      welcomeMessage: parsed.welcomeMessage || parsed.invitationText || '',
+      invitationText: parsed.invitationText || parsed.welcomeMessage || '',
+      eventDate: parsed.eventDate || '',
+      eventTime: parsed.eventTime || '',
+      venueName: parsed.venueName || '',
+      locationUrl: parsed.locationUrl || '',
+      youtubeVideoId: parsed.youtubeVideoId || '',
+      customNote: parsed.customNote || '',
+    };
+  } catch {
+    return null;
+  }
+}

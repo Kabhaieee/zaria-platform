@@ -286,6 +286,12 @@ export interface CustomInvitationData {
   updatedAt?: string;
   /** Optional hydrated RSVPs list attached in the Admin Dashboard view. */
   rsvps?: ClientRSVPEntry[];
+  /** Optional path (from `/public`) of a custom hero background video or image (e.g. '/omar-ayat/hero.mp4'). */
+  backgroundMedia?: string;
+  /** Optional poster image path (from `/public`) shown before a custom background video loads. */
+  backgroundPoster?: string;
+  /** Permanent demo congratulatory wishes shown in "كلمات المهنئين" for this client. */
+  initialWishes?: { name: string; message: string }[];
 }
 
 /**

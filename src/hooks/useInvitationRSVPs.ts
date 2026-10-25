@@ -45,15 +45,26 @@ function toGuestbookEntry(
 export function useInvitationRSVPs(
   slug: string | undefined,
   defaultDemoWishes: GuestbookEntry[],
-  avatarColors: string[]
+  avatarColors: string[],
+  initialWishes?: { name: string; message: string }[]
 ) {
   const isClientInvitation = Boolean(slug && slug.trim());
   const cleanSlug = slug?.trim().toLowerCase() || '';
 
-  // For client invitations, start with empty wishes until their isolated wishes load;
+  // Permanent seed wishes defined in the client's config (`initialWishes`), shown below real guest wishes.
+  const seedWishes: GuestbookEntry[] = (initialWishes || []).map((w, idx) =>
+    toGuestbookEntry(
+      { id: `seed-${idx}`, slug: cleanSlug, name: w.name, message: w.message, status: 'attending', guests: 0, createdAt: '' },
+      avatarColors,
+      idx
+    )
+  );
+  const seedKey = JSON.stringify(initialWishes || []);
+
+  // For client invitations, start with their seed wishes until isolated wishes load;
   // for master previews, start with the default demo wishes.
   const [guestbookMessages, setGuestbookMessages] = useState<GuestbookEntry[]>(() =>
-    isClientInvitation ? [] : defaultDemoWishes
+    isClientInvitation ? seedWishes : defaultDemoWishes
   );
 
   // Load isolated wishes for client invitations on mount
@@ -96,7 +107,7 @@ export function useInvitationRSVPs(
             .map((e, idx) => toGuestbookEntry(e, avatarColors, idx));
 
           if (isMounted) {
-            setGuestbookMessages(wishesOnly);
+            setGuestbookMessages([...wishesOnly, ...seedWishes]);
           }
           return;
         }
@@ -108,7 +119,7 @@ export function useInvitationRSVPs(
         const fallbackWishes = localEntries
           .filter((e) => e.message && e.message.trim().length > 0)
           .map((e, idx) => toGuestbookEntry(e, avatarColors, idx));
-        setGuestbookMessages(fallbackWishes);
+        setGuestbookMessages([...fallbackWishes, ...seedWishes]);
       }
     }
 
@@ -117,7 +128,8 @@ export function useInvitationRSVPs(
     return () => {
       isMounted = false;
     };
-  }, [isClientInvitation, cleanSlug]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isClientInvitation, cleanSlug, seedKey]);
 
   /**
    * Submits an RSVP and optional wish.

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 /**
  * @file src/components/templates/designs/BirthdayFun.jsx
@@ -201,11 +201,7 @@ export default function BirthdayFun({ customData } = {}) {
       avatarLetter: 'أ',
     },
   ];
-  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(
-    customData?.slug,
-    defaultMessages,
-    avatarPalette
-  );
+  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(customData?.slug, defaultMessages, avatarPalette, customData?.initialWishes);
 
   /**
    * Handles submission of the RSVP form ("تأكيد الحضور"):

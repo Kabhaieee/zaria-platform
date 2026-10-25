@@ -11,13 +11,15 @@ import type { Metadata } from 'next';
 
 // 3. Internal components, hooks, and utility functions
 import InviteClientView from './InviteClientView';
-import { getClientInvitationBySlug } from '@/lib/invitationStore';
-import { getMasterTemplate } from '@/lib/masterTemplates';
+import { getStaticInvitationBySlug } from '@/data/clientInvitations';
+import { getClientInvitationBySlug, upsertClientInvitation } from '@/lib/invitationStore';
+import { decodeInvitationShareParam, getMasterTemplate } from '@/lib/masterTemplates';
 
 export const dynamic = 'force-dynamic';
 
 interface InvitePageProps {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ d?: string }>;
 }
 
 /**
@@ -45,9 +47,14 @@ function getOccasionTitlePrefix(templateId?: string): string {
 /**
  * Generates dynamic OpenGraph / WhatsApp share metadata for each client's invitation slug.
  */
-export async function generateMetadata({ params }: InvitePageProps): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: InvitePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const invitation = await getClientInvitationBySlug(slug);
+  const resolvedSearch = searchParams ? await searchParams : undefined;
+  let invitation =
+    getStaticInvitationBySlug(slug) ?? (await getClientInvitationBySlug(slug));
+  if (!invitation && resolvedSearch?.d) {
+    invitation = decodeInvitationShareParam(resolvedSearch.d, slug);
+  }
 
   if (!invitation) {
     return {
@@ -84,9 +91,18 @@ export async function generateMetadata({ params }: InvitePageProps): Promise<Met
 /**
  * Server Component entry point for `/invite/[slug]`.
  */
-export default async function ClientInvitationPage({ params }: InvitePageProps) {
+export default async function ClientInvitationPage({ params, searchParams }: InvitePageProps) {
   const { slug } = await params;
-  const invitation = await getClientInvitationBySlug(slug);
+  const resolvedSearch = searchParams ? await searchParams : undefined;
+  let invitation =
+    getStaticInvitationBySlug(slug) ?? (await getClientInvitationBySlug(slug));
+
+  if (!invitation && resolvedSearch?.d) {
+    const decoded = decodeInvitationShareParam(resolvedSearch.d, slug);
+    if (decoded) {
+      invitation = await upsertClientInvitation(decoded);
+    }
+  }
 
   return <InviteClientView slug={slug} initialInvitation={invitation} />;
 }

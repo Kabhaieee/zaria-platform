@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 /**
  * @file EngagementFloral.jsx
@@ -227,11 +227,7 @@ export default function EngagementFloral({ customData } = {}) {
   const videoRef = useRef(null);
 
   // Isolated Wishes & RSVPs hook
-  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(
-    customData?.slug,
-    DEFAULT_ENGAGEMENT_WISHES,
-    ENGAGEMENT_AVATAR_COLORS
-  );
+  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(customData?.slug, DEFAULT_ENGAGEMENT_WISHES, ENGAGEMENT_AVATAR_COLORS, customData?.initialWishes);
 
   /**
    * Handles RSVP form submission:

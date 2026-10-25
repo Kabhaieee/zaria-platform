@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 /**
  * @file src/components/templates/designs/NewbornCute.jsx
@@ -213,11 +213,7 @@ export default function NewbornCute({ customData } = {}) {
       avatarLetter: 'أ',
     },
   ];
-  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(
-    customData?.slug,
-    defaultMessages,
-    avatarPalette
-  );
+  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(customData?.slug, defaultMessages, avatarPalette, customData?.initialWishes);
 
   /**
    * Handles submission of the RSVP form ("تأكيد الحضور"):

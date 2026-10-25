@@ -7,31 +7,56 @@
 
 // 1. React and Next.js core modules
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 
 // 2. Third-party libraries
 import { ArrowRight } from 'lucide-react';
 
 // 3. Internal components, hooks, and utility functions
+import InviteClientView from '@/app/invite/[slug]/InviteClientView';
 import GSAPAnimations from '@/components/GSAPAnimations';
+import TemplateRenderer from '@/components/templates/TemplateRenderer';
 import invitations from '@/data/invitations.json';
+import { getClientInvitationBySlug } from '@/lib/invitationStore';
+import { VALID_TEMPLATE_IDS } from '@/lib/masterTemplates';
+
+export const dynamic = 'force-dynamic';
 
 /**
  * InvitationPage Async Server Component
  *
  * @param {Object} props - Next.js dynamic route props.
  * @param {Promise<{ slug: string }>} props.params - Route parameters promise resolving to the invitation `slug`.
- * @returns {Promise<JSX.Element>} The rendered event invitation page or a 404 NotFound response.
+ * @returns {Promise<JSX.Element>} The rendered event invitation page.
  */
 export default async function InvitationPage({ params }) {
   const { slug } = await params;
+  const cleanSlug = decodeURIComponent(slug || '').trim().toLowerCase();
 
+  // 1. If the slug matches one of the 7 master template IDs, render its standalone preview
+  if (VALID_TEMPLATE_IDS.includes(/** @type {import('@/types/zaria').TemplateSlug} */ (cleanSlug))) {
+    return (
+      <div className="min-h-screen bg-black w-full" dir="rtl">
+        <TemplateRenderer
+          templateId={/** @type {import('@/types/zaria').TemplateSlug} */ (cleanSlug)}
+          showCopyPreviewButton={true}
+        />
+      </div>
+    );
+  }
+
+  // 2. Check if the slug matches a custom client invitation created in `/admin`
+  const customInvitation = await getClientInvitationBySlug(cleanSlug);
+  if (customInvitation) {
+    return <InviteClientView slug={cleanSlug} initialInvitation={customInvitation} />;
+  }
+
+  // 3. Check legacy `src/data/invitations.json` records
   /** @type {import('@/types/zaria').InvitationRecord | undefined} */
-  const event = invitations.find((inv) => inv.id === slug);
+  const event = invitations.find((inv) => inv.id === cleanSlug || inv.id === slug);
 
-  // Trigger Next.js 404 page if the invitation slug does not exist in the dataset
+  // 4. Fallback to InviteClientView (which also checks browser localStorage for newly created invitations)
   if (!event) {
-    notFound();
+    return <InviteClientView slug={cleanSlug} initialInvitation={null} />;
   }
 
   // Format the event date and time into localized Arabic (Saudi/Levant) readable strings

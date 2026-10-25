@@ -217,11 +217,7 @@ export default function WeddingClassic({ customData } = {}) {
   const videoRef = useRef(null);
 
   // Isolated Wishes & RSVPs hook
-  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(
-    customData?.slug,
-    DEFAULT_CLASSIC_WISHES,
-    CLASSIC_AVATAR_COLORS
-  );
+  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(customData?.slug, DEFAULT_CLASSIC_WISHES, CLASSIC_AVATAR_COLORS, customData?.initialWishes);
 
   /**
    * Handles RSVP form submission:
@@ -369,11 +365,17 @@ export default function WeddingClassic({ customData } = {}) {
 
       {/* Hero Intro Section */}
       <section className="relative w-full h-[100svh] flex flex-col items-center justify-center overflow-hidden bg-black text-[#fdf8f5]">
-        {/* Looping background video */}
+        {/* Looping background media (client override via customData.backgroundMedia, else master hero video) */}
+        {customData?.backgroundMedia && /\.(jpe?g|png|webp|avif|gif)$/i.test(customData.backgroundMedia) ? (
+          <div
+            className="absolute inset-0 w-full h-full z-0 opacity-70 bg-cover bg-center"
+            style={{ backgroundImage: `url("${customData.backgroundMedia}")` }}
+          />
+        ) : (
         <video
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-70"
-          src="/hero.mp4"
-          poster="/hero_poster.jpg"
+          src={customData?.backgroundMedia || '/hero.mp4'}
+          poster={customData?.backgroundPoster || '/hero_poster.jpg'}
           loop
           muted
           playsInline
@@ -384,6 +386,7 @@ export default function WeddingClassic({ customData } = {}) {
             }
           }}
         />
+        )}
 
         {/* Gradient overlays for text contrast */}
         <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" />

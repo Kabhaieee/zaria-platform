@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 /**
  * @file src/components/templates/designs/GraduationModern.jsx
@@ -211,11 +211,7 @@ export default function GraduationModern({ customData } = {}) {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
   // Isolated Wishes & RSVPs hook
-  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(
-    customData?.slug,
-    DEFAULT_GRAD_WISHES,
-    GRAD_AVATAR_COLORS
-  );
+  const { guestbookMessages, submitRSVP } = useInvitationRSVPs(customData?.slug, DEFAULT_GRAD_WISHES, GRAD_AVATAR_COLORS, customData?.initialWishes);
 
   /**
    * Handles submission of the RSVP form ("تأكيد الحضور"):

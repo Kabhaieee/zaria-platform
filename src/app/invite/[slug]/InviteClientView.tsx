@@ -13,6 +13,7 @@ import Link from 'next/link';
 
 // 3. Internal components, hooks, and utility functions
 import TemplateRenderer from '@/components/templates/TemplateRenderer';
+import { decodeInvitationShareParam } from '@/lib/masterTemplates';
 
 // 4. TypeScript types
 import type { CustomInvitationData } from '@/types/zaria';
@@ -35,7 +36,29 @@ export default function InviteClientView({ slug, initialInvitation }: InviteClie
     let active = true;
 
     async function resolveInvitation() {
-      // Check localStorage override/fallback first in case admin edited in browser
+      // Server-resolved invitations (permanent config in `src/data/clientInvitations.ts`) are final;
+      // never override them with stale browser/URL data.
+      if (initialInvitation) {
+        setLoading(false);
+        return;
+      }
+
+      // Check ?d= encoded share parameter first if present in URL
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const encoded = params.get('d');
+        if (encoded) {
+          const decoded = decodeInvitationShareParam(encoded, slug);
+          if (decoded && active) {
+            setInvitation(decoded);
+            setLoading(false);
+          }
+        }
+      } catch {
+        // Ignore URLSearchParams errors
+      }
+
+      // Check localStorage override/fallback in case admin edited in browser
       try {
         const raw = window.localStorage.getItem(LOCAL_INVITATIONS_STORAGE_KEY);
         if (raw) {
