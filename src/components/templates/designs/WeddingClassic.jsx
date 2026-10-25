@@ -107,10 +107,11 @@ const FadeIn = ({ children, delay = 0 }) => (
  *
  * @param {Object} props - Component props.
  * @param {string} [props.className] - Additional CSS utility classes.
+ * @param {string} [props.color] - Fill color.
  * @returns {JSX.Element} The rendered scrolling heart SVG.
  */
-const ScrollHeart = ({ className = 'w-6 h-6 text-[#C49A6C]' }) => (
-  <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+const ScrollHeart = ({ className = 'w-6 h-6 text-[#C49A6C]', color }) => (
+  <svg viewBox="0 0 24 24" className={className} fill={color || 'currentColor'}>
     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
   </svg>
 );
@@ -134,6 +135,11 @@ const CLASSIC_AVATAR_COLORS = ['bg-[#A888B5]', 'bg-[#6B4B75]', 'bg-[#BE955C]', '
  * @returns {JSX.Element} The rendered WeddingClassic template.
  */
 export default function WeddingClassic({ customData } = {}) {
+  // Scoped custom theme detection: Royal Burgundy & Warm Champagne
+  const isBurgundy = customData?.theme === 'burgundy' || customData?.slug === 'omar-ayat';
+  const accentGold = isBurgundy ? '#E6C79C' : ZARIA_GOLD;
+  const metallicGold = isBurgundy ? '#D4AF37' : ZARIA_GOLD;
+
   // Resolve customizable client fields with automatic fallback to immutable master showcase defaults
   const [groomFirst, brideFirst] = resolveCoupleNames(
     customData?.hostNames || customData?.coupleNames,
@@ -286,7 +292,7 @@ export default function WeddingClassic({ customData } = {}) {
   };
 
   return (
-    <div className={`w-full min-h-screen bg-[${ZARIA_CREAM_DARK}] overflow-x-hidden ${amiri.className}`} dir="rtl">
+    <div className={`w-full min-h-screen ${isBurgundy ? 'bg-[#2D070D]' : 'bg-[#F5EBE1]'} overflow-x-hidden ${amiri.className}`} dir="rtl">
       {/* Cinematic Preloader Door Overlay */}
       <AnimatePresence>
         {doorState !== 'done' && (
@@ -294,22 +300,23 @@ export default function WeddingClassic({ customData } = {}) {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.5, ease: 'easeInOut' }}
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#F5EBE1]"
+            className={`fixed inset-0 z-[100] flex flex-col items-center justify-center ${isBurgundy ? 'bg-[#2D070D]' : 'bg-[#F5EBE1]'}`}
           >
             {/* Preloader background video */}
             <video
               ref={videoRef}
-              src="/wedding_preloader.mp4"
-              poster="/wedding_preloader_poster.jpg"
+              src={customData?.introMedia || '/wedding_preloader.mp4'}
+              poster={customData?.introPoster || '/wedding_preloader_poster.jpg'}
               muted
               playsInline
+              preload="auto"
               onEnded={() => setDoorState('done')}
               className="absolute inset-0 w-full h-full object-cover transition-all duration-1000"
             />
 
             {/* Dark contrast overlay while waiting for user interaction */}
             {doorState === 'waiting' && (
-              <div className="absolute inset-0 bg-black/20 z-10 transition-opacity" />
+              <div className={`absolute inset-0 ${isBurgundy ? 'bg-[#2D070D]/40' : 'bg-black/20'} z-10 transition-opacity`} />
             )}
 
             {/* Interactive glassmorphism button to open the invitation */}
@@ -327,22 +334,28 @@ export default function WeddingClassic({ customData } = {}) {
                     }
                   }
                 }}
-                className="z-30 flex flex-col items-center justify-center px-10 py-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-[2.5rem] shadow-[0_8px_32px_rgba(0,0,0,0.3)] cursor-pointer hover:bg-white/15 hover:scale-105 transition-all text-center min-w-[260px] relative overflow-hidden group"
+                className={`z-30 flex flex-col items-center justify-center px-10 py-10 ${
+                  isBurgundy
+                    ? 'bg-[#2D070D]/40 border-[#E6C79C]/40 shadow-[0_8px_32px_rgba(45,7,13,0.6)] hover:bg-[#4A0E17]/50'
+                    : 'bg-white/10 border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:bg-white/15'
+                } backdrop-blur-md border rounded-[2.5rem] cursor-pointer hover:scale-105 transition-all text-center min-w-[280px] max-w-sm relative overflow-hidden group`}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 1.1 }}
                 transition={{ duration: 0.8 }}
               >
                 {/* Hover shimmer highlight */}
-                <div className="absolute top-0 left-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
+                <div className="absolute top-0 left-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
 
-                <span className="text-[#E8DCC8] font-['Aref_Ruqaa'] text-xl mb-3 opacity-90 tracking-wide" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>دعوة زفاف</span>
-                <span className="text-white font-['Aref_Ruqaa'] text-5xl mb-8" style={{ textShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>عمر و آيات</span>
+                <span className={`${isBurgundy ? 'text-[#E6C79C]' : 'text-[#E8DCC8]'} font-['Aref_Ruqaa'] text-xl mb-3 opacity-90 tracking-wide`} style={{ textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}>دعوة زفاف</span>
+                <span className="text-white font-['Aref_Ruqaa'] text-3xl md:text-5xl mb-8 font-bold leading-relaxed px-4 text-center" style={{ textShadow: '0 4px 14px rgba(0,0,0,0.7)' }}>
+                  {customData ? `${groomFirst} & ${brideFirst}` : 'عمر و آيات'}
+                </span>
 
                 <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-[1px] bg-gradient-to-r from-transparent to-white/50" />
-                  <span className="text-white/90 text-sm font-medium tracking-widest uppercase">اضغط لفتح الدعوة</span>
-                  <div className="w-12 h-[1px] bg-gradient-to-l from-transparent to-white/50" />
+                  <div className={`w-12 h-[1px] bg-gradient-to-r from-transparent ${isBurgundy ? 'to-[#E6C79C]' : 'to-white/50'}`} />
+                  <span className={`${isBurgundy ? 'text-[#F7E7CE]' : 'text-white/90'} text-sm font-medium tracking-widest uppercase`}>اضغط لفتح الدعوة</span>
+                  <div className={`w-12 h-[1px] bg-gradient-to-l from-transparent ${isBurgundy ? 'to-[#E6C79C]' : 'to-white/50'}`} />
                 </div>
               </motion.button>
             )}
@@ -354,7 +367,7 @@ export default function WeddingClassic({ customData } = {}) {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 2 }}
                 onClick={() => setDoorState('done')}
-                className="absolute bottom-12 px-8 py-3 bg-white/20 backdrop-blur-md rounded-full text-white font-medium border border-white/30 hover:bg-white/40 transition-colors shadow-lg z-30"
+                className={`absolute bottom-12 px-8 py-3 ${isBurgundy ? 'bg-[#2D070D]/70 text-[#F7E7CE] border-[#E6C79C]/40 hover:bg-[#4A0E17]' : 'bg-white/20 text-white border-white/30 hover:bg-white/40'} backdrop-blur-md rounded-full font-medium border transition-colors shadow-lg z-30`}
               >
                 تخطي
               </motion.button>
@@ -373,12 +386,14 @@ export default function WeddingClassic({ customData } = {}) {
           />
         ) : (
         <video
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-70"
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-75"
           src={customData?.backgroundMedia || '/hero.mp4'}
           poster={customData?.backgroundPoster || '/hero_poster.jpg'}
+          autoPlay
           loop
           muted
           playsInline
+          preload="auto"
           ref={(el) => {
             if (el) {
               const p = el.play();
@@ -388,9 +403,19 @@ export default function WeddingClassic({ customData } = {}) {
         />
         )}
 
-        {/* Gradient overlays for text contrast */}
-        <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-10 pointer-events-none" />
+        {/* Gradient overlays for text contrast (Burgundy & Champagne luxury scrim for omar-ayat) */}
+        {isBurgundy ? (
+          <>
+            <div className="absolute inset-0 bg-[#2D070D]/60 z-10 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#2D070D]/90 via-[#4A0E17]/45 to-[#2D070D]/95 z-10 pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,18,30,0.35)_0%,rgba(45,7,13,0.85)_100%)] z-10 pointer-events-none" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-10 pointer-events-none" />
+          </>
+        )}
 
         <motion.div
           className="relative z-20 flex flex-col items-center text-center px-4 w-full"
@@ -399,7 +424,7 @@ export default function WeddingClassic({ customData } = {}) {
           transition={{ duration: 1.5, delay: 0.5 }}
         >
           <motion.p
-            className="text-sm md:text-base mb-6 font-['Noto_Naskh_Arabic'] opacity-90 drop-shadow-md"
+            className={`text-sm md:text-base mb-6 font-['Noto_Naskh_Arabic'] ${isBurgundy ? 'text-[#F7E7CE]' : 'text-white'} opacity-90 drop-shadow-md`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1 }}
@@ -408,18 +433,18 @@ export default function WeddingClassic({ customData } = {}) {
           </motion.p>
 
           <motion.div
-            className="flex items-center gap-2 mb-8 opacity-70"
+            className="flex items-center gap-2 mb-8 opacity-80"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 1.3 }}
           >
-            <span className="w-12 h-[1px] bg-gradient-to-r from-transparent to-[#d4b886]" />
-            <b className="text-[#d4b886] text-xs">♦</b>
-            <span className="w-12 h-[1px] bg-gradient-to-l from-transparent to-[#d4b886]" />
+            <span className={`w-12 h-[1px] bg-gradient-to-r from-transparent ${isBurgundy ? 'to-[#E6C79C]' : 'to-[#d4b886]'}`} />
+            <b className={`${isBurgundy ? 'text-[#E6C79C]' : 'text-[#d4b886]'} text-xs`}>♦</b>
+            <span className={`w-12 h-[1px] bg-gradient-to-l from-transparent ${isBurgundy ? 'to-[#E6C79C]' : 'to-[#d4b886]'}`} />
           </motion.div>
 
           <motion.h1
-            className="text-5xl md:text-7xl font-['Aref_Ruqaa'] text-white drop-shadow-[0_2px_15px_rgba(0,0,0,0.5)] mb-4"
+            className={`text-4xl sm:text-5xl md:text-7xl font-['Aref_Ruqaa'] ${isBurgundy ? 'text-[#FDFBF7]' : 'text-white'} drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)] mb-4`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1.6 }}
@@ -428,7 +453,7 @@ export default function WeddingClassic({ customData } = {}) {
           </motion.h1>
 
           <motion.div
-            className="text-2xl md:text-3xl font-light text-[#d4b886] mb-4 drop-shadow-md"
+            className={`text-2xl md:text-3xl font-light ${isBurgundy ? 'text-[#E6C79C]' : 'text-[#d4b886]'} mb-4 drop-shadow-md`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1.9 }}
@@ -437,7 +462,7 @@ export default function WeddingClassic({ customData } = {}) {
           </motion.div>
 
           <motion.h1
-            className="text-5xl md:text-7xl font-['Aref_Ruqaa'] text-white drop-shadow-[0_2px_15px_rgba(0,0,0,0.5)] mb-12"
+            className={`text-4xl sm:text-5xl md:text-7xl font-['Aref_Ruqaa'] ${isBurgundy ? 'text-[#FDFBF7]' : 'text-white'} drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)] mb-12`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 2.2 }}
@@ -446,7 +471,7 @@ export default function WeddingClassic({ customData } = {}) {
           </motion.h1>
 
           <motion.p
-            className="text-lg md:text-xl font-['Aref_Ruqaa'] opacity-90 mb-8 max-w-sm mx-auto drop-shadow-md text-[#fdf8f5]"
+            className={`text-lg md:text-xl font-['Aref_Ruqaa'] opacity-95 mb-8 max-w-sm mx-auto drop-shadow-md ${isBurgundy ? 'text-[#F7E7CE]' : 'text-[#fdf8f5]'}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 2.5 }}
@@ -464,7 +489,7 @@ export default function WeddingClassic({ customData } = {}) {
           </motion.p>
 
           <motion.p
-            className="text-lg md:text-xl font-['Aref_Ruqaa'] text-[#d4b886] drop-shadow-md"
+            className={`text-lg md:text-xl font-['Aref_Ruqaa'] ${isBurgundy ? 'text-[#E6C79C]' : 'text-[#d4b886]'} drop-shadow-md`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 3.4 }}
@@ -475,14 +500,14 @@ export default function WeddingClassic({ customData } = {}) {
 
         {/* Animated Scroll Down Indicator */}
         <motion.div
-          className="absolute bottom-8 z-20 flex flex-col items-center gap-2 text-white/80"
+          className={`absolute bottom-8 z-20 flex flex-col items-center gap-2 ${isBurgundy ? 'text-[#F7E7CE]/90' : 'text-white/80'}`}
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2, delay: 4 }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
-          <span className="text-[11px] font-medium tracking-widest bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10">مرّر للأسفل</span>
+          <span className={`text-[11px] font-medium tracking-widest ${isBurgundy ? 'bg-[#2D070D]/70 border-[#E6C79C]/30 text-[#F7E7CE]' : 'bg-black/30 border-white/10 text-white/90'} px-3 py-1 rounded-full backdrop-blur-sm border`}>مرّر للأسفل</span>
           <svg className="w-5 h-5 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9l6 6 6-6" />
           </svg>
@@ -490,65 +515,65 @@ export default function WeddingClassic({ customData } = {}) {
       </section>
 
       {/* Main Invitation Content Container */}
-      <div className="mx-auto max-w-md w-full bg-[#F5EBE1] relative text-[#5A4F46] pb-24 overflow-x-hidden pt-12 px-4 shadow-2xl">
+      <div className={`mx-auto max-w-md w-full ${isBurgundy ? 'bg-gradient-to-b from-[#2D070D] via-[#4A0E17] to-[#2D070D] text-[#F7E7CE]' : 'bg-[#F5EBE1] text-[#5A4F46]'} relative pb-24 overflow-x-hidden pt-12 px-4 shadow-2xl transition-colors duration-500`}>
         {/* Ornamental Framed Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="relative w-full bg-[#FDFBF9] flex flex-col items-center pt-10 pb-12 px-2 shadow-sm border border-[#C49A6C]/30"
+          className={`relative w-full ${isBurgundy ? 'bg-[#FDFBF7] text-[#4A0E17] border border-[#E6C79C]/60 shadow-[0_20px_60px_rgba(45,7,13,0.4)]' : 'bg-[#FDFBF9] text-[#5A4F46] border border-[#C49A6C]/30 shadow-sm'} flex flex-col items-center pt-10 pb-12 px-2`}
         >
           {/* Decorative Frame Corners */}
-          <div className="absolute -top-[1px] -left-[1px] bg-[#FDFBF9] p-1"><ElegantCorner className="w-5 h-5 text-[#C49A6C]" /></div>
-          <div className="absolute -top-[1px] -right-[1px] bg-[#FDFBF9] p-1"><ElegantCorner className="w-5 h-5 text-[#C49A6C] rotate-90" /></div>
-          <div className="absolute -bottom-[1px] -left-[1px] bg-[#FDFBF9] p-1"><ElegantCorner className="w-5 h-5 text-[#C49A6C] -rotate-90" /></div>
-          <div className="absolute -bottom-[1px] -right-[1px] bg-[#FDFBF9] p-1"><ElegantCorner className="w-5 h-5 text-[#C49A6C] rotate-180" /></div>
+          <div className={`absolute -top-[1px] -left-[1px] ${isBurgundy ? 'bg-[#FDFBF7]' : 'bg-[#FDFBF9]'} p-1`}><ElegantCorner className="w-5 h-5" color={accentGold} /></div>
+          <div className={`absolute -top-[1px] -right-[1px] ${isBurgundy ? 'bg-[#FDFBF7]' : 'bg-[#FDFBF9]'} p-1`}><ElegantCorner className="w-5 h-5 rotate-90" color={accentGold} /></div>
+          <div className={`absolute -bottom-[1px] -left-[1px] ${isBurgundy ? 'bg-[#FDFBF7]' : 'bg-[#FDFBF9]'} p-1`}><ElegantCorner className="w-5 h-5 -rotate-90" color={accentGold} /></div>
+          <div className={`absolute -bottom-[1px] -right-[1px] ${isBurgundy ? 'bg-[#FDFBF7]' : 'bg-[#FDFBF9]'} p-1`}><ElegantCorner className="w-5 h-5 rotate-180" color={accentGold} /></div>
 
           {/* Framed Content Wrapper */}
           <div className="relative z-20 flex flex-col items-center w-full">
             {/* Opening Blessing / Dua */}
-            <p className="text-[#5A4F46] text-[18px] md:text-xl mb-10 leading-loose text-center px-4 font-medium">
+            <p className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} text-[18px] md:text-xl mb-10 leading-loose text-center px-4 font-medium`}>
               اللّهُمَّ بارِكْ لهُما وبارِكْ عليهِما واجمَعْ بينهُما في خَيْرٍ
             </p>
 
             {/* Divider */}
             <div className="flex items-center justify-center gap-2 mb-10 w-2/3 opacity-60">
-              <div className="h-[1px] flex-1 bg-[#C49A6C]"></div>
-              <div className="w-1.5 h-1.5 rotate-45 bg-[#C49A6C]"></div>
-              <div className="h-[1px] flex-1 bg-[#C49A6C]"></div>
+              <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+              <div className={`w-1.5 h-1.5 rotate-45 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+              <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
             </div>
 
             {/* Invitation Heading & Welcome Text */}
-            <h3 className={`text-4xl text-[#C49A6C] mb-8 font-bold ${aref.className}`}>بطاقة دعوة</h3>
-            <p className="text-[14px] leading-[2.2] mb-12 text-[#5A4F46] text-center px-4 max-w-[300px]">
+            <h3 className={`text-4xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-8 font-bold ${aref.className}`}>بطاقة دعوة</h3>
+            <p className={`text-[14px] leading-[2.2] mb-12 ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} text-center px-4 max-w-[300px]`}>
               {welcomeMessage}
             </p>
 
             {/* Parents & Couple Names */}
             <div className="flex justify-between items-start text-[14px] font-bold w-full px-2 mb-12 mt-4">
               <div className="flex-1 text-center flex flex-col items-center">
-                <p className="text-[#8A7968] text-[11px] mb-3">والد العريس</p>
-                <p className="leading-relaxed text-[#5A4F46] mb-5">الدكتور سهيل أبو عمر<br />وعائلته الكريمة</p>
-                <p className={`text-[22px] text-[#C49A6C] font-bold leading-tight whitespace-pre-line ${aref.className}`}>{groomFullDisplay}</p>
+                <p className={`${isBurgundy ? 'text-[#63121E]/70' : 'text-[#8A7968]'} text-[11px] mb-3`}>والد العريس</p>
+                <p className={`leading-relaxed ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-5`}>الدكتور سهيل أبو عمر<br />وعائلته الكريمة</p>
+                <p className={`text-[20px] md:text-[22px] ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} font-bold leading-tight whitespace-pre-line ${aref.className}`}>{groomFullDisplay}</p>
               </div>
-              <div className="w-1.5 h-1.5 rotate-45 bg-[#C49A6C] mt-7 mx-2 opacity-60"></div>
+              <div className={`w-1.5 h-1.5 rotate-45 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'} mt-7 mx-2 opacity-60`}></div>
               <div className="flex-1 text-center flex flex-col items-center">
-                <p className="text-[#8A7968] text-[11px] mb-3">والد العروس</p>
-                <p className="leading-relaxed text-[#5A4F46] mb-5">المهندس علي أبو نضال<br />وعائلته الكريمة</p>
-                <p className={`text-[22px] text-[#C49A6C] font-bold leading-tight whitespace-pre-line ${aref.className}`}>{brideFullDisplay}</p>
+                <p className={`${isBurgundy ? 'text-[#63121E]/70' : 'text-[#8A7968]'} text-[11px] mb-3`}>والد العروس</p>
+                <p className={`leading-relaxed ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-5`}>المهندس علي أبو نضال<br />وعائلته الكريمة</p>
+                <p className={`text-[20px] md:text-[22px] ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} font-bold leading-tight whitespace-pre-line ${aref.className}`}>{brideFullDisplay}</p>
               </div>
             </div>
 
             {/* Divider */}
             <div className="flex items-center justify-center gap-2 mb-10 w-2/3 opacity-60">
-              <div className="h-[1px] flex-1 bg-[#C49A6C]"></div>
-              <div className="w-1.5 h-1.5 rotate-45 bg-[#C49A6C]"></div>
-              <div className="h-[1px] flex-1 bg-[#C49A6C]"></div>
+              <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+              <div className={`w-1.5 h-1.5 rotate-45 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+              <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
             </div>
 
             {/* Live Countdown Timer */}
             <FadeIn>
-              <h3 className={`text-3xl text-[#C49A6C] mb-8 font-bold ${aref.className}`}>يبدأ الاحتفال بعد</h3>
+              <h3 className={`text-3xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-8 font-bold ${aref.className}`}>يبدأ الاحتفال بعد</h3>
               <div className="flex justify-center gap-3 mb-10 w-full px-4">
                 {[
                   { label: 'يوم', value: timeLeft.days },
@@ -556,9 +581,9 @@ export default function WeddingClassic({ customData } = {}) {
                   { label: 'دقيقة', value: timeLeft.minutes },
                   { label: 'ثانية', value: timeLeft.seconds },
                 ].map((item, idx) => (
-                  <div key={idx} className="w-[65px] h-[75px] bg-[#FDFBF9] border border-[#C49A6C]/30 rounded-xl flex flex-col items-center justify-center shadow-sm">
-                    <span className="text-2xl font-bold font-sans text-[#C49A6C] mb-1">{toArabic(item.value.toString().padStart(2, '0'))}</span>
-                    <span className="text-[11px] font-bold text-[#8A7968]">{item.label}</span>
+                  <div key={idx} className={`w-[65px] h-[75px] ${isBurgundy ? 'bg-[#FDFBF7] border border-[#E6C79C]/60 shadow-[0_4px_15px_rgba(230,199,156,0.2)]' : 'bg-[#FDFBF9] border border-[#C49A6C]/30 shadow-sm'} rounded-xl flex flex-col items-center justify-center`}>
+                    <span className={`text-2xl font-bold font-sans ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-1`}>{toArabic(item.value.toString().padStart(2, '0'))}</span>
+                    <span className={`text-[11px] font-bold ${isBurgundy ? 'text-[#4A0E17]/80' : 'text-[#8A7968]'}`}>{item.label}</span>
                   </div>
                 ))}
               </div>
@@ -566,26 +591,29 @@ export default function WeddingClassic({ customData } = {}) {
 
             {/* Divider */}
             <div className="flex items-center justify-center gap-2 mb-10 w-2/3 opacity-60">
-              <div className="h-[1px] flex-1 bg-[#C49A6C]"></div>
-              <div className="w-1.5 h-1.5 rotate-45 bg-[#C49A6C]"></div>
-              <div className="h-[1px] flex-1 bg-[#C49A6C]"></div>
+              <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+              <div className={`w-1.5 h-1.5 rotate-45 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+              <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
             </div>
 
             {/* Program Timeline Section */}
             <FadeIn>
               <div className="w-full flex flex-col items-center py-10 relative">
-                <h3 className={`text-4xl text-[#C49A6C] mb-12 font-bold z-10 ${aref.className} text-center`}>برنامج الحفل</h3>
+                <h3 className={`text-4xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-12 font-bold z-10 ${aref.className} text-center`}>برنامج الحفل</h3>
 
                 <div className="relative w-full flex flex-col px-0 max-w-sm z-10" ref={timelineRef}>
                   {/* Vertical Track Line */}
-                  <div className="absolute right-[95px] md:right-[105px] top-6 bottom-6 w-px bg-[#C49A6C]/30"></div>
+                  <div className={`absolute right-[95px] md:right-[105px] top-6 bottom-6 w-px ${isBurgundy ? 'bg-[#E6C79C]/40' : 'bg-[#C49A6C]/30'}`}></div>
 
                   {/* Scroll-Linked Heart Indicator */}
                   <motion.div
                     className="absolute right-[95px] md:right-[105px] translate-x-1/2 flex items-center justify-center z-20"
                     style={{ top: diamondTop }}
                   >
-                    <ScrollHeart className="w-6 h-6 text-[#C49A6C] drop-shadow-[0_0_8px_rgba(196,154,108,0.4)]" />
+                    <ScrollHeart
+                      className="w-6 h-6 drop-shadow-[0_0_8px_rgba(212,175,55,0.5)]"
+                      color={metallicGold}
+                    />
                   </motion.div>
 
                   {[
@@ -600,18 +628,18 @@ export default function WeddingClassic({ customData } = {}) {
                     <div key={idx} className="flex flex-row-reverse items-start py-8 relative z-10">
                       {/* Left Side: Event Title & Description */}
                       <div className="flex-1 text-right pr-4">
-                        <h4 className="text-[#5A4F46] text-[22px] font-bold mb-2 font-['Aref_Ruqaa']" style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}>{prog.event}</h4>
-                        <p className="text-[#8A7968] text-[14px] leading-relaxed">{prog.desc}</p>
+                        <h4 className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} text-[22px] font-bold mb-2 font-['Aref_Ruqaa']`} style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}>{prog.event}</h4>
+                        <p className={`${isBurgundy ? 'text-[#4A0E17]/80' : 'text-[#8A7968]'} text-[14px] leading-relaxed`}>{prog.desc}</p>
                       </div>
 
                       {/* Middle: Static Point on Track */}
                       <div className="w-[50px] shrink-0 flex flex-col items-center justify-start pt-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#C49A6C] opacity-40 shadow-[0_0_8px_rgba(196,154,108,0.2)]"></div>
+                        <div className={`w-1.5 h-1.5 rounded-full ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'} opacity-70 shadow-[0_0_8px_rgba(230,199,156,0.4)]`}></div>
                       </div>
 
                       {/* Right Side: Time Slot */}
                       <div className="w-[70px] md:w-[80px] shrink-0 text-left pt-2 pl-2">
-                        <span className="text-[#8A7968] opacity-90 text-[13px] font-bold tracking-wider font-sans" dir="ltr">{prog.time}</span>
+                        <span className={`${isBurgundy ? 'text-[#63121E]' : 'text-[#8A7968]'} opacity-90 text-[13px] font-bold tracking-wider font-sans`} dir="ltr">{prog.time}</span>
                       </div>
                     </div>
                   ))}
@@ -623,8 +651,8 @@ export default function WeddingClassic({ customData } = {}) {
 
             {/* Venue Location & Embedded Google Map */}
             <FadeIn>
-              <h3 className={`text-4xl text-[#C49A6C] mb-8 font-bold ${aref.className}`}>الموقع</h3>
-              <div className="w-full max-w-[300px] h-48 bg-[#EFE7DD] rounded-xl mb-6 border border-[#C49A6C]/30 shadow-sm relative overflow-hidden group">
+              <h3 className={`text-4xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-8 font-bold ${aref.className}`}>الموقع</h3>
+              <div className={`w-full max-w-[300px] h-48 bg-[#EFE7DD] rounded-xl mb-6 border ${isBurgundy ? 'border-[#E6C79C]/50' : 'border-[#C49A6C]/30'} shadow-sm relative overflow-hidden group`}>
                 <iframe
                   title={`موقع الحفل - ${venueName}`}
                   src={mapEmbedUrl}
@@ -633,36 +661,41 @@ export default function WeddingClassic({ customData } = {}) {
                   referrerPolicy="no-referrer-when-downgrade"
                 />
                 <a href={locationUrl} target="_blank" rel="noopener noreferrer" aria-label="فتح في خرائط جوجل" className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-white hover:scale-105 transition-all">
-                  <MapPin size={18} className="text-[#C49A6C]" />
+                  <MapPin size={18} className={isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} />
                 </a>
               </div>
 
-              <div className="text-center font-bold text-[14px] leading-relaxed mb-8 text-[#5A4F46]">
+              <div className={`text-center font-bold text-[14px] leading-relaxed mb-8 ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'}`}>
                 <p className="mb-3">{arabicDate}</p>
-                <p className="text-[#8A7968] mb-6 text-[12px]">{arabicTime}</p>
-                <p className={`text-[#C49A6C] mb-3 font-normal text-2xl ${aref.className}`}>{venueName}</p>
-                <p className="text-[#8A7968] text-[13px]">عمان — الأردن</p>
+                <p className={`${isBurgundy ? 'text-[#4A0E17]/70' : 'text-[#8A7968]'} mb-6 text-[12px]`}>{arabicTime}</p>
+                <p className={`${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-3 font-normal text-2xl ${aref.className}`}>{venueName}</p>
+                <p className={`${isBurgundy ? 'text-[#4A0E17]/70' : 'text-[#8A7968]'} text-[13px]`}>عمان — الأردن</p>
               </div>
 
-              <a href={locationUrl} target="_blank" rel="noopener noreferrer" className="bg-[#C49A6C] text-white px-8 py-2.5 rounded-full text-[13px] font-bold shadow-md hover:bg-[#A88461] transition-all inline-block mb-4">
+              <a
+                href={locationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${isBurgundy ? 'bg-gradient-to-r from-[#63121E] to-[#4A0E17] text-[#F7E7CE] border border-[#E6C79C]/40 hover:from-[#4A0E17] hover:to-[#2D070D]' : 'bg-[#C49A6C] text-white hover:bg-[#A88461]'} px-8 py-2.5 rounded-full text-[13px] font-bold shadow-md transition-all inline-block mb-4`}
+              >
                 الخريطة
               </a>
             </FadeIn>
 
             {/* Divider */}
             <div className="flex items-center justify-center gap-2 my-10 w-2/3 opacity-60">
-              <div className="h-[1px] flex-1 bg-[#C49A6C]"></div>
-              <div className="w-1.5 h-1.5 rotate-45 bg-[#C49A6C]"></div>
-              <div className="h-[1px] flex-1 bg-[#C49A6C]"></div>
+              <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+              <div className={`w-1.5 h-1.5 rotate-45 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+              <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
             </div>
 
             {/* Event Notes Section */}
             <FadeIn>
-              <h3 className={`text-4xl text-[#C49A6C] mb-10 font-bold ${aref.className}`}>ملاحظات</h3>
-              <ul className="text-[14px] font-bold flex flex-col gap-6 text-right w-full px-6 text-[#5A4F46]">
+              <h3 className={`text-4xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-10 font-bold ${aref.className}`}>ملاحظات</h3>
+              <ul className={`text-[14px] font-bold flex flex-col gap-6 text-right w-full px-6 ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'}`}>
                 {notesList.map((note, idx) => (
                   <li key={idx} className="flex items-start justify-center gap-3 text-center">
-                    <DiamondBullet className="w-3.5 h-3.5 mt-1 shrink-0 text-[#C49A6C] opacity-70" />
+                    <DiamondBullet className="w-3.5 h-3.5 mt-1 shrink-0 opacity-80" color={accentGold} />
                     <span>{note}</span>
                   </li>
                 ))}
@@ -671,25 +704,32 @@ export default function WeddingClassic({ customData } = {}) {
 
             {/* Divider */}
             <div className="flex items-center justify-center gap-2 my-10 w-2/3 opacity-60">
-              <div className="h-[1px] flex-1 bg-[#C49A6C]"></div>
-              <div className="w-1.5 h-1.5 rotate-45 bg-[#C49A6C]"></div>
-              <div className="h-[1px] flex-1 bg-[#C49A6C]"></div>
+              <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+              <div className={`w-1.5 h-1.5 rotate-45 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+              <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
             </div>
 
             {/* Closing Contact & Family Signatures */}
             <FadeIn>
               <div className="text-center w-full font-bold">
-                <h3 className={`text-3xl mb-5 text-[#5A4F46] ${aref.className}`}>حضوركم يزيّن فرحتنا</h3>
-                <p className="text-[#C49A6C] font-sans text-[14px] mb-12 tracking-wider">#عمر_وآيات</p>
+                <h3 className={`text-3xl mb-5 ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} ${aref.className}`}>حضوركم يزيّن فرحتنا</h3>
+                <p className={`${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} font-sans text-[14px] mb-12 tracking-wider`}>
+                  {customData ? `#${groomFirst.replace(/\s+/g, '_')}_و${brideFirst.replace(/\s+/g, '_')}` : '#عمر_وآيات'}
+                </p>
 
-                <p className="text-[12px] text-[#8A7968] mb-4">للاستفسار والتأكيد</p>
+                <p className={`text-[12px] ${isBurgundy ? 'text-[#4A0E17]/70' : 'text-[#8A7968]'} mb-4`}>للاستفسار والتأكيد</p>
                 <div className="flex justify-center mb-10">
-                  <a href="https://wa.me/9647700000000" target="_blank" rel="noopener noreferrer" className="border border-[#C49A6C]/50 rounded-full px-6 py-2 text-[13px] text-[#5A4F46] bg-transparent flex items-center gap-2 hover:bg-[#F5EBE1] transition-colors">
-                    أبو عمر <Phone size={14} className="text-[#C49A6C]" />
+                  <a
+                    href="https://wa.me/9647700000000"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`border ${isBurgundy ? 'border-[#E6C79C]/60 text-[#4A0E17] hover:bg-[#F7E7CE]/40' : 'border-[#C49A6C]/50 text-[#5A4F46] hover:bg-[#F5EBE1]'} rounded-full px-6 py-2 text-[13px] bg-transparent flex items-center gap-2 transition-colors`}
+                  >
+                    أبو عمر <Phone size={14} className={isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} />
                   </a>
                 </div>
 
-                <p className="text-[13px] text-[#5A4F46] mb-8">عائلة العمري &amp; عائلة الخطيب</p>
+                <p className={`text-[13px] ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-8`}>عائلة العمري &amp; عائلة الخطيب</p>
               </div>
             </FadeIn>
           </div>
@@ -697,7 +737,7 @@ export default function WeddingClassic({ customData } = {}) {
 
         {/* Photo Gallery Section Outside Frame */}
         <div className="w-full flex justify-center mt-12 mb-8">
-          <h3 className={`text-4xl text-[#C49A6C] font-bold ${aref.className} flex flex-col items-center gap-3`}>
+          <h3 className={`text-4xl ${isBurgundy ? 'text-[#F7E7CE]' : 'text-[#C49A6C]'} font-bold ${aref.className} flex flex-col items-center gap-3`}>
             بداية الحكاية
           </h3>
         </div>
@@ -711,7 +751,7 @@ export default function WeddingClassic({ customData } = {}) {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className={`relative rounded-xl overflow-hidden shadow-sm border border-[#C49A6C]/20 ${idx === 0 || idx === 3 ? 'aspect-[4/5]' : 'aspect-square'}`}
+                className={`relative rounded-xl overflow-hidden shadow-sm border ${isBurgundy ? 'border-[#E6C79C]/40 shadow-md' : 'border-[#C49A6C]/20'} ${idx === 0 || idx === 3 ? 'aspect-[4/5]' : 'aspect-square'}`}
               >
                 <Image
                   src={`/gallery-${i}.jpg`}
@@ -733,34 +773,42 @@ export default function WeddingClassic({ customData } = {}) {
         >
           <div className="flex items-center gap-2 mb-8">
             <span className="text-xl">🤍</span>
-            <h3 className={`text-2xl text-[#A67C52] font-bold ${aref.className}`}>
+            <h3 className={`text-2xl ${isBurgundy ? 'text-[#F7E7CE]' : 'text-[#A67C52]'} font-bold ${aref.className}`}>
               احفظ الموعد
             </h3>
           </div>
 
-          <div className="bg-[#FDFBF9] rounded-2xl shadow-[0_10px_30px_rgba(166,124,82,0.15)] w-full max-w-sm overflow-hidden border border-[#A67C52]/20 relative">
+          <div className={`${isBurgundy ? 'bg-[#FDFBF7] shadow-[0_15px_40px_rgba(45,7,13,0.35)] border border-[#E6C79C]/50' : 'bg-[#FDFBF9] shadow-[0_10px_30px_rgba(166,124,82,0.15)] border border-[#A67C52]/20'} rounded-2xl w-full max-w-sm overflow-hidden relative`}>
             <div className="absolute top-0 left-1/4 w-3 h-4 bg-gray-200 rounded-full border border-gray-300 -translate-y-1/2 z-10 shadow-sm"></div>
             <div className="absolute top-0 right-1/4 w-3 h-4 bg-gray-200 rounded-full border border-gray-300 -translate-y-1/2 z-10 shadow-sm"></div>
 
-            <div className="bg-[#A67C52] text-white py-3 text-center font-bold text-lg pt-4">
+            <div className={`${isBurgundy ? 'bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE]' : 'bg-[#A67C52] text-white'} py-3 text-center font-bold text-lg pt-4`}>
               {calendarMonthYear}
             </div>
 
             <div className="p-6 flex flex-col items-center relative">
-              <p className="text-[#A67C52] font-bold text-lg mb-1">{calendarWeekday}</p>
-              <p className="text-8xl text-[#C49A6C] font-light mb-2 leading-none">{calendarDay}</p>
-              <p className="text-[#5A4F46] font-bold text-sm">{arabicTime}</p>
+              <p className={`${isBurgundy ? 'text-[#63121E]' : 'text-[#A67C52]'} font-bold text-lg mb-1`}>{calendarWeekday}</p>
+              <p className={`text-8xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} font-light mb-2 leading-none`}>{calendarDay}</p>
+              <p className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} font-bold text-sm`}>{arabicTime}</p>
             </div>
 
-            <div className="border-t border-dashed border-[#A67C52]/30 px-6 py-5 bg-white/50">
-              <p className="text-center text-[#8A7968] text-xs font-bold mb-4">
+            <div className={`border-t border-dashed ${isBurgundy ? 'border-[#E6C79C]/40 bg-[#F7E7CE]/20' : 'border-[#A67C52]/30 bg-white/50'} px-6 py-5`}>
+              <p className={`text-center ${isBurgundy ? 'text-[#4A0E17]/80' : 'text-[#8A7968]'} text-xs font-bold mb-4`}>
                 أضف الموعد إلى تقويم هاتفك بضغطة 📅
               </p>
               <div className="flex gap-3 justify-center">
-                <a href={googleCalUrl} target="_blank" rel="noopener noreferrer" className="flex-1 text-center border border-[#A67C52] text-[#A67C52] rounded-full py-2 text-xs font-bold hover:bg-[#A67C52] hover:text-white transition-colors block">
+                <a
+                  href={googleCalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex-1 text-center border ${isBurgundy ? 'border-[#63121E] text-[#63121E] hover:bg-[#63121E] hover:text-[#F7E7CE]' : 'border-[#A67C52] text-[#A67C52] hover:bg-[#A67C52] hover:text-white'} rounded-full py-2 text-xs font-bold transition-colors block`}
+                >
                   تقويم جوجل
                 </a>
-                <button onClick={handleAppleCalendar} className="flex-1 border border-[#A67C52] text-[#A67C52] rounded-full py-2 text-xs font-bold hover:bg-[#A67C52] hover:text-white transition-colors">
+                <button
+                  onClick={handleAppleCalendar}
+                  className={`flex-1 border ${isBurgundy ? 'border-[#63121E] text-[#63121E] hover:bg-[#63121E] hover:text-[#F7E7CE]' : 'border-[#A67C52] text-[#A67C52] hover:bg-[#A67C52] hover:text-white'} rounded-full py-2 text-xs font-bold transition-colors`}
+                >
                   تقويم آيفون
                 </button>
               </div>
@@ -772,14 +820,14 @@ export default function WeddingClassic({ customData } = {}) {
         <div className="w-full flex justify-center mt-12 mb-8">
           <div className="text-center w-full relative z-10 flex flex-col items-center">
             <div className="flex items-center justify-center gap-3 mb-2 opacity-80">
-              <div className="w-12 h-[1px] bg-[#C49A6C]"></div>
+              <div className={`w-12 h-[1px] ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
               <span className="text-xl">🤍</span>
-              <div className="w-12 h-[1px] bg-[#C49A6C]"></div>
+              <div className={`w-12 h-[1px] ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
             </div>
-            <h3 className={`text-[42px] text-[#5A4F46] font-bold ${aref.className} mb-1 mt-2`}>
+            <h3 className={`text-[42px] ${isBurgundy ? 'text-[#F7E7CE]' : 'text-[#5A4F46]'} font-bold ${aref.className} mb-1 mt-2`}>
               تأكيد الحضور
             </h3>
-            <p className="text-center text-[#8A7968] text-[15px] mb-2 font-bold">يسعدنا تأكيد حضوركم</p>
+            <p className={`text-center ${isBurgundy ? 'text-[#F7E7CE]/80' : 'text-[#8A7968]'} text-[15px] mb-2 font-bold`}>يسعدنا تأكيد حضوركم</p>
           </div>
         </div>
 
@@ -789,10 +837,10 @@ export default function WeddingClassic({ customData } = {}) {
           viewport={{ once: true }}
           className="w-full px-6 mb-24"
         >
-          <form onSubmit={handleRSVPSubmit} className="bg-[#FDFBF9] border border-[#C49A6C]/40 rounded-[2rem] p-8 shadow-[0_10px_40px_rgba(196,154,108,0.1)] relative overflow-hidden">
+          <form onSubmit={handleRSVPSubmit} className={`${isBurgundy ? 'bg-[#FDFBF7] border border-[#E6C79C]/60 shadow-[0_15px_45px_rgba(45,7,13,0.35)]' : 'bg-[#FDFBF9] border border-[#C49A6C]/40 shadow-[0_10px_40px_rgba(196,154,108,0.1)]'} rounded-[2rem] p-8 relative overflow-hidden`}>
             {/* Guest Full Name Input */}
             <div className="mb-5 mt-2">
-              <label className="block text-[#8A7968] mb-2 text-xs font-bold">الاسم الكريم</label>
+              <label className={`block ${isBurgundy ? 'text-[#4A0E17]/80' : 'text-[#8A7968]'} mb-2 text-xs font-bold`}>الاسم الكريم</label>
               <input
                 type="text"
                 required
@@ -800,23 +848,47 @@ export default function WeddingClassic({ customData } = {}) {
                 value={rsvpData.name}
                 onChange={(e) => setRsvpData({ ...rsvpData, name: e.target.value })}
                 placeholder="أدخل اسمك هنا..."
-                className="w-full border-b border-[#C49A6C]/30 bg-transparent px-2 py-2 text-[#5A4F46] text-sm focus:outline-none focus:border-[#C49A6C] transition-colors placeholder-[#8A7968]/40"
+                className={`w-full border-b ${isBurgundy ? 'border-[#E6C79C]/50 text-[#4A0E17] focus:border-[#63121E] placeholder-[#4A0E17]/40' : 'border-[#C49A6C]/30 text-[#5A4F46] focus:border-[#C49A6C] placeholder-[#8A7968]/40'} bg-transparent px-2 py-2 text-sm focus:outline-none transition-colors`}
               />
             </div>
 
             {/* Attendance Status Radio Selection */}
             <div className="mb-6">
-              <label className="block text-[#5A4F46] mb-3 text-sm font-bold text-right w-full">هل ستحضر؟</label>
+              <label className={`block ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-3 text-sm font-bold text-right w-full`}>هل ستحضر؟</label>
               <div className="flex gap-2">
-                <label className={`flex-1 cursor-pointer rounded-xl border ${rsvpData.status === 'attending' ? 'bg-[#A67C52] border-[#A67C52] text-white' : 'border-[#C49A6C]/30 bg-white text-[#5A4F46] hover:border-[#C49A6C]/60'} py-2.5 text-center transition-colors text-[13px] font-bold`}>
+                <label className={`flex-1 cursor-pointer rounded-xl border ${
+                  rsvpData.status === 'attending'
+                    ? isBurgundy
+                      ? 'bg-[#63121E] border-[#63121E] text-[#F7E7CE]'
+                      : 'bg-[#A67C52] border-[#A67C52] text-white'
+                    : isBurgundy
+                    ? 'border-[#E6C79C]/50 bg-white text-[#4A0E17] hover:border-[#63121E]'
+                    : 'border-[#C49A6C]/30 bg-white text-[#5A4F46] hover:border-[#C49A6C]/60'
+                } py-2.5 text-center transition-colors text-[13px] font-bold`}>
                   <input type="radio" name="status" value="attending" checked={rsvpData.status === 'attending'} onChange={(e) => setRsvpData({ ...rsvpData, status: e.target.value })} className="hidden" />
                   نعم
                 </label>
-                <label className={`flex-1 cursor-pointer rounded-xl border ${rsvpData.status === 'not_attending' ? 'bg-[#A67C52] border-[#A67C52] text-white' : 'border-[#C49A6C]/30 bg-white text-[#5A4F46] hover:border-[#C49A6C]/60'} py-2.5 text-center transition-colors text-[13px] font-bold`}>
+                <label className={`flex-1 cursor-pointer rounded-xl border ${
+                  rsvpData.status === 'not_attending'
+                    ? isBurgundy
+                      ? 'bg-[#63121E] border-[#63121E] text-[#F7E7CE]'
+                      : 'bg-[#A67C52] border-[#A67C52] text-white'
+                    : isBurgundy
+                    ? 'border-[#E6C79C]/50 bg-white text-[#4A0E17] hover:border-[#63121E]'
+                    : 'border-[#C49A6C]/30 bg-white text-[#5A4F46] hover:border-[#C49A6C]/60'
+                } py-2.5 text-center transition-colors text-[13px] font-bold`}>
                   <input type="radio" name="status" value="not_attending" checked={rsvpData.status === 'not_attending'} onChange={(e) => setRsvpData({ ...rsvpData, status: e.target.value })} className="hidden" />
                   لا
                 </label>
-                <label className={`flex-1 cursor-pointer rounded-xl border ${rsvpData.status === 'maybe' ? 'bg-[#A67C52] border-[#A67C52] text-white' : 'border-[#C49A6C]/30 bg-white text-[#5A4F46] hover:border-[#C49A6C]/60'} py-2.5 text-center transition-colors text-[13px] font-bold`}>
+                <label className={`flex-1 cursor-pointer rounded-xl border ${
+                  rsvpData.status === 'maybe'
+                    ? isBurgundy
+                      ? 'bg-[#63121E] border-[#63121E] text-[#F7E7CE]'
+                      : 'bg-[#A67C52] border-[#A67C52] text-white'
+                    : isBurgundy
+                    ? 'border-[#E6C79C]/50 bg-white text-[#4A0E17] hover:border-[#63121E]'
+                    : 'border-[#C49A6C]/30 bg-white text-[#5A4F46] hover:border-[#C49A6C]/60'
+                } py-2.5 text-center transition-colors text-[13px] font-bold`}>
                   <input type="radio" name="status" value="maybe" checked={rsvpData.status === 'maybe'} onChange={(e) => setRsvpData({ ...rsvpData, status: e.target.value })} className="hidden" />
                   ربما
                 </label>
@@ -832,13 +904,21 @@ export default function WeddingClassic({ customData } = {}) {
                   exit={{ opacity: 0, height: 0 }}
                   className="mb-8"
                 >
-                  <label className="block text-[#5A4F46] mb-4 text-xs font-bold text-center w-full">عدد المرافقين (عدا حضورك - 0 إن كنت وحدك)</label>
+                  <label className={`block ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-4 text-xs font-bold text-center w-full`}>عدد المرافقين (عدا حضورك - 0 إن كنت وحدك)</label>
                   <div className="flex items-center justify-center gap-6 w-full">
-                    <button type="button" onClick={() => setRsvpData({ ...rsvpData, guests: Math.max(0, (Number(rsvpData.guests) || 0) - 1) })} className="w-10 h-10 rounded-full border border-[#C49A6C]/40 bg-white flex items-center justify-center text-[#8A7968] hover:bg-[#F5EBE1] hover:text-[#C49A6C] transition-colors">
+                    <button
+                      type="button"
+                      onClick={() => setRsvpData({ ...rsvpData, guests: Math.max(0, (Number(rsvpData.guests) || 0) - 1) })}
+                      className={`w-10 h-10 rounded-full border ${isBurgundy ? 'border-[#E6C79C]/60 bg-white text-[#4A0E17] hover:bg-[#F7E7CE]' : 'border-[#C49A6C]/40 bg-white text-[#8A7968] hover:bg-[#F5EBE1] hover:text-[#C49A6C]'} flex items-center justify-center transition-colors`}
+                    >
                       <Minus size={16} strokeWidth={1.5} />
                     </button>
-                    <span className="text-[#5A4F46] font-bold text-lg w-4 text-center">{rsvpData.guests}</span>
-                    <button type="button" onClick={() => setRsvpData({ ...rsvpData, guests: Math.min(20, (Number(rsvpData.guests) || 0) + 1) })} className="w-10 h-10 rounded-full border border-[#C49A6C]/40 bg-white flex items-center justify-center text-[#8A7968] hover:bg-[#F5EBE1] hover:text-[#C49A6C] transition-colors">
+                    <span className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} font-bold text-lg w-4 text-center`}>{rsvpData.guests}</span>
+                    <button
+                      type="button"
+                      onClick={() => setRsvpData({ ...rsvpData, guests: Math.min(20, (Number(rsvpData.guests) || 0) + 1) })}
+                      className={`w-10 h-10 rounded-full border ${isBurgundy ? 'border-[#E6C79C]/60 bg-white text-[#4A0E17] hover:bg-[#F7E7CE]' : 'border-[#C49A6C]/40 bg-white text-[#8A7968] hover:bg-[#F5EBE1] hover:text-[#C49A6C]'} flex items-center justify-center transition-colors`}
+                    >
                       <Plus size={16} strokeWidth={1.5} />
                     </button>
                   </div>
@@ -848,18 +928,21 @@ export default function WeddingClassic({ customData } = {}) {
 
             {/* Optional Congratulatory Message Textarea */}
             <div className="mb-8">
-              <label className="block text-[#5A4F46] mb-2 text-xs font-bold flex items-center gap-2">كلمة للعروسين 💌</label>
+              <label className={`block ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-2 text-xs font-bold flex items-center gap-2`}>كلمة للعروسين 💌</label>
               <textarea
                 maxLength={500}
                 value={rsvpData.message}
                 onChange={(e) => setRsvpData({ ...rsvpData, message: e.target.value })}
                 placeholder="اكتب تهنئتك للعروسين..."
                 rows="3"
-                className="w-full border border-[#C49A6C]/30 rounded-xl px-4 py-3 bg-white text-[#5A4F46] text-sm focus:outline-none focus:border-[#C49A6C] transition-colors resize-none placeholder-[#8A7968]/50"
+                className={`w-full border ${isBurgundy ? 'border-[#E6C79C]/50 text-[#4A0E17] focus:border-[#63121E] placeholder-[#4A0E17]/40' : 'border-[#C49A6C]/30 text-[#5A4F46] focus:border-[#C49A6C] placeholder-[#8A7968]/50'} rounded-xl px-4 py-3 bg-white text-sm focus:outline-none transition-colors resize-none`}
               ></textarea>
             </div>
 
-            <button type="submit" className="w-full bg-[#A67C52] text-white rounded-2xl py-4 mt-2 font-bold text-[15px] shadow-md hover:bg-[#A88461] transition-colors flex items-center justify-center gap-2">
+            <button
+              type="submit"
+              className={`w-full ${isBurgundy ? 'bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] border border-[#E6C79C]/40 hover:from-[#4A0E17] hover:to-[#2D070D]' : 'bg-[#A67C52] text-white hover:bg-[#A88461]'} rounded-2xl py-4 mt-2 font-bold text-[15px] shadow-md transition-all flex items-center justify-center gap-2`}
+            >
               إرسال التأكيد
             </button>
           </form>
@@ -867,9 +950,9 @@ export default function WeddingClassic({ customData } = {}) {
 
         {/* Wishes & Greetings Guestbook Section ("كلمات المهنئين") */}
         <div className="w-full flex justify-center mt-12 mb-8">
-          <div className="bg-white/60 backdrop-blur-sm border border-[#C49A6C]/30 rounded-full px-8 py-3 shadow-sm flex items-center justify-center gap-3">
+          <div className={`${isBurgundy ? 'bg-[#2D070D]/80 border-[#E6C79C]/40 text-[#F7E7CE]' : 'bg-white/60 border-[#C49A6C]/30 text-[#5A4F46]'} backdrop-blur-sm border rounded-full px-8 py-3 shadow-sm flex items-center justify-center gap-3`}>
             <span className="text-[20px] drop-shadow-sm">🌹</span>
-            <h3 className={`text-2xl text-[#5A4F46] font-bold ${aref.className}`}>
+            <h3 className={`text-2xl font-bold ${aref.className}`}>
               كلمات المهنئين
             </h3>
           </div>
@@ -883,14 +966,14 @@ export default function WeddingClassic({ customData } = {}) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="bg-white/80 backdrop-blur-sm border border-[#C49A6C]/20 rounded-2xl p-5 shadow-[0_4px_20px_rgba(196,154,108,0.05)] flex items-center gap-4 relative overflow-hidden"
+              className={`${isBurgundy ? 'bg-[#FDFBF7] border-[#E6C79C]/40 shadow-md' : 'bg-white/80 border-[#C49A6C]/20 shadow-[0_4px_20px_rgba(196,154,108,0.05)]'} backdrop-blur-sm border rounded-2xl p-5 flex items-center gap-4 relative overflow-hidden`}
             >
-              <div className={`w-14 h-14 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xl font-bold ${msg.avatarColor} shadow-inner`}>
+              <div className={`w-14 h-14 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xl font-bold ${isBurgundy && idx % 2 === 0 ? 'bg-[#63121E]' : msg.avatarColor} shadow-inner`}>
                 {msg.avatarLetter}
               </div>
               <div className="flex flex-col flex-1">
-                <h4 className="text-[#5A4F46] font-bold text-lg mb-1">{msg.name}</h4>
-                <p className="text-[#8A7968] text-[13px] leading-relaxed">
+                <h4 className={`${isBurgundy ? 'text-[#63121E]' : 'text-[#5A4F46]'} font-bold text-lg mb-1`}>{msg.name}</h4>
+                <p className={`${isBurgundy ? 'text-[#4A0E17]/90' : 'text-[#8A7968]'} text-[13px] leading-relaxed`}>
                   {msg.message}
                 </p>
               </div>
@@ -910,7 +993,7 @@ export default function WeddingClassic({ customData } = {}) {
             height={windowSize.height}
             recycle={false}
             numberOfPieces={300}
-            colors={['#C49A6C', '#C49A6C', '#FDFBF9', '#A888B5', '#8A7968']}
+            colors={isBurgundy ? ['#63121E', '#4A0E17', '#E6C79C', '#D4AF37', '#F7E7CE'] : ['#C49A6C', '#C49A6C', '#FDFBF9', '#A888B5', '#8A7968']}
           />
         </div>
       )}
@@ -918,31 +1001,31 @@ export default function WeddingClassic({ customData } = {}) {
       {/* VIP QR Code Entry Pass Modal */}
       <AnimatePresence>
         {showQRModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" dir="rtl">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" dir="rtl">
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-[#FDFBF9] border-2 border-[#C49A6C] rounded-2xl p-8 max-w-sm w-full flex flex-col items-center shadow-2xl relative"
+              className={`${isBurgundy ? 'bg-[#FDFBF7] border-2 border-[#E6C79C]' : 'bg-[#FDFBF9] border-2 border-[#C49A6C]'} rounded-2xl p-8 max-w-sm w-full flex flex-col items-center shadow-2xl relative`}
             >
               <button
                 onClick={() => setShowQRModal(false)}
-                className="absolute top-4 right-4 text-[#8A7968] hover:text-[#5A4F46] transition-colors bg-[#EFE7DD] p-2 rounded-full"
+                className={`absolute top-4 right-4 ${isBurgundy ? 'text-[#4A0E17] hover:text-[#63121E] bg-[#F7E7CE]/50' : 'text-[#8A7968] hover:text-[#5A4F46] bg-[#EFE7DD]'} p-2 rounded-full transition-colors`}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
               </button>
 
-              <h3 className={`text-4xl text-[#C49A6C] font-bold mb-4 ${aref.className} mt-2`}>شكراً لتأكيد حضورك!</h3>
+              <h3 className={`text-4xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} font-bold mb-4 ${aref.className} mt-2`}>شكراً لتأكيد حضورك!</h3>
 
               {rsvpData.status === 'attending' ? (
                 <>
-                  <p className="text-[#5A4F46] text-center mb-6 text-[14px] leading-relaxed">
+                  <p className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} text-center mb-6 text-[14px] leading-relaxed`}>
                     نحن متحمسون جداً لرؤيتك في حفل زفافنا. يُرجى الاحتفاظ ببطاقة الدخول الذكية (QR Code) وإبرازها لموظفي الاستقبال.
                   </p>
 
-                  <div className="bg-white p-2 rounded-xl shadow-[0_5px_15px_rgba(196,154,108,0.2)] border border-[#C49A6C]/20 mb-6 flex justify-center items-center">
+                  <div className={`bg-white p-2 rounded-xl shadow-[0_5px_15px_rgba(230,199,156,0.25)] border ${isBurgundy ? 'border-[#E6C79C]/40' : 'border-[#C49A6C]/20'} mb-6 flex justify-center items-center`}>
                     <QRCodeCanvas
-                      value={`BEGIN:VCARD\nVERSION:3.0\nFN:${rsvpData.name || 'ضيف'}\nORG:بطاقة صالحة - زفاف عمر وآيات\nNOTE:عدد المرافقين: ${rsvpData.guests}\nEND:VCARD`}
+                      value={`BEGIN:VCARD\nVERSION:3.0\nFN:${rsvpData.name || 'ضيف'}\nORG:بطاقة صالحة - زفاف ${groomFirst} و${brideFirst}\nNOTE:عدد المرافقين: ${rsvpData.guests}\nEND:VCARD`}
                       size={180}
                       fgColor="#000000"
                       level="H"
@@ -950,11 +1033,11 @@ export default function WeddingClassic({ customData } = {}) {
                     />
                   </div>
 
-                  <p className="text-[#8A7968] font-bold text-xl mb-1">{rsvpData.name || 'ضيف'}</p>
-                  <p className="text-[#C49A6C] text-sm font-bold">المرافقين: {rsvpData.guests}</p>
+                  <p className={`${isBurgundy ? 'text-[#63121E]' : 'text-[#8A7968]'} font-bold text-xl mb-1`}>{rsvpData.name || 'ضيف'}</p>
+                  <p className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#C49A6C]'} text-sm font-bold`}>المرافقين: {rsvpData.guests}</p>
                 </>
               ) : (
-                <p className="text-[#5A4F46] text-center mb-6 text-[15px] leading-relaxed mt-4">
+                <p className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} text-center mb-6 text-[15px] leading-relaxed mt-4`}>
                   {rsvpData.status === 'not_attending'
                     ? 'نشكرك على ردك اللطيف، ونتمنى لك دوام الصحة والسعادة، وسنفتقدك بالتأكيد في يومنا هذا.'
                     : 'نشكرك على ردك اللطيف، ونتمنى أن تتمكن من مشاركتنا فرحتنا قريباً.'}
@@ -963,7 +1046,7 @@ export default function WeddingClassic({ customData } = {}) {
 
               <button
                 onClick={() => setShowQRModal(false)}
-                className="mt-8 bg-[#C49A6C] text-white px-10 py-3 rounded-full text-sm font-bold shadow-md hover:bg-[#A88461] transition-all w-full"
+                className={`mt-8 ${isBurgundy ? 'bg-[#63121E] hover:bg-[#4A0E17] text-[#F7E7CE] border border-[#E6C79C]/40' : 'bg-[#C49A6C] text-white hover:bg-[#A88461]'} px-10 py-3 rounded-full text-sm font-bold shadow-md transition-all w-full`}
               >
                 حسناً
               </button>

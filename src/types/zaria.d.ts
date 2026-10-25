@@ -290,6 +290,12 @@ export interface CustomInvitationData {
   backgroundMedia?: string;
   /** Optional poster image path (from `/public`) shown before a custom background video loads. */
   backgroundPoster?: string;
+  /** Optional path (from `/public`) of a custom opening intro splash screen video (e.g. '/omar-ayat/video.mp4'). */
+  introMedia?: string;
+  /** Optional poster image path (from `/public`) for the opening intro splash screen video. */
+  introPoster?: string;
+  /** Optional custom color theme override (e.g., 'burgundy' for Royal Burgundy & Warm Champagne). */
+  theme?: string;
   /** Permanent demo congratulatory wishes shown in "كلمات المهنئين" for this client. */
   initialWishes?: { name: string; message: string }[];
 }
