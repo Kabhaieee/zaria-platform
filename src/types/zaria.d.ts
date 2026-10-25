@@ -278,6 +278,10 @@ export interface CustomInvitationData {
   locationUrl?: string;
   /** Optional custom YouTube video ID or URL; falls back to template default song if empty. */
   youtubeVideoId?: string;
+  /** Optional start timestamp in seconds for the background YouTube song (e.g. 65 for 1:05). */
+  youtubeStartSeconds?: number;
+  /** Optional family names displayed in the invitation footer (e.g. 'عائلة السخون & عائلة قبها'). */
+  familyNames?: string;
   /** Optional custom note(s) (e.g., 'جنة الأطفال منازلهم' or newline-separated notes). */
   customNote?: string;
   /** Creation timestamp. */

@@ -184,6 +184,9 @@ export default function WeddingClassic({ customData } = {}) {
     'نتشرّف بحضوركم بأبهى حلّة',
     'الدعوة تشمل حاملها والعائلة الكريمة',
   ]);
+  const familyNames =
+    customData?.familyNames?.trim() ||
+    (isBurgundy ? 'عائلة السخون & عائلة قبها' : 'عائلة العمري & عائلة الخطيب');
 
   // Reference and scroll progress binding for the vertical program timeline indicator
   const timelineRef = useRef(null);
@@ -274,14 +277,22 @@ export default function WeddingClassic({ customData } = {}) {
     return () => clearInterval(timer);
   }, [isoTarget]);
 
-  // Google Calendar deep link URL for the wedding event
-  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`حفل زفاف ${groomFirst} و ${brideFirst}`)}&dates=20261129T180000Z/20261129T210000Z&details=${encodeURIComponent(welcomeMessage)}&location=${encodeURIComponent(venueName)}`;
+  // Google Calendar deep link URL and Apple Calendar .ics export for the wedding event
+  const eventDateObj = new Date(isoTarget);
+  const startIsoStr = !Number.isNaN(eventDateObj.getTime())
+    ? eventDateObj.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+    : '20261129T180000Z';
+  const endIsoStr = !Number.isNaN(eventDateObj.getTime())
+    ? new Date(eventDateObj.getTime() + 3 * 3600 * 1000).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+    : '20261129T210000Z';
+
+  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`حفل زفاف ${groomFirst} و ${brideFirst}`)}&dates=${startIsoStr}/${endIsoStr}&details=${encodeURIComponent(welcomeMessage)}&location=${encodeURIComponent(venueName)}`;
 
   /**
    * Generates and triggers an `.ics` calendar file download for Apple/iOS Calendar.
    */
   const handleAppleCalendar = () => {
-    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Wedding//AR\nBEGIN:VEVENT\nSUMMARY:حفل زفاف ${groomFirst} و ${brideFirst}\nDTSTART:20261129T180000Z\nDTEND:20261129T210000Z\nLOCATION:${venueName}\nDESCRIPTION:${welcomeMessage}\nEND:VEVENT\nEND:VCALENDAR`;
+    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Wedding//AR\nBEGIN:VEVENT\nSUMMARY:حفل زفاف ${groomFirst} و ${brideFirst}\nDTSTART:${startIsoStr}\nDTEND:${endIsoStr}\nLOCATION:${venueName}\nDESCRIPTION:${welcomeMessage}\nEND:VEVENT\nEND:VCALENDAR`;
     const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
@@ -730,7 +741,7 @@ export default function WeddingClassic({ customData } = {}) {
                   </a>
                 </div>
 
-                <p className={`text-[13px] ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-8`}>عائلة العمري &amp; عائلة الخطيب</p>
+                <p className={`text-[13px] ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-8`}>{familyNames}</p>
               </div>
             </FadeIn>
           </div>
@@ -992,7 +1003,10 @@ export default function WeddingClassic({ customData } = {}) {
       </div>
 
       {/* Floating Background Music Controller */}
-      <BackgroundMusic youtubeUrl={youtubeUrl} />
+      <BackgroundMusic
+        youtubeUrl={youtubeUrl}
+        startSeconds={customData?.youtubeStartSeconds || 0}
+      />
 
       {/* Celebratory Confetti Overlay */}
       {showConfetti && (

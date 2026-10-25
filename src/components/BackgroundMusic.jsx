@@ -32,14 +32,16 @@ const extractVideoId = (url) => {
  * @param {Object} props - Component props.
  * @param {string} props.youtubeUrl - YouTube video/audio URL to stream in the background.
  * @param {boolean} [props.autoPlay=false] - Whether to auto-start on load / first interaction for templates without a door preloader.
+ * @param {number} [props.startSeconds=0] - Optional start offset in seconds (e.g. 65 for 1:05).
  * @returns {JSX.Element | null} The offscreen YouTube player and floating mute/unmute toggle button.
  */
-export default function BackgroundMusic({ youtubeUrl, autoPlay = false }) {
+export default function BackgroundMusic({ youtubeUrl, autoPlay = false, startSeconds = 0 }) {
   const [playing, setPlaying] = useState(false);
   const [mounted, setMounted] = useState(false);
   const iframeRef = useRef(null);
   const playingRef = useRef(false);
   const userToggledRef = useRef(false);
+  const hasSeekedRef = useRef(false);
   const buttonRef = useRef(null);
 
   const videoId = extractVideoId(youtubeUrl);
@@ -61,14 +63,19 @@ export default function BackgroundMusic({ youtubeUrl, autoPlay = false }) {
 
   /**
    * Starts audio playback and sets a comfortable background volume level.
+   * Seeks to `startSeconds` on the first playback trigger if configured.
    */
   const startPlayback = useCallback(() => {
     playingRef.current = true;
     setPlaying(true);
     sendPlayerCommand('unMute');
     sendPlayerCommand('setVolume', [60]);
+    if (startSeconds > 0 && !hasSeekedRef.current) {
+      sendPlayerCommand('seekTo', [startSeconds, true]);
+      hasSeekedRef.current = true;
+    }
     sendPlayerCommand('playVideo');
-  }, [sendPlayerCommand]);
+  }, [sendPlayerCommand, startSeconds]);
 
   /**
    * Pauses audio playback.
@@ -130,7 +137,8 @@ export default function BackgroundMusic({ youtubeUrl, autoPlay = false }) {
   // Prevent hydration mismatch by rendering only on the client
   if (!mounted) return null;
 
-  const embedUrl = `https://www.youtube.com/embed/${videoId}?enablejsapi=1${autoPlay ? '&autoplay=1' : ''}&playsinline=1&loop=1&playlist=${videoId}&controls=0&rel=0&showinfo=0`;
+  const startParam = startSeconds > 0 ? `&start=${startSeconds}` : '';
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?enablejsapi=1${autoPlay ? '&autoplay=1' : ''}${startParam}&playsinline=1&loop=1&playlist=${videoId}&controls=0&rel=0&showinfo=0`;
 
   return (
     <>
