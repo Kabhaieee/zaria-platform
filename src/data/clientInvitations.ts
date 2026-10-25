@@ -49,16 +49,16 @@ export const CLIENT_INVITATIONS: readonly CustomInvitationData[] = [
       'يُرجى الحضور قبل الموعد بنصف ساعة\nنتشرّف بحضوركم بأبهى حلّة\nالدعوة خاصة وتُبرز عند الاستقبال\nجنة الأطفال منازلهم',
 
     // فيديو الخلفية الرئيسي في قسم البداية (من public/omar-ayat)
-    backgroundMedia: '/omar-ayat/gemini_generated_video_6b8cbeb1.mp4',
+    backgroundMedia: '/omar-ayat/video.mp4',
 
     // بوستر فيديو الخلفية يمنع الوميض قبل بدء التشغيل
-    backgroundPoster: '/omar-ayat/gemini_generated_video_6b8cbeb1_thumb.jpg',
+    backgroundPoster: '/omar-ayat/video_thumb.jpg',
 
-    // فيديو شاشة الافتتاح / الستار الترحيبي عند فتح الدعوة (من public/omar-ayat)
-    introMedia: '/omar-ayat/video.mp4',
+    // فيديو شاشة الافتتاح / الباب الترحيبي الملكي عند فتح الدعوة (من public/omar-ayat)
+    introMedia: '/omar-ayat/gemini_generated_video_6b8cbeb1.mp4',
 
-    // بوستر شاشة الافتتاح
-    introPoster: '/omar-ayat/video_thumb.jpg',
+    // بوستر شاشة الباب عند الافتتاح
+    introPoster: '/omar-ayat/gemini_generated_video_6b8cbeb1_thumb.jpg',
 
     // تهاني تجريبية دائمة تظهر في قسم "كلمات المهنئين"
     initialWishes: [
