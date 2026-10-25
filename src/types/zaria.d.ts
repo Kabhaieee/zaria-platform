@@ -300,6 +300,10 @@ export interface CustomInvitationData {
   introPoster?: string;
   /** Optional custom color theme override (e.g., 'burgundy' for Royal Burgundy & Warm Champagne). */
   theme?: string;
+  /** Optional featured couple photo displayed in the invitation card (e.g. '/omar-ayat/photo-2.jpeg'). */
+  featuredImage?: string;
+  /** Optional custom gallery photos displayed in the memory gallery section. */
+  galleryImages?: string[];
   /** Whether to hide the RSVP form section ("تأكيد الحضور"). */
   hideRsvp?: boolean;
   /** Whether to hide the guest wishes/comments section ("كلمات المهنئين"). */

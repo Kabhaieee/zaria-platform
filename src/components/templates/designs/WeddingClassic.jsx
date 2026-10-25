@@ -187,6 +187,10 @@ export default function WeddingClassic({ customData } = {}) {
   const familyNames =
     customData?.familyNames?.trim() ||
     (isBurgundy ? 'عائلة السخون & عائلة قبها' : 'عائلة العمري & عائلة الخطيب');
+  const galleryPhotos =
+    customData?.galleryImages && customData.galleryImages.length > 0
+      ? customData.galleryImages
+      : ['/gallery-1.jpg', '/gallery-2.jpg', '/gallery-3.jpg', '/gallery-4.jpg'];
 
   // Reference and scroll progress binding for the vertical program timeline indicator
   const timelineRef = useRef(null);
@@ -223,6 +227,7 @@ export default function WeddingClassic({ customData } = {}) {
   const [showQRModal, setShowQRModal] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [doorState, setDoorState] = useState('waiting'); // 'waiting' -> 'opening' -> 'done'
+  const [activePhoto, setActivePhoto] = useState(null);
   const videoRef = useRef(null);
 
   // Isolated Wishes & RSVPs hook
@@ -277,7 +282,8 @@ export default function WeddingClassic({ customData } = {}) {
     return () => clearInterval(timer);
   }, [isoTarget]);
 
-  // Google Calendar deep link URL and Apple Calendar .ics export for the wedding event
+  // Calendar Event Details and dates calculation
+  const isOmarAyat = customData?.slug === 'omar-ayat';
   const eventDateObj = new Date(isoTarget);
   const startIsoStr = !Number.isNaN(eventDateObj.getTime())
     ? eventDateObj.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
@@ -286,20 +292,86 @@ export default function WeddingClassic({ customData } = {}) {
     ? new Date(eventDateObj.getTime() + 3 * 3600 * 1000).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
     : '20261129T210000Z';
 
-  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`حفل زفاف ${groomFirst} و ${brideFirst}`)}&dates=${startIsoStr}/${endIsoStr}&details=${encodeURIComponent(welcomeMessage)}&location=${encodeURIComponent(venueName)}`;
+  const calTitle = isOmarAyat
+    ? 'حفل زفاف المهندس عمر & الدكتورة آيات'
+    : customData?.coupleNames
+    ? `حفل زفاف ${customData.coupleNames}`
+    : `حفل زفاف ${groomFirst} و ${brideFirst}`;
+
+  const calLocation = isOmarAyat
+    ? 'قاعات النعمان - عمّان (https://www.google.com/maps/search/?api=1&query=قاعات+النعمان+عمان)'
+    : `${venueName} (${locationUrl})`;
+
+  const calDescription = isOmarAyat
+    ? 'نتشرف بحضوركم ومشاركتنا فرحة العمر في حفل زفاف المهندس عمر والدكتورة آيات - عائلة السخون وعائلة قبها'
+    : welcomeMessage;
+
+  const calStartUtc = isOmarAyat ? '20261116T170000Z' : startIsoStr;
+  const calEndUtc = isOmarAyat ? '20261116T203000Z' : endIsoStr;
+
+  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+    calTitle
+  )}&dates=${calStartUtc}/${calEndUtc}&details=${encodeURIComponent(
+    calDescription
+  )}&location=${encodeURIComponent(calLocation)}`;
+
+  const icsData = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Zaria//Wedding Invitation//AR',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `UID:${customData?.slug || 'classic'}-${calStartUtc}@zaria.app`,
+    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`,
+    `DTSTART:${calStartUtc}`,
+    `DTEND:${calEndUtc}`,
+    `SUMMARY:${calTitle}`,
+    `DESCRIPTION:${calDescription}`,
+    `LOCATION:${calLocation}`,
+    'STATUS:CONFIRMED',
+    'SEQUENCE:0',
+    'BEGIN:VALARM',
+    'TRIGGER:-PT24H',
+    'ACTION:DISPLAY',
+    'DESCRIPTION:تذكير: حفل الزفاف غداً',
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n');
 
   /**
    * Generates and triggers an `.ics` calendar file download for Apple/iOS Calendar.
    */
   const handleAppleCalendar = () => {
-    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Zaria//Wedding//AR\nBEGIN:VEVENT\nSUMMARY:حفل زفاف ${groomFirst} و ${brideFirst}\nDTSTART:${startIsoStr}\nDTEND:${endIsoStr}\nLOCATION:${venueName}\nDESCRIPTION:${welcomeMessage}\nEND:VEVENT\nEND:VCALENDAR`;
+    const isIOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      window.location.href = `data:text/calendar;charset=utf-8,${encodeURIComponent(icsData)}`;
+      return;
+    }
     const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.setAttribute('download', 'wedding_invitation.ics');
+    link.setAttribute('download', `${customData?.slug || 'wedding'}-calendar.ics`);
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    setTimeout(() => {
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(link.href);
+    }, 1000);
+  };
+
+  /**
+   * Smart one-click handler that automatically routes to native iOS Calendar on Apple devices
+   * or Google Calendar / download on Android and desktop devices.
+   */
+  const handleSmartCalendarAdd = () => {
+    const isIOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      handleAppleCalendar();
+    } else {
+      window.open(googleCalUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
@@ -320,9 +392,10 @@ export default function WeddingClassic({ customData } = {}) {
               poster={customData?.introPoster || '/wedding_preloader_poster.jpg'}
               muted
               playsInline
+              {...({ 'webkit-playsinline': 'true' })}
               preload="auto"
               onEnded={() => setDoorState('done')}
-              className="absolute inset-0 w-full h-full object-cover transition-all duration-1000"
+              className="absolute inset-0 w-full h-full object-cover object-center transition-all duration-1000"
             />
 
             {/* Dark contrast overlay while waiting for user interaction (disabled for isBurgundy so door video appears in 100% original colors) */}
@@ -388,7 +461,7 @@ export default function WeddingClassic({ customData } = {}) {
       </AnimatePresence>
 
       {/* Hero Intro Section */}
-      <section className="relative w-full h-[100svh] flex flex-col items-center justify-center overflow-hidden bg-black text-[#fdf8f5]">
+      <section className="relative w-full h-[100dvh] min-h-[100dvh] flex flex-col items-center justify-center overflow-hidden bg-black text-[#fdf8f5]">
         {/* Looping background media (client override via customData.backgroundMedia, else master hero video) */}
         {customData?.backgroundMedia && /\.(jpe?g|png|webp|avif|gif)$/i.test(customData.backgroundMedia) ? (
           <div
@@ -397,13 +470,14 @@ export default function WeddingClassic({ customData } = {}) {
           />
         ) : (
         <video
-          className={`absolute inset-0 w-full h-full object-cover z-0 ${isBurgundy ? 'opacity-100' : 'opacity-75'}`}
+          className={`absolute inset-0 w-full h-full object-cover object-center z-0 ${isBurgundy ? 'opacity-100' : 'opacity-75'}`}
           src={customData?.backgroundMedia || '/hero.mp4'}
           poster={customData?.backgroundPoster || '/hero_poster.jpg'}
           autoPlay
           loop
           muted
           playsInline
+          {...({ 'webkit-playsinline': 'true' })}
           preload="auto"
           ref={(el) => {
             if (el) {
@@ -557,6 +631,26 @@ export default function WeddingClassic({ customData } = {}) {
 
             {/* Invitation Heading & Welcome Text */}
             <h3 className={`text-4xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-8 font-bold ${aref.className}`}>بطاقة دعوة</h3>
+
+            {customData?.featuredImage && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="relative w-48 h-64 md:w-56 md:h-72 mb-8 rounded-[2rem] overflow-hidden border-2 border-[#E6C79C]/80 shadow-[0_10px_30px_rgba(45,7,13,0.25)] bg-[#2D070D]"
+              >
+                <Image
+                  src={customData.featuredImage}
+                  alt={customData?.coupleNames || 'العروسان'}
+                  fill
+                  sizes="(max-width: 768px) 250px, 300px"
+                  className="object-cover object-top hover:scale-105 transition-transform duration-700"
+                  priority
+                />
+              </motion.div>
+            )}
+
             <p className={`text-[14px] leading-[2.2] mb-12 ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} text-center px-4 max-w-[300px]`}>
               {welcomeMessage}
             </p>
@@ -756,20 +850,22 @@ export default function WeddingClassic({ customData } = {}) {
 
         <div className="px-6 mb-16 w-full">
           <div className="grid grid-cols-2 gap-3">
-            {[1, 2, 3, 4].map((i, idx) => (
+            {galleryPhotos.map((imgSrc, idx) => (
               <motion.div
-                key={i}
+                key={idx}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className={`relative rounded-xl overflow-hidden shadow-sm border ${isBurgundy ? 'border-[#E6C79C]/40 shadow-md' : 'border-[#C49A6C]/20'} ${idx === 0 || idx === 3 ? 'aspect-[4/5]' : 'aspect-square'}`}
+                onClick={() => setActivePhoto(imgSrc)}
+                className={`relative rounded-xl overflow-hidden shadow-sm border cursor-pointer group ${isBurgundy ? 'border-[#E6C79C]/40 shadow-md' : 'border-[#C49A6C]/20'} ${idx === 0 || idx === 3 ? 'aspect-[4/5]' : 'aspect-square'}`}
               >
                 <Image
-                  src={`/gallery-${i}.jpg`}
-                  alt={`Memory ${i}`}
+                  src={imgSrc}
+                  alt={`Memory ${idx + 1}`}
                   fill
-                  className="object-cover hover:scale-105 transition-transform duration-700"
+                  sizes="(max-width: 768px) 50vw, 300px"
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
                 />
               </motion.div>
             ))}
@@ -804,24 +900,45 @@ export default function WeddingClassic({ customData } = {}) {
               <p className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} font-bold text-sm`}>{arabicTime}</p>
             </div>
 
-            <div className={`border-t border-dashed ${isBurgundy ? 'border-[#E6C79C]/40 bg-[#F7E7CE]/20' : 'border-[#A67C52]/30 bg-white/50'} px-6 py-5`}>
-              <p className={`text-center ${isBurgundy ? 'text-[#4A0E17]/80' : 'text-[#8A7968]'} text-xs font-bold mb-4`}>
-                أضف الموعد إلى تقويم هاتفك بضغطة 📅
-              </p>
-              <div className="flex gap-3 justify-center">
+            <div className={`border-t border-dashed ${isBurgundy ? 'border-[#E6C79C]/40 bg-[#F7E7CE]/20' : 'border-[#A67C52]/30 bg-white/50'} px-6 py-6 flex flex-col items-center gap-3`}>
+              {/* Primary Smart One-Click Calendar Button */}
+              <button
+                type="button"
+                onClick={handleSmartCalendarAdd}
+                className={`w-full py-3.5 px-6 rounded-full font-bold text-[14px] shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                  isBurgundy
+                    ? 'bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] border border-[#E6C79C]/50 hover:shadow-[0_4px_20px_rgba(74,14,23,0.4)]'
+                    : 'bg-[#A67C52] text-white hover:bg-[#8e653d]'
+                }`}
+              >
+                <span>📅</span>
+                <span>أضف الموعد إلى تقويم هاتفك بضغطة</span>
+              </button>
+
+              {/* Direct Calendar Options */}
+              <div className="flex gap-2.5 w-full justify-center pt-1">
                 <a
                   href={googleCalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`flex-1 text-center border ${isBurgundy ? 'border-[#63121E] text-[#63121E] hover:bg-[#63121E] hover:text-[#F7E7CE]' : 'border-[#A67C52] text-[#A67C52] hover:bg-[#A67C52] hover:text-white'} rounded-full py-2 text-xs font-bold transition-colors block`}
+                  className={`flex-1 text-center border ${
+                    isBurgundy
+                      ? 'border-[#63121E]/60 text-[#63121E] bg-white/70 hover:bg-[#63121E] hover:text-[#F7E7CE]'
+                      : 'border-[#A67C52] text-[#A67C52] hover:bg-[#A67C52] hover:text-white'
+                  } rounded-full py-2 text-xs font-bold transition-all shadow-sm block`}
                 >
                   تقويم جوجل
                 </a>
                 <button
+                  type="button"
                   onClick={handleAppleCalendar}
-                  className={`flex-1 border ${isBurgundy ? 'border-[#63121E] text-[#63121E] hover:bg-[#63121E] hover:text-[#F7E7CE]' : 'border-[#A67C52] text-[#A67C52] hover:bg-[#A67C52] hover:text-white'} rounded-full py-2 text-xs font-bold transition-colors`}
+                  className={`flex-1 border ${
+                    isBurgundy
+                      ? 'border-[#63121E]/60 text-[#63121E] bg-white/70 hover:bg-[#63121E] hover:text-[#F7E7CE]'
+                      : 'border-[#A67C52] text-[#A67C52] hover:bg-[#A67C52] hover:text-white'
+                  } rounded-full py-2 text-xs font-bold transition-all shadow-sm`}
                 >
-                  تقويم آيفون
+                  تقويم آيفون (Apple)
                 </button>
               </div>
             </div>
@@ -1075,6 +1192,36 @@ export default function WeddingClassic({ customData } = {}) {
               </button>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+      {/* Photo Lightbox Modal */}
+      <AnimatePresence>
+        {activePhoto && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setActivePhoto(null)}
+            className="fixed inset-0 z-[120] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer"
+          >
+            <button
+              onClick={() => setActivePhoto(null)}
+              className="absolute top-6 left-6 text-white text-2xl font-light w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors z-20"
+              aria-label="إغلاق"
+            >
+              ✕
+            </button>
+            <div className="relative w-full max-w-md max-h-[85vh] h-[75vh]" onClick={(e) => e.stopPropagation()}>
+              <Image
+                src={activePhoto}
+                alt="Full Photo"
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 600px"
+                priority
+              />
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

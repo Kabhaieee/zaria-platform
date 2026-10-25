@@ -58,6 +58,17 @@ export const CLIENT_INVITATIONS: readonly CustomInvitationData[] = [
     customNote:
       'يُرجى الحضور قبل الموعد بنصف ساعة\nنتشرّف بحضوركم بأبهى حلّة\nالدعوة خاصة وتُبرز عند الاستقبال\nجنة الأطفال منازلهم',
 
+    // صورة العروسين المميزة داخل بطاقة الدعوة (من public/omar-ayat)
+    featuredImage: '/omar-ayat/photo-2.jpeg',
+
+    // صور ألبوم الذكريات ("بداية الحكاية") الخاصة بالعروسين (من public/omar-ayat)
+    galleryImages: [
+      '/omar-ayat/photo-1.jpeg', // عقد القران (كتب الكتاب)
+      '/omar-ayat/photo-2.jpeg', // العروسان
+      '/omar-ayat/photo-3.jpeg', // نظرة المحبة
+      '/omar-ayat/photo-4.jpeg', // أجمل اللحظات
+    ],
+
     // فيديو الخلفية الرئيسي في قسم البداية (من public/omar-ayat)
     backgroundMedia: '/omar-ayat/video.mp4',
 
