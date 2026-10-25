@@ -67,6 +67,8 @@ export async function generateMetadata({ params }: InvitePageProps): Promise<Met
     invitation.invitationText ||
     `${master?.defaultWelcomeMessage || 'نتشرف بحضوركم'} — ${invitation.venueName || ''}`;
 
+  const previewImage = invitation.backgroundPoster || invitation.introPoster;
+
   return {
     title: `${fullTitle} | ZARIA`,
     description,
@@ -74,11 +76,13 @@ export async function generateMetadata({ params }: InvitePageProps): Promise<Met
       title: fullTitle,
       description,
       type: 'website',
+      images: previewImage ? [{ url: previewImage }] : undefined,
     },
     twitter: {
       card: 'summary_large_image',
       title: fullTitle,
       description,
+      images: previewImage ? [previewImage] : undefined,
     },
   };
 }

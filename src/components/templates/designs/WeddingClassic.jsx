@@ -229,6 +229,7 @@ export default function WeddingClassic({ customData } = {}) {
   const [doorState, setDoorState] = useState('waiting'); // 'waiting' -> 'opening' -> 'done'
   const [activePhoto, setActivePhoto] = useState(null);
   const videoRef = useRef(null);
+  const heroVideoRef = useRef(null);
 
   // Isolated Wishes & RSVPs hook
   const { guestbookMessages, submitRSVP } = useInvitationRSVPs(customData?.slug, DEFAULT_CLASSIC_WISHES, CLASSIC_AVATAR_COLORS, customData?.initialWishes);
@@ -281,6 +282,16 @@ export default function WeddingClassic({ customData } = {}) {
     }, 1000);
     return () => clearInterval(timer);
   }, [isoTarget]);
+
+  // Ensure hero video playback starts smoothly when door finishes or on mount without repeated re-triggers
+  useEffect(() => {
+    if (doorState === 'done' || !customData?.introMedia) {
+      if (heroVideoRef.current && heroVideoRef.current.paused) {
+        const p = heroVideoRef.current.play();
+        if (p !== undefined) p.catch(() => {});
+      }
+    }
+  }, [doorState, customData?.introMedia]);
 
   // Calendar Event Details and dates calculation
   const isOmarAyat = customData?.slug === 'omar-ayat';
@@ -391,11 +402,17 @@ export default function WeddingClassic({ customData } = {}) {
               src={customData?.introMedia || '/wedding_preloader.mp4'}
               poster={customData?.introPoster || '/wedding_preloader_poster.jpg'}
               muted
+              defaultMuted
               playsInline
               {...({ 'webkit-playsinline': 'true' })}
               preload="auto"
               onEnded={() => setDoorState('done')}
               className="absolute inset-0 w-full h-full object-cover object-center transition-all duration-1000"
+              style={{
+                transform: 'translateZ(0)',
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+              }}
             />
 
             {/* Dark contrast overlay while waiting for user interaction (disabled for isBurgundy so door video appears in 100% original colors) */}
@@ -461,7 +478,10 @@ export default function WeddingClassic({ customData } = {}) {
       </AnimatePresence>
 
       {/* Hero Intro Section */}
-      <section className="relative w-full h-[100dvh] min-h-[100dvh] flex flex-col items-center justify-center overflow-hidden bg-black text-[#fdf8f5]">
+      <section
+        className="relative w-full h-[100dvh] min-h-[100dvh] flex flex-col items-center justify-center overflow-hidden bg-black text-[#fdf8f5]"
+        style={{ transform: 'translateZ(0)', isolation: 'isolate' }}
+      >
         {/* Looping background media (client override via customData.backgroundMedia, else master hero video) */}
         {customData?.backgroundMedia && /\.(jpe?g|png|webp|avif|gif)$/i.test(customData.backgroundMedia) ? (
           <div
@@ -470,20 +490,21 @@ export default function WeddingClassic({ customData } = {}) {
           />
         ) : (
         <video
+          ref={heroVideoRef}
           className={`absolute inset-0 w-full h-full object-cover object-center z-0 ${isBurgundy ? 'opacity-100' : 'opacity-75'}`}
           src={customData?.backgroundMedia || '/hero.mp4'}
           poster={customData?.backgroundPoster || '/hero_poster.jpg'}
           autoPlay
           loop
           muted
+          defaultMuted
           playsInline
           {...({ 'webkit-playsinline': 'true' })}
           preload="auto"
-          ref={(el) => {
-            if (el) {
-              const p = el.play();
-              if (p !== undefined) p.catch(() => {});
-            }
+          style={{
+            transform: 'translateZ(0)',
+            willChange: 'transform',
+            backfaceVisibility: 'hidden',
           }}
         />
         )}
@@ -498,6 +519,7 @@ export default function WeddingClassic({ customData } = {}) {
 
         <motion.div
           className="relative z-20 flex flex-col items-center text-center px-4 w-full"
+          style={{ transform: 'translateZ(0)', willChange: 'opacity, transform' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5, delay: 0.5 }}
