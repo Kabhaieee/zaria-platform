@@ -314,9 +314,9 @@ export default function WeddingClassic({ customData } = {}) {
               className="absolute inset-0 w-full h-full object-cover transition-all duration-1000"
             />
 
-            {/* Dark contrast overlay while waiting for user interaction */}
-            {doorState === 'waiting' && (
-              <div className={`absolute inset-0 ${isBurgundy ? 'bg-[#2D070D]/40' : 'bg-black/20'} z-10 transition-opacity`} />
+            {/* Dark contrast overlay while waiting for user interaction (disabled for isBurgundy so door video appears in 100% original colors) */}
+            {doorState === 'waiting' && !isBurgundy && (
+              <div className="absolute inset-0 bg-black/20 z-10 transition-opacity" />
             )}
 
             {/* Interactive glassmorphism button to open the invitation */}
@@ -336,9 +336,9 @@ export default function WeddingClassic({ customData } = {}) {
                 }}
                 className={`z-30 flex flex-col items-center justify-center px-10 py-10 ${
                   isBurgundy
-                    ? 'bg-[#2D070D]/40 border-[#E6C79C]/40 shadow-[0_8px_32px_rgba(45,7,13,0.6)] hover:bg-[#4A0E17]/50'
+                    ? 'bg-black/20 border-[#E6C79C]/40 shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:bg-black/30'
                     : 'bg-white/10 border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:bg-white/15'
-                } backdrop-blur-md border rounded-[2.5rem] cursor-pointer hover:scale-105 transition-all text-center min-w-[280px] max-w-sm relative overflow-hidden group`}
+                } backdrop-blur-sm border rounded-[2.5rem] cursor-pointer hover:scale-105 transition-all text-center min-w-[280px] max-w-sm relative overflow-hidden group`}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 1.1 }}
@@ -347,8 +347,8 @@ export default function WeddingClassic({ customData } = {}) {
                 {/* Hover shimmer highlight */}
                 <div className="absolute top-0 left-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
 
-                <span className={`${isBurgundy ? 'text-[#E6C79C]' : 'text-[#E8DCC8]'} font-['Aref_Ruqaa'] text-xl mb-3 opacity-90 tracking-wide`} style={{ textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}>دعوة زفاف</span>
-                <span className="text-white font-['Aref_Ruqaa'] text-3xl md:text-5xl mb-8 font-bold leading-relaxed px-4 text-center" style={{ textShadow: '0 4px 14px rgba(0,0,0,0.7)' }}>
+                <span className={`${isBurgundy ? 'text-[#E6C79C]' : 'text-[#E8DCC8]'} font-['Aref_Ruqaa'] text-xl mb-3 opacity-90 tracking-wide`} style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7)' }}>دعوة زفاف</span>
+                <span className="text-white font-['Aref_Ruqaa'] text-3xl md:text-5xl mb-8 font-bold leading-relaxed px-4 text-center" style={{ textShadow: '0 4px 14px rgba(0,0,0,0.8)' }}>
                   {customData ? `${groomFirst} & ${brideFirst}` : 'عمر و آيات'}
                 </span>
 
@@ -381,12 +381,12 @@ export default function WeddingClassic({ customData } = {}) {
         {/* Looping background media (client override via customData.backgroundMedia, else master hero video) */}
         {customData?.backgroundMedia && /\.(jpe?g|png|webp|avif|gif)$/i.test(customData.backgroundMedia) ? (
           <div
-            className="absolute inset-0 w-full h-full z-0 opacity-70 bg-cover bg-center"
+            className={`absolute inset-0 w-full h-full z-0 ${isBurgundy ? 'opacity-100' : 'opacity-70'} bg-cover bg-center`}
             style={{ backgroundImage: `url("${customData.backgroundMedia}")` }}
           />
         ) : (
         <video
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-75"
+          className={`absolute inset-0 w-full h-full object-cover z-0 ${isBurgundy ? 'opacity-100' : 'opacity-75'}`}
           src={customData?.backgroundMedia || '/hero.mp4'}
           poster={customData?.backgroundPoster || '/hero_poster.jpg'}
           autoPlay
@@ -403,14 +403,8 @@ export default function WeddingClassic({ customData } = {}) {
         />
         )}
 
-        {/* Gradient overlays for text contrast (Burgundy & Champagne luxury scrim for omar-ayat) */}
-        {isBurgundy ? (
-          <>
-            <div className="absolute inset-0 bg-[#2D070D]/60 z-10 pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#2D070D]/90 via-[#4A0E17]/45 to-[#2D070D]/95 z-10 pointer-events-none" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,18,30,0.35)_0%,rgba(45,7,13,0.85)_100%)] z-10 pointer-events-none" />
-          </>
-        ) : (
+        {/* Overlays: COMPLETELY REMOVED for isBurgundy so the video displays in 100% natural original colors */}
+        {!isBurgundy && (
           <>
             <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-10 pointer-events-none" />
@@ -424,7 +418,8 @@ export default function WeddingClassic({ customData } = {}) {
           transition={{ duration: 1.5, delay: 0.5 }}
         >
           <motion.p
-            className={`text-sm md:text-base mb-6 font-['Noto_Naskh_Arabic'] ${isBurgundy ? 'text-[#F7E7CE]' : 'text-white'} opacity-90 drop-shadow-md`}
+            className={`text-sm md:text-base mb-6 font-['Noto_Naskh_Arabic'] ${isBurgundy ? 'text-[#FDFBF7]' : 'text-white'} opacity-95`}
+            style={{ textShadow: '0 2px 8px rgba(0,0,0,0.9), 0 4px 16px rgba(0,0,0,0.7)' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1 }}
@@ -433,18 +428,19 @@ export default function WeddingClassic({ customData } = {}) {
           </motion.p>
 
           <motion.div
-            className="flex items-center gap-2 mb-8 opacity-80"
+            className="flex items-center gap-2 mb-8 opacity-90"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 1.3 }}
           >
             <span className={`w-12 h-[1px] bg-gradient-to-r from-transparent ${isBurgundy ? 'to-[#E6C79C]' : 'to-[#d4b886]'}`} />
-            <b className={`${isBurgundy ? 'text-[#E6C79C]' : 'text-[#d4b886]'} text-xs`}>♦</b>
+            <b className={`${isBurgundy ? 'text-[#E6C79C]' : 'text-[#d4b886]'} text-xs`} style={{ textShadow: '0 2px 8px rgba(0,0,0,0.9)' }}>♦</b>
             <span className={`w-12 h-[1px] bg-gradient-to-l from-transparent ${isBurgundy ? 'to-[#E6C79C]' : 'to-[#d4b886]'}`} />
           </motion.div>
 
           <motion.h1
-            className={`text-4xl sm:text-5xl md:text-7xl font-['Aref_Ruqaa'] ${isBurgundy ? 'text-[#FDFBF7]' : 'text-white'} drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)] mb-4`}
+            className={`text-4xl sm:text-5xl md:text-7xl font-['Aref_Ruqaa'] ${isBurgundy ? 'text-[#FDFBF7]' : 'text-white'} mb-4`}
+            style={{ textShadow: '0 3px 12px rgba(0,0,0,0.95), 0 6px 25px rgba(0,0,0,0.8)' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1.6 }}
@@ -453,7 +449,8 @@ export default function WeddingClassic({ customData } = {}) {
           </motion.h1>
 
           <motion.div
-            className={`text-2xl md:text-3xl font-light ${isBurgundy ? 'text-[#E6C79C]' : 'text-[#d4b886]'} mb-4 drop-shadow-md`}
+            className={`text-2xl md:text-3xl font-light ${isBurgundy ? 'text-[#E6C79C]' : 'text-[#d4b886]'} mb-4`}
+            style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9)' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1.9 }}
@@ -462,7 +459,8 @@ export default function WeddingClassic({ customData } = {}) {
           </motion.div>
 
           <motion.h1
-            className={`text-4xl sm:text-5xl md:text-7xl font-['Aref_Ruqaa'] ${isBurgundy ? 'text-[#FDFBF7]' : 'text-white'} drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)] mb-12`}
+            className={`text-4xl sm:text-5xl md:text-7xl font-['Aref_Ruqaa'] ${isBurgundy ? 'text-[#FDFBF7]' : 'text-white'} mb-12`}
+            style={{ textShadow: '0 3px 12px rgba(0,0,0,0.95), 0 6px 25px rgba(0,0,0,0.8)' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 2.2 }}
@@ -471,7 +469,8 @@ export default function WeddingClassic({ customData } = {}) {
           </motion.h1>
 
           <motion.p
-            className={`text-lg md:text-xl font-['Aref_Ruqaa'] opacity-95 mb-8 max-w-sm mx-auto drop-shadow-md ${isBurgundy ? 'text-[#F7E7CE]' : 'text-[#fdf8f5]'}`}
+            className={`text-lg md:text-xl font-['Aref_Ruqaa'] opacity-95 mb-8 max-w-sm mx-auto ${isBurgundy ? 'text-[#FDFBF7]' : 'text-[#fdf8f5]'}`}
+            style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9), 0 4px 18px rgba(0,0,0,0.7)' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 2.5 }}
@@ -481,6 +480,7 @@ export default function WeddingClassic({ customData } = {}) {
 
           <motion.p
             className="text-sm md:text-base opacity-80 mb-4 tracking-widest font-mono"
+            style={{ textShadow: '0 2px 8px rgba(0,0,0,0.9)' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 3.1 }}
@@ -489,7 +489,8 @@ export default function WeddingClassic({ customData } = {}) {
           </motion.p>
 
           <motion.p
-            className={`text-lg md:text-xl font-['Aref_Ruqaa'] ${isBurgundy ? 'text-[#E6C79C]' : 'text-[#d4b886]'} drop-shadow-md`}
+            className={`text-lg md:text-xl font-['Aref_Ruqaa'] ${isBurgundy ? 'text-[#E6C79C]' : 'text-[#d4b886]'}`}
+            style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9)' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 3.4 }}
@@ -816,170 +817,178 @@ export default function WeddingClassic({ customData } = {}) {
           </div>
         </motion.div>
 
-        {/* RSVP Form Section ("تأكيد الحضور") */}
-        <div className="w-full flex justify-center mt-12 mb-8">
-          <div className="text-center w-full relative z-10 flex flex-col items-center">
-            <div className="flex items-center justify-center gap-3 mb-2 opacity-80">
-              <div className={`w-12 h-[1px] ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
-              <span className="text-xl">🤍</span>
-              <div className={`w-12 h-[1px] ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
-            </div>
-            <h3 className={`text-[42px] ${isBurgundy ? 'text-[#F7E7CE]' : 'text-[#5A4F46]'} font-bold ${aref.className} mb-1 mt-2`}>
-              تأكيد الحضور
-            </h3>
-            <p className={`text-center ${isBurgundy ? 'text-[#F7E7CE]/80' : 'text-[#8A7968]'} text-[15px] mb-2 font-bold`}>يسعدنا تأكيد حضوركم</p>
-          </div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="w-full px-6 mb-24"
-        >
-          <form onSubmit={handleRSVPSubmit} className={`${isBurgundy ? 'bg-[#FDFBF7] border border-[#E6C79C]/60 shadow-[0_15px_45px_rgba(45,7,13,0.35)]' : 'bg-[#FDFBF9] border border-[#C49A6C]/40 shadow-[0_10px_40px_rgba(196,154,108,0.1)]'} rounded-[2rem] p-8 relative overflow-hidden`}>
-            {/* Guest Full Name Input */}
-            <div className="mb-5 mt-2">
-              <label className={`block ${isBurgundy ? 'text-[#4A0E17]/80' : 'text-[#8A7968]'} mb-2 text-xs font-bold`}>الاسم الكريم</label>
-              <input
-                type="text"
-                required
-                maxLength={80}
-                value={rsvpData.name}
-                onChange={(e) => setRsvpData({ ...rsvpData, name: e.target.value })}
-                placeholder="أدخل اسمك هنا..."
-                className={`w-full border-b ${isBurgundy ? 'border-[#E6C79C]/50 text-[#4A0E17] focus:border-[#63121E] placeholder-[#4A0E17]/40' : 'border-[#C49A6C]/30 text-[#5A4F46] focus:border-[#C49A6C] placeholder-[#8A7968]/40'} bg-transparent px-2 py-2 text-sm focus:outline-none transition-colors`}
-              />
-            </div>
-
-            {/* Attendance Status Radio Selection */}
-            <div className="mb-6">
-              <label className={`block ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-3 text-sm font-bold text-right w-full`}>هل ستحضر؟</label>
-              <div className="flex gap-2">
-                <label className={`flex-1 cursor-pointer rounded-xl border ${
-                  rsvpData.status === 'attending'
-                    ? isBurgundy
-                      ? 'bg-[#63121E] border-[#63121E] text-[#F7E7CE]'
-                      : 'bg-[#A67C52] border-[#A67C52] text-white'
-                    : isBurgundy
-                    ? 'border-[#E6C79C]/50 bg-white text-[#4A0E17] hover:border-[#63121E]'
-                    : 'border-[#C49A6C]/30 bg-white text-[#5A4F46] hover:border-[#C49A6C]/60'
-                } py-2.5 text-center transition-colors text-[13px] font-bold`}>
-                  <input type="radio" name="status" value="attending" checked={rsvpData.status === 'attending'} onChange={(e) => setRsvpData({ ...rsvpData, status: e.target.value })} className="hidden" />
-                  نعم
-                </label>
-                <label className={`flex-1 cursor-pointer rounded-xl border ${
-                  rsvpData.status === 'not_attending'
-                    ? isBurgundy
-                      ? 'bg-[#63121E] border-[#63121E] text-[#F7E7CE]'
-                      : 'bg-[#A67C52] border-[#A67C52] text-white'
-                    : isBurgundy
-                    ? 'border-[#E6C79C]/50 bg-white text-[#4A0E17] hover:border-[#63121E]'
-                    : 'border-[#C49A6C]/30 bg-white text-[#5A4F46] hover:border-[#C49A6C]/60'
-                } py-2.5 text-center transition-colors text-[13px] font-bold`}>
-                  <input type="radio" name="status" value="not_attending" checked={rsvpData.status === 'not_attending'} onChange={(e) => setRsvpData({ ...rsvpData, status: e.target.value })} className="hidden" />
-                  لا
-                </label>
-                <label className={`flex-1 cursor-pointer rounded-xl border ${
-                  rsvpData.status === 'maybe'
-                    ? isBurgundy
-                      ? 'bg-[#63121E] border-[#63121E] text-[#F7E7CE]'
-                      : 'bg-[#A67C52] border-[#A67C52] text-white'
-                    : isBurgundy
-                    ? 'border-[#E6C79C]/50 bg-white text-[#4A0E17] hover:border-[#63121E]'
-                    : 'border-[#C49A6C]/30 bg-white text-[#5A4F46] hover:border-[#C49A6C]/60'
-                } py-2.5 text-center transition-colors text-[13px] font-bold`}>
-                  <input type="radio" name="status" value="maybe" checked={rsvpData.status === 'maybe'} onChange={(e) => setRsvpData({ ...rsvpData, status: e.target.value })} className="hidden" />
-                  ربما
-                </label>
+        {/* RSVP Form Section ("تأكيد الحضور") - Omitted if hideRsvp is true */}
+        {!customData?.hideRsvp && (
+          <>
+            <div className="w-full flex justify-center mt-12 mb-8">
+              <div className="text-center w-full relative z-10 flex flex-col items-center">
+                <div className="flex items-center justify-center gap-3 mb-2 opacity-80">
+                  <div className={`w-12 h-[1px] ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+                  <span className="text-xl">🤍</span>
+                  <div className={`w-12 h-[1px] ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+                </div>
+                <h3 className={`text-[42px] ${isBurgundy ? 'text-[#F7E7CE]' : 'text-[#5A4F46]'} font-bold ${aref.className} mb-1 mt-2`}>
+                  تأكيد الحضور
+                </h3>
+                <p className={`text-center ${isBurgundy ? 'text-[#F7E7CE]/80' : 'text-[#8A7968]'} text-[15px] mb-2 font-bold`}>يسعدنا تأكيد حضوركم</p>
               </div>
             </div>
 
-            {/* Accompanying Guests Counter (Increment/Decrement) */}
-            <AnimatePresence>
-              {rsvpData.status !== 'not_attending' && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="mb-8"
-                >
-                  <label className={`block ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-4 text-xs font-bold text-center w-full`}>عدد المرافقين (عدا حضورك - 0 إن كنت وحدك)</label>
-                  <div className="flex items-center justify-center gap-6 w-full">
-                    <button
-                      type="button"
-                      onClick={() => setRsvpData({ ...rsvpData, guests: Math.max(0, (Number(rsvpData.guests) || 0) - 1) })}
-                      className={`w-10 h-10 rounded-full border ${isBurgundy ? 'border-[#E6C79C]/60 bg-white text-[#4A0E17] hover:bg-[#F7E7CE]' : 'border-[#C49A6C]/40 bg-white text-[#8A7968] hover:bg-[#F5EBE1] hover:text-[#C49A6C]'} flex items-center justify-center transition-colors`}
-                    >
-                      <Minus size={16} strokeWidth={1.5} />
-                    </button>
-                    <span className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} font-bold text-lg w-4 text-center`}>{rsvpData.guests}</span>
-                    <button
-                      type="button"
-                      onClick={() => setRsvpData({ ...rsvpData, guests: Math.min(20, (Number(rsvpData.guests) || 0) + 1) })}
-                      className={`w-10 h-10 rounded-full border ${isBurgundy ? 'border-[#E6C79C]/60 bg-white text-[#4A0E17] hover:bg-[#F7E7CE]' : 'border-[#C49A6C]/40 bg-white text-[#8A7968] hover:bg-[#F5EBE1] hover:text-[#C49A6C]'} flex items-center justify-center transition-colors`}
-                    >
-                      <Plus size={16} strokeWidth={1.5} />
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Optional Congratulatory Message Textarea */}
-            <div className="mb-8">
-              <label className={`block ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-2 text-xs font-bold flex items-center gap-2`}>كلمة للعروسين 💌</label>
-              <textarea
-                maxLength={500}
-                value={rsvpData.message}
-                onChange={(e) => setRsvpData({ ...rsvpData, message: e.target.value })}
-                placeholder="اكتب تهنئتك للعروسين..."
-                rows="3"
-                className={`w-full border ${isBurgundy ? 'border-[#E6C79C]/50 text-[#4A0E17] focus:border-[#63121E] placeholder-[#4A0E17]/40' : 'border-[#C49A6C]/30 text-[#5A4F46] focus:border-[#C49A6C] placeholder-[#8A7968]/50'} rounded-xl px-4 py-3 bg-white text-sm focus:outline-none transition-colors resize-none`}
-              ></textarea>
-            </div>
-
-            <button
-              type="submit"
-              className={`w-full ${isBurgundy ? 'bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] border border-[#E6C79C]/40 hover:from-[#4A0E17] hover:to-[#2D070D]' : 'bg-[#A67C52] text-white hover:bg-[#A88461]'} rounded-2xl py-4 mt-2 font-bold text-[15px] shadow-md transition-all flex items-center justify-center gap-2`}
-            >
-              إرسال التأكيد
-            </button>
-          </form>
-        </motion.div>
-
-        {/* Wishes & Greetings Guestbook Section ("كلمات المهنئين") */}
-        <div className="w-full flex justify-center mt-12 mb-8">
-          <div className={`${isBurgundy ? 'bg-[#2D070D]/80 border-[#E6C79C]/40 text-[#F7E7CE]' : 'bg-white/60 border-[#C49A6C]/30 text-[#5A4F46]'} backdrop-blur-sm border rounded-full px-8 py-3 shadow-sm flex items-center justify-center gap-3`}>
-            <span className="text-[20px] drop-shadow-sm">🌹</span>
-            <h3 className={`text-2xl font-bold ${aref.className}`}>
-              كلمات المهنئين
-            </h3>
-          </div>
-        </div>
-
-        <div className="w-full px-6 mb-24 flex flex-col gap-4">
-          {guestbookMessages.map((msg, idx) => (
             <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className={`${isBurgundy ? 'bg-[#FDFBF7] border-[#E6C79C]/40 shadow-md' : 'bg-white/80 border-[#C49A6C]/20 shadow-[0_4px_20px_rgba(196,154,108,0.05)]'} backdrop-blur-sm border rounded-2xl p-5 flex items-center gap-4 relative overflow-hidden`}
+              className="w-full px-6 mb-24"
             >
-              <div className={`w-14 h-14 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xl font-bold ${isBurgundy && idx % 2 === 0 ? 'bg-[#63121E]' : msg.avatarColor} shadow-inner`}>
-                {msg.avatarLetter}
-              </div>
-              <div className="flex flex-col flex-1">
-                <h4 className={`${isBurgundy ? 'text-[#63121E]' : 'text-[#5A4F46]'} font-bold text-lg mb-1`}>{msg.name}</h4>
-                <p className={`${isBurgundy ? 'text-[#4A0E17]/90' : 'text-[#8A7968]'} text-[13px] leading-relaxed`}>
-                  {msg.message}
-                </p>
-              </div>
+              <form onSubmit={handleRSVPSubmit} className={`${isBurgundy ? 'bg-[#FDFBF7] border border-[#E6C79C]/60 shadow-[0_15px_45px_rgba(45,7,13,0.35)]' : 'bg-[#FDFBF9] border border-[#C49A6C]/40 shadow-[0_10px_40px_rgba(196,154,108,0.1)]'} rounded-[2rem] p-8 relative overflow-hidden`}>
+                {/* Guest Full Name Input */}
+                <div className="mb-5 mt-2">
+                  <label className={`block ${isBurgundy ? 'text-[#4A0E17]/80' : 'text-[#8A7968]'} mb-2 text-xs font-bold`}>الاسم الكريم</label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={80}
+                    value={rsvpData.name}
+                    onChange={(e) => setRsvpData({ ...rsvpData, name: e.target.value })}
+                    placeholder="أدخل اسمك هنا..."
+                    className={`w-full border-b ${isBurgundy ? 'border-[#E6C79C]/50 text-[#4A0E17] focus:border-[#63121E] placeholder-[#4A0E17]/40' : 'border-[#C49A6C]/30 text-[#5A4F46] focus:border-[#C49A6C] placeholder-[#8A7968]/40'} bg-transparent px-2 py-2 text-sm focus:outline-none transition-colors`}
+                  />
+                </div>
+
+                {/* Attendance Status Radio Selection */}
+                <div className="mb-6">
+                  <label className={`block ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-3 text-sm font-bold text-right w-full`}>هل ستحضر؟</label>
+                  <div className="flex gap-2">
+                    <label className={`flex-1 cursor-pointer rounded-xl border ${
+                      rsvpData.status === 'attending'
+                        ? isBurgundy
+                          ? 'bg-[#63121E] border-[#63121E] text-[#F7E7CE]'
+                          : 'bg-[#A67C52] border-[#A67C52] text-white'
+                        : isBurgundy
+                        ? 'border-[#E6C79C]/50 bg-white text-[#4A0E17] hover:border-[#63121E]'
+                        : 'border-[#C49A6C]/30 bg-white text-[#5A4F46] hover:border-[#C49A6C]/60'
+                    } py-2.5 text-center transition-colors text-[13px] font-bold`}>
+                      <input type="radio" name="status" value="attending" checked={rsvpData.status === 'attending'} onChange={(e) => setRsvpData({ ...rsvpData, status: e.target.value })} className="hidden" />
+                      نعم
+                    </label>
+                    <label className={`flex-1 cursor-pointer rounded-xl border ${
+                      rsvpData.status === 'not_attending'
+                        ? isBurgundy
+                          ? 'bg-[#63121E] border-[#63121E] text-[#F7E7CE]'
+                          : 'bg-[#A67C52] border-[#A67C52] text-white'
+                        : isBurgundy
+                        ? 'border-[#E6C79C]/50 bg-white text-[#4A0E17] hover:border-[#63121E]'
+                        : 'border-[#C49A6C]/30 bg-white text-[#5A4F46] hover:border-[#C49A6C]/60'
+                    } py-2.5 text-center transition-colors text-[13px] font-bold`}>
+                      <input type="radio" name="status" value="not_attending" checked={rsvpData.status === 'not_attending'} onChange={(e) => setRsvpData({ ...rsvpData, status: e.target.value })} className="hidden" />
+                      لا
+                    </label>
+                    <label className={`flex-1 cursor-pointer rounded-xl border ${
+                      rsvpData.status === 'maybe'
+                        ? isBurgundy
+                          ? 'bg-[#63121E] border-[#63121E] text-[#F7E7CE]'
+                          : 'bg-[#A67C52] border-[#A67C52] text-white'
+                        : isBurgundy
+                        ? 'border-[#E6C79C]/50 bg-white text-[#4A0E17] hover:border-[#63121E]'
+                        : 'border-[#C49A6C]/30 bg-white text-[#5A4F46] hover:border-[#C49A6C]/60'
+                    } py-2.5 text-center transition-colors text-[13px] font-bold`}>
+                      <input type="radio" name="status" value="maybe" checked={rsvpData.status === 'maybe'} onChange={(e) => setRsvpData({ ...rsvpData, status: e.target.value })} className="hidden" />
+                      ربما
+                    </label>
+                  </div>
+                </div>
+
+                {/* Accompanying Guests Counter (Increment/Decrement) */}
+                <AnimatePresence>
+                  {rsvpData.status !== 'not_attending' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mb-8"
+                    >
+                      <label className={`block ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-4 text-xs font-bold text-center w-full`}>عدد المرافقين (عدا حضورك - 0 إن كنت وحدك)</label>
+                      <div className="flex items-center justify-center gap-6 w-full">
+                        <button
+                          type="button"
+                          onClick={() => setRsvpData({ ...rsvpData, guests: Math.max(0, (Number(rsvpData.guests) || 0) - 1) })}
+                          className={`w-10 h-10 rounded-full border ${isBurgundy ? 'border-[#E6C79C]/60 bg-white text-[#4A0E17] hover:bg-[#F7E7CE]' : 'border-[#C49A6C]/40 bg-white text-[#8A7968] hover:bg-[#F5EBE1] hover:text-[#C49A6C]'} flex items-center justify-center transition-colors`}
+                        >
+                          <Minus size={16} strokeWidth={1.5} />
+                        </button>
+                        <span className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} font-bold text-lg w-4 text-center`}>{rsvpData.guests}</span>
+                        <button
+                          type="button"
+                          onClick={() => setRsvpData({ ...rsvpData, guests: Math.min(20, (Number(rsvpData.guests) || 0) + 1) })}
+                          className={`w-10 h-10 rounded-full border ${isBurgundy ? 'border-[#E6C79C]/60 bg-white text-[#4A0E17] hover:bg-[#F7E7CE]' : 'border-[#C49A6C]/40 bg-white text-[#8A7968] hover:bg-[#F5EBE1] hover:text-[#C49A6C]'} flex items-center justify-center transition-colors`}
+                        >
+                          <Plus size={16} strokeWidth={1.5} />
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Optional Congratulatory Message Textarea */}
+                <div className="mb-8">
+                  <label className={`block ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-2 text-xs font-bold flex items-center gap-2`}>كلمة للعروسين 💌</label>
+                  <textarea
+                    maxLength={500}
+                    value={rsvpData.message}
+                    onChange={(e) => setRsvpData({ ...rsvpData, message: e.target.value })}
+                    placeholder="اكتب تهنئتك للعروسين..."
+                    rows="3"
+                    className={`w-full border ${isBurgundy ? 'border-[#E6C79C]/50 text-[#4A0E17] focus:border-[#63121E] placeholder-[#4A0E17]/40' : 'border-[#C49A6C]/30 text-[#5A4F46] focus:border-[#C49A6C] placeholder-[#8A7968]/50'} rounded-xl px-4 py-3 bg-white text-sm focus:outline-none transition-colors resize-none`}
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  className={`w-full ${isBurgundy ? 'bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] border border-[#E6C79C]/40 hover:from-[#4A0E17] hover:to-[#2D070D]' : 'bg-[#A67C52] text-white hover:bg-[#A88461]'} rounded-2xl py-4 mt-2 font-bold text-[15px] shadow-md transition-all flex items-center justify-center gap-2`}
+                >
+                  إرسال التأكيد
+                </button>
+              </form>
             </motion.div>
-          ))}
-        </div>
+          </>
+        )}
+
+        {/* Wishes & Greetings Guestbook Section ("كلمات المهنئين") - Omitted if hideWishes is true */}
+        {!customData?.hideWishes && (
+          <>
+            <div className="w-full flex justify-center mt-12 mb-8">
+              <div className={`${isBurgundy ? 'bg-[#2D070D]/80 border-[#E6C79C]/40 text-[#F7E7CE]' : 'bg-white/60 border-[#C49A6C]/30 text-[#5A4F46]'} backdrop-blur-sm border rounded-full px-8 py-3 shadow-sm flex items-center justify-center gap-3`}>
+                <span className="text-[20px] drop-shadow-sm">🌹</span>
+                <h3 className={`text-2xl font-bold ${aref.className}`}>
+                  كلمات المهنئين
+                </h3>
+              </div>
+            </div>
+
+            <div className="w-full px-6 mb-24 flex flex-col gap-4">
+              {guestbookMessages.map((msg, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  className={`${isBurgundy ? 'bg-[#FDFBF7] border-[#E6C79C]/40 shadow-md' : 'bg-white/80 border-[#C49A6C]/20 shadow-[0_4px_20px_rgba(196,154,108,0.05)]'} backdrop-blur-sm border rounded-2xl p-5 flex items-center gap-4 relative overflow-hidden`}
+                >
+                  <div className={`w-14 h-14 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xl font-bold ${isBurgundy && idx % 2 === 0 ? 'bg-[#63121E]' : msg.avatarColor} shadow-inner`}>
+                    {msg.avatarLetter}
+                  </div>
+                  <div className="flex flex-col flex-1">
+                    <h4 className={`${isBurgundy ? 'text-[#63121E]' : 'text-[#5A4F46]'} font-bold text-lg mb-1`}>{msg.name}</h4>
+                    <p className={`${isBurgundy ? 'text-[#4A0E17]/90' : 'text-[#8A7968]'} text-[13px] leading-relaxed`}>
+                      {msg.message}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Floating Background Music Controller */}

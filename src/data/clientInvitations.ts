@@ -25,6 +25,10 @@ export const CLIENT_INVITATIONS: readonly CustomInvitationData[] = [
     // ثيم الألوان المخصص لدعوة عمر وآيات: Royal Burgundy & Warm Champagne
     theme: 'burgundy',
 
+    // إخفاء قسم تأكيد الحضور (RSVP) وقسم كلمات المهنئين
+    hideRsvp: true,
+    hideWishes: true,
+
     // نص الدعوة الترحيبي
     welcomeMessage:
       'بقلوبٍ مفعمةٍ بالمحبة والمودة، يسرّنا دعوتكم لمشاركتنا فرحة العمر في حفل زفافنا. بحضوركم تكتمل سعادتنا وتزدان ليلتنا بهجةً وسروراً.',

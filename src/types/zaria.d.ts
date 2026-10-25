@@ -296,6 +296,10 @@ export interface CustomInvitationData {
   introPoster?: string;
   /** Optional custom color theme override (e.g., 'burgundy' for Royal Burgundy & Warm Champagne). */
   theme?: string;
+  /** Whether to hide the RSVP form section ("تأكيد الحضور"). */
+  hideRsvp?: boolean;
+  /** Whether to hide the guest wishes/comments section ("كلمات المهنئين"). */
+  hideWishes?: boolean;
   /** Permanent demo congratulatory wishes shown in "كلمات المهنئين" for this client. */
   initialWishes?: { name: string; message: string }[];
 }
