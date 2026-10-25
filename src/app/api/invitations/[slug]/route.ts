@@ -5,6 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { lockedWriteResponse } from '@/lib/adminApiGuard';
 import {
   deleteClientInvitation,
   getClientInvitationBySlug,
@@ -47,6 +48,8 @@ export async function PUT(
   req: NextRequest,
   context: { params: Promise<{ slug: string }> }
 ) {
+  const locked = lockedWriteResponse();
+  if (locked) return locked;
   try {
     const { slug } = await context.params;
     const body = await req.json();
@@ -83,6 +86,8 @@ export async function DELETE(
   _req: NextRequest,
   context: { params: Promise<{ slug: string }> }
 ) {
+  const locked = lockedWriteResponse();
+  if (locked) return locked;
   try {
     const { slug } = await context.params;
     const deleted = await deleteClientInvitation(slug);

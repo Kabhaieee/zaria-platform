@@ -5,6 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { lockedWriteResponse } from '@/lib/adminApiGuard';
 import {
   getAllClientInvitations,
   getAllRSVPs,
@@ -38,6 +39,8 @@ export async function GET() {
  * Creates or updates a client invitation record.
  */
 export async function POST(req: NextRequest) {
+  const locked = lockedWriteResponse();
+  if (locked) return locked;
   try {
     const body = await req.json();
     if (!body?.slug || !body?.templateId) {

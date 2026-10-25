@@ -13,12 +13,10 @@ import Link from 'next/link';
 
 // 3. Internal components, hooks, and utility functions
 import TemplateRenderer from '@/components/templates/TemplateRenderer';
-import { decodeInvitationShareParam } from '@/lib/masterTemplates';
 
 // 4. TypeScript types
 import type { CustomInvitationData } from '@/types/zaria';
 
-const LOCAL_INVITATIONS_STORAGE_KEY = 'zaria_custom_invitations_v1';
 
 interface InviteClientViewProps {
   slug: string;
@@ -41,37 +39,6 @@ export default function InviteClientView({ slug, initialInvitation }: InviteClie
       if (initialInvitation) {
         setLoading(false);
         return;
-      }
-
-      // Check ?d= encoded share parameter first if present in URL
-      try {
-        const params = new URLSearchParams(window.location.search);
-        const encoded = params.get('d');
-        if (encoded) {
-          const decoded = decodeInvitationShareParam(encoded, slug);
-          if (decoded && active) {
-            setInvitation(decoded);
-            setLoading(false);
-          }
-        }
-      } catch {
-        // Ignore URLSearchParams errors
-      }
-
-      // Check localStorage override/fallback in case admin edited in browser
-      try {
-        const raw = window.localStorage.getItem(LOCAL_INVITATIONS_STORAGE_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw) as Record<string, CustomInvitationData>;
-          if (parsed && parsed[slug]) {
-            if (active) {
-              setInvitation(parsed[slug]);
-              setLoading(false);
-            }
-          }
-        }
-      } catch {
-        // Ignore storage errors
       }
 
       // Fetch latest from API to ensure fresh data

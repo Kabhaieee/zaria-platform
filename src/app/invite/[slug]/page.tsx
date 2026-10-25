@@ -12,14 +12,13 @@ import type { Metadata } from 'next';
 // 3. Internal components, hooks, and utility functions
 import InviteClientView from './InviteClientView';
 import { getStaticInvitationBySlug } from '@/data/clientInvitations';
-import { getClientInvitationBySlug, upsertClientInvitation } from '@/lib/invitationStore';
-import { decodeInvitationShareParam, getMasterTemplate } from '@/lib/masterTemplates';
+import { getClientInvitationBySlug } from '@/lib/invitationStore';
+import { getMasterTemplate } from '@/lib/masterTemplates';
 
 export const dynamic = 'force-dynamic';
 
 interface InvitePageProps {
   params: Promise<{ slug: string }>;
-  searchParams?: Promise<{ d?: string }>;
 }
 
 /**
@@ -47,14 +46,10 @@ function getOccasionTitlePrefix(templateId?: string): string {
 /**
  * Generates dynamic OpenGraph / WhatsApp share metadata for each client's invitation slug.
  */
-export async function generateMetadata({ params, searchParams }: InvitePageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: InvitePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const resolvedSearch = searchParams ? await searchParams : undefined;
-  let invitation =
+  const invitation =
     getStaticInvitationBySlug(slug) ?? (await getClientInvitationBySlug(slug));
-  if (!invitation && resolvedSearch?.d) {
-    invitation = decodeInvitationShareParam(resolvedSearch.d, slug);
-  }
 
   if (!invitation) {
     return {
@@ -91,18 +86,12 @@ export async function generateMetadata({ params, searchParams }: InvitePageProps
 /**
  * Server Component entry point for `/invite/[slug]`.
  */
-export default async function ClientInvitationPage({ params, searchParams }: InvitePageProps) {
+export default async function ClientInvitationPage({ params }: InvitePageProps) {
   const { slug } = await params;
-  const resolvedSearch = searchParams ? await searchParams : undefined;
-  let invitation =
+  // Invitations come ONLY from the permanent config (or the server store); URL-encoded
+  // `?d=` payloads are ignored so nobody can create invitations by crafting a link.
+  const invitation =
     getStaticInvitationBySlug(slug) ?? (await getClientInvitationBySlug(slug));
-
-  if (!invitation && resolvedSearch?.d) {
-    const decoded = decodeInvitationShareParam(resolvedSearch.d, slug);
-    if (decoded) {
-      invitation = await upsertClientInvitation(decoded);
-    }
-  }
 
   return <InviteClientView slug={slug} initialInvitation={invitation} />;
 }
