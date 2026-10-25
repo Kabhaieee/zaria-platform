@@ -20,6 +20,8 @@ export const dynamic = 'force-dynamic';
  * Returns all custom client invitations and their RSVP records for the Admin Dashboard.
  */
 export async function GET() {
+  const locked = lockedWriteResponse();
+  if (locked) return locked;
   try {
     const [invitations, rsvps] = await Promise.all([
       getAllClientInvitations(),
