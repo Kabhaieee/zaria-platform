@@ -116,6 +116,35 @@ const ScrollHeart = ({ className = 'w-6 h-6 text-[#C49A6C]', color }) => (
   </svg>
 );
 
+/**
+ * Ornate vertical calligraphic Arabic "Waw" (حرف الواو المزخرف المتداخل رأسيًا)
+ * Renders the custom calligraphic vector shape matching the royal invitation design,
+ * styled in warm champagne-gold (#D4AF37) for the dark hero screen or deep burgundy (#5A1821) between fathers' names.
+ */
+const CalligraphicWaw = ({
+  className = 'h-10 w-auto',
+  color = '#D4AF37',
+  dropShadow = true,
+  alt = 'و',
+}) => (
+  <svg
+    viewBox="0 0 160 188"
+    className={`${className} inline-block select-none pointer-events-none transition-transform`}
+    style={{
+      color,
+      filter: dropShadow ? 'drop-shadow(0 2px 8px rgba(0,0,0,0.45))' : 'none',
+    }}
+    aria-label={alt}
+    role="img"
+  >
+    <path
+      d="M 16,6 L 14,7 L 9,12 L 9,21 L 10,23 L 13,27 L 16,29 L 17,31 L 17,39 L 16,44 L 13,49 L 13,54 L 15,57 L 20,63 L 20,66 L 19,67 L 19,70 L 20,72 L 23,75 L 24,77 L 24,82 L 23,84 L 21,86 L 20,90 L 20,94 L 21,97 L 25,105 L 28,109 L 39,119 L 40,120 L 43,123 L 44,124 L 47,127 L 48,128 L 51,131 L 52,132 L 55,135 L 56,136 L 59,139 L 60,140 L 75,155 L 76,156 L 84,165 L 86,167 L 94,174 L 97,175 L 100,178 L 106,180 L 110,180 L 111,179 L 116,179 L 118,178 L 123,174 L 135,163 L 140,158 L 153,143 L 158,139 L 159,133 L 155,135 L 149,140 L 138,150 L 127,160 L 125,163 L 120,167 L 117,169 L 115,170 L 113,171 L 105,171 L 102,170 L 100,169 L 95,166 L 65,135 L 64,134 L 61,131 L 60,130 L 59,130 L 55,126 L 53,124 L 52,122 L 52,117 L 57,112 L 62,109 L 68,106 L 71,103 L 79,99 L 82,96 L 91,90 L 93,90 L 97,86 L 99,86 L 103,82 L 105,82 L 109,78 L 111,77 L 114,76 L 114,75 L 115,74 L 119,72 L 116,72 L 113,75 L 109,76 L 107,78 L 105,79 L 103,79 L 101,81 L 99,82 L 92,83 L 84,83 L 80,78 L 77,75 L 76,74 L 73,71 L 72,70 L 68,66 L 65,63 L 62,62 L 61,58 L 63,55 L 68,48 L 72,43 L 78,37 L 80,33 L 79,31 L 81,30 L 81,27 L 84,24 L 84,22 L 82,21 L 77,20 L 73,17 L 67,16 L 62,16 L 61,19 L 55,25 L 52,27 L 46,27 L 46,26 L 46,23 L 46,21 L 57,11 L 52,10 L 50,12 L 48,13 L 43,14 L 36,14 L 34,15 L 31,18 L 29,19 L 26,19 L 24,18 L 20,14 L 19,12 L 19,9 L 20,8 L 20,6 Z M 111,123 L 109,124 L 107,125 L 98,134 L 96,137 L 96,139 L 97,141 L 99,143 L 105,143 L 118,130 L 118,126 L 116,124 L 113,123 Z M 91,101 L 89,102 L 84,106 L 77,113 L 75,117 L 76,119 L 78,121 L 80,122 L 83,122 L 85,121 L 91,115 L 96,109 L 97,107 L 97,104 L 94,101 Z"
+      fill="currentColor"
+      fillRule="evenodd"
+    />
+  </svg>
+);
+
 const DEFAULT_CLASSIC_WISHES = [
   { name: 'أم محمد', message: 'ألف مبروك 🤍 بالرفاه والبنين إن شاء الله، فرحتكم فرحتنا', avatarColor: 'bg-[#A888B5]', avatarLetter: 'أ' },
   { name: 'سارة', message: 'عقبال ما نفرح بيكم بأحلى المناسبات، دعوة بغاية الذوق 🤩', avatarColor: 'bg-[#6B4B75]', avatarLetter: 'س' },
@@ -592,17 +621,13 @@ export default function WeddingClassic({ customData } = {}) {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 1.9 }}
             >
-              <span className="w-8 sm:w-12 h-[1px] bg-gradient-to-r from-transparent to-[#E6C79C]/70" />
-              <span
-                className="text-3xl sm:text-4xl md:text-5xl text-[#E6C79C] leading-none select-none font-['Aref_Ruqaa']"
-                style={{
-                  fontFamily: 'var(--font-aref-ruqaa), serif',
-                  textShadow: '0 2px 12px rgba(0,0,0,0.95), 0 0 20px rgba(230,199,156,0.4)',
-                }}
-              >
-                و
-              </span>
-              <span className="w-8 sm:w-12 h-[1px] bg-gradient-to-l from-transparent to-[#E6C79C]/70" />
+              <span className="w-8 sm:w-14 h-[1px] bg-gradient-to-r from-transparent to-[#E6C79C]/70" />
+              <CalligraphicWaw
+                className="h-12 w-auto my-2"
+                color="#D4AF37"
+                dropShadow={true}
+              />
+              <span className="w-8 sm:w-14 h-[1px] bg-gradient-to-l from-transparent to-[#E6C79C]/70" />
             </motion.div>
           ) : (
             <motion.div
@@ -723,35 +748,39 @@ export default function WeddingClassic({ customData } = {}) {
 
             {isBurgundy ? (
               <div className="w-full flex flex-col items-center text-center px-1 sm:px-4 mb-10">
-                {/* Line 1: Centered Opening phrase */}
+                {/* Row 1 (Top line): يتشرف بكل ودّ ومحبة */}
                 <p
-                  className="text-[15px] sm:text-base md:text-lg text-[#4A0E17] font-semibold mb-6"
+                  className="text-lg sm:text-xl text-[#4A0E17] font-semibold mb-6 tracking-wide"
                   style={{ fontFamily: 'var(--font-amiri), serif' }}
                 >
                   يتشرف بكل ودّ ومحبة
                 </p>
 
-                {/* Line 2: Hosts / Fathers (Two columns space-between with 'و' in center) */}
-                <div className="w-full flex items-center justify-between gap-1 sm:gap-4 mb-7 px-1 sm:px-3 text-[#4A0E17]">
-                  <div className="flex-1 text-center">
+                {/* Row 2 (Fathers' Names): 3-column layout */}
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 w-full mb-8 px-1 text-[#4A0E17]">
+                  {/* Right side: Groom's father */}
+                  <div className="text-center">
                     <p
-                      className="text-[15px] sm:text-lg font-bold leading-snug whitespace-nowrap"
+                      className="text-lg sm:text-xl font-bold leading-snug whitespace-nowrap"
                       style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}
                     >
                       {groomFather}
                     </p>
                   </div>
-                  <div className="shrink-0 px-1">
-                    <span
-                      className="text-lg sm:text-xl text-[#E6C79C] font-bold"
-                      style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}
-                    >
-                      و
-                    </span>
+
+                  {/* Center: The decorative calligraphic Waw */}
+                  <div className="flex items-center justify-center px-1">
+                    <CalligraphicWaw
+                      className="h-8 w-auto"
+                      color="#5A1821"
+                      dropShadow={false}
+                    />
                   </div>
-                  <div className="flex-1 text-center">
+
+                  {/* Left side: Bride's father */}
+                  <div className="text-center">
                     <p
-                      className="text-[15px] sm:text-lg font-bold leading-snug whitespace-nowrap"
+                      className="text-lg sm:text-xl font-bold leading-snug whitespace-nowrap"
                       style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}
                     >
                       {brideFather}
@@ -759,52 +788,52 @@ export default function WeddingClassic({ customData } = {}) {
                   </div>
                 </div>
 
-                {/* Line 3: Centered invitation phrase */}
+                {/* Row 3 (Middle Connector — Clearly Separated): بدعوتكم لحضور حفل زفاف */}
                 <p
-                  className="text-[15px] sm:text-base md:text-lg text-[#4A0E17] font-semibold mb-7"
+                  className="my-8 py-2 text-lg sm:text-xl text-[#4A0E17] font-semibold tracking-wide"
                   style={{ fontFamily: 'var(--font-amiri), serif' }}
                 >
                   بدعوتكم لحضور حفل زفاف
                 </p>
 
-                {/* Lines 4 & 5: Couple Names (Two columns: Right for Groom, Left for Bride) */}
-                <div className="w-full grid grid-cols-2 gap-2 sm:gap-6 px-1 sm:px-4 py-2 items-start">
+                {/* Row 4 (Couple Titles & Names — With Anti-Overlap Spacing) */}
+                <div className="grid grid-cols-2 gap-6 w-full mt-6 pt-2 items-start text-center px-1 sm:px-4">
                   {/* Right Column: Groom */}
                   <div className="flex flex-col items-center text-center">
-                    <span
-                      className="text-xs sm:text-sm text-[#63121E]/80 font-bold mb-1"
+                    <div
+                      className="text-base sm:text-lg text-[#63121E]/85 font-bold mb-6 tracking-wide"
                       style={{ fontFamily: 'var(--font-amiri), serif' }}
                     >
                       ابنه المهندس
-                    </span>
-                    <span
-                      className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#63121E] tracking-wide"
+                    </div>
+                    <div
+                      className="text-4xl sm:text-5xl font-bold leading-relaxed pt-2 text-[#63121E] tracking-wider select-none"
                       style={{
                         fontFamily: 'var(--font-aref-ruqaa), serif',
                         textShadow: '0 2px 8px rgba(99,18,30,0.15)',
                       }}
                     >
                       عُمَر
-                    </span>
+                    </div>
                   </div>
 
                   {/* Left Column: Bride */}
                   <div className="flex flex-col items-center text-center">
-                    <span
-                      className="text-xs sm:text-sm text-[#63121E]/80 font-bold mb-1"
+                    <div
+                      className="text-base sm:text-lg text-[#63121E]/85 font-bold mb-6 tracking-wide"
                       style={{ fontFamily: 'var(--font-amiri), serif' }}
                     >
                       ابنته الدكتورة
-                    </span>
-                    <span
-                      className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#63121E] tracking-wide"
+                    </div>
+                    <div
+                      className="text-4xl sm:text-5xl font-bold leading-relaxed pt-2 text-[#63121E] tracking-wider select-none"
                       style={{
                         fontFamily: 'var(--font-aref-ruqaa), serif',
                         textShadow: '0 2px 8px rgba(99,18,30,0.15)',
                       }}
                     >
                       آيَات
-                    </span>
+                    </div>
                   </div>
                 </div>
               </div>
