@@ -186,11 +186,36 @@ export default function WeddingClassic({ customData } = {}) {
   ]);
   const familyNames =
     customData?.familyNames?.trim() ||
-    (isBurgundy ? 'عائلة السخون & عائلة قبها' : 'عائلة العمري & عائلة الخطيب');
+    (isBurgundy ? 'عائلة السخن & عائلة قبها' : 'عائلة العمري & عائلة الخطيب');
+  const groomFather =
+    customData?.groomFather ||
+    (isBurgundy ? 'الدكتور سهيل السخن' : 'الدكتور سهيل أبو عمر');
+  const brideFather =
+    customData?.brideFather ||
+    (isBurgundy ? 'المهندس علي قبها' : 'المهندس علي أبو نضال');
   const galleryPhotos =
     customData?.galleryImages && customData.galleryImages.length > 0
       ? customData.galleryImages
       : ['/gallery-1.jpg', '/gallery-2.jpg', '/gallery-3.jpg', '/gallery-4.jpg'];
+
+  const scheduleTimeline = isBurgundy
+    ? [
+        { time: '8:00 – 8:20', event: 'استقبال الضيوف', desc: 'استقبال وترحيب بالضيوف مع موسيقى هادئة.' },
+        { time: '8:20 – 8:35', event: 'زفة العروسين', desc: 'دخول العروسين وسط أجواء احتفالية مميزة.' },
+        { time: '8:35 – 8:50', event: 'الرقصة الأولى', desc: 'لحظة رومانسية خاصة للعروسين.' },
+        { time: '8:50 – 9:15', event: 'فرحة الأهل', desc: 'رقص واحتفال مع الأهل والمقرّبين.' },
+        { time: '9:15 – 9:50', event: 'أجواء الحفل 💃🕺', desc: 'موسيقى ورقص واحتفال مع جميع الحضور.' },
+        { time: '9:50 – 10:00', event: 'الختام 🤍', desc: 'آخر لحظات الاحتفال، صور جماعية، وتوديع الضيوف.' },
+      ]
+    : [
+        { time: '9:00 – 9:20', event: 'استقبال الضيوف', desc: 'استقبال وترحيب بالضيوف مع موسيقى هادئة وضيافة خفيفة.' },
+        { time: '9:20 – 9:35', event: 'دخول العروسين 🤍', desc: 'دخول العروسين وسط أجواء احتفالية وموسيقى خاصة.' },
+        { time: '9:35 – 9:50', event: 'الرقصة الأولى', desc: 'لحظة رومانسية خاصة للعروسين.' },
+        { time: '9:50 – 10:10', event: 'فرحة الأهل', desc: 'رقص واحتفال مع الأهل والمقرّبين.' },
+        { time: '10:10 – 10:40', event: 'أجواء الحفل 💃🏻🕺🏻', desc: 'موسيقى ورقص واحتفال مع جميع الحضور.' },
+        { time: '10:40 – 10:50', event: 'ضيافة ومشروبات ☕️', desc: 'تقديم الضيافة والمشروبات للضيوف.' },
+        { time: '10:50 – 11:00', event: 'الختام 🤍', desc: 'آخر لحظات الاحتفال، صور جماعية، وتوديع الضيوف.' },
+      ];
 
   // Reference and scroll progress binding for the vertical program timeline indicator
   const timelineRef = useRef(null);
@@ -314,7 +339,7 @@ export default function WeddingClassic({ customData } = {}) {
     : `${venueName} (${locationUrl})`;
 
   const calDescription = isOmarAyat
-    ? 'نتشرف بحضوركم ومشاركتنا فرحة العمر في حفل زفاف المهندس عمر والدكتورة آيات - عائلة السخون وعائلة قبها'
+    ? 'نتشرف بحضوركم ومشاركتنا فرحة العمر في حفل زفاف المهندس عمر والدكتورة آيات - عائلة السخن وعائلة قبها'
     : welcomeMessage;
 
   const calStartUtc = isOmarAyat ? '20261116T170000Z' : startIsoStr;
@@ -629,7 +654,7 @@ export default function WeddingClassic({ customData } = {}) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className={`relative w-full ${isBurgundy ? 'bg-[#FDFBF7] text-[#4A0E17] border border-[#E6C79C]/60 shadow-[0_20px_60px_rgba(45,7,13,0.4)]' : 'bg-[#FDFBF9] text-[#5A4F46] border border-[#C49A6C]/30 shadow-sm'} flex flex-col items-center pt-10 pb-12 px-2`}
+          className={`relative w-full ${isBurgundy ? 'bg-[#FDFBF7] text-[#4A0E17] border border-[#E6C79C]/60 shadow-[0_20px_60px_rgba(45,7,13,0.4)]' : 'bg-[#FDFBF9] text-[#5A4F46] border border-[#C49A6C]/30 shadow-sm'} flex flex-col items-center pt-10 pb-12 px-3 sm:px-6 max-w-full overflow-hidden`}
         >
           {/* Decorative Frame Corners */}
           <div className={`absolute -top-[1px] -left-[1px] ${isBurgundy ? 'bg-[#FDFBF7]' : 'bg-[#FDFBF9]'} p-1`}><ElegantCorner className="w-5 h-5" color={accentGold} /></div>
@@ -639,10 +664,19 @@ export default function WeddingClassic({ customData } = {}) {
 
           {/* Framed Content Wrapper */}
           <div className="relative z-20 flex flex-col items-center w-full">
-            {/* Opening Blessing / Dua */}
-            <p className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} text-[18px] md:text-xl mb-10 leading-loose text-center px-4 font-medium`}>
-              اللّهُمَّ بارِكْ لهُما وبارِكْ عليهِما واجمَعْ بينهُما في خَيْرٍ
-            </p>
+            {/* Opening Quranic Verse / Blessing */}
+            <div className="w-full max-w-full overflow-hidden px-4 sm:px-6 mb-8 text-center">
+              <p
+                className={`${
+                  isBurgundy ? 'text-[#4A0E17] font-bold' : 'text-[#5A4F46] font-medium'
+                } text-[15px] sm:text-base md:text-lg leading-[2.2] sm:leading-loose text-center break-words`}
+                style={{ fontFamily: 'var(--font-amiri), serif' }}
+              >
+                {customData?.quranVerse || (isBurgundy
+                  ? '﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ ﴾'
+                  : 'اللّهُمَّ بارِكْ لهُما وبارِكْ عليهِما واجمَعْ بينهُما في خَيْرٍ')}
+              </p>
+            </div>
 
             {/* Divider */}
             <div className="flex items-center justify-center gap-2 mb-10 w-2/3 opacity-60">
@@ -661,13 +695,13 @@ export default function WeddingClassic({ customData } = {}) {
             <div className="flex justify-between items-start text-[14px] font-bold w-full px-2 mb-12 mt-4">
               <div className="flex-1 text-center flex flex-col items-center">
                 <p className={`${isBurgundy ? 'text-[#63121E]/70' : 'text-[#8A7968]'} text-[11px] mb-3`}>والد العريس</p>
-                <p className={`leading-relaxed ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-5`}>الدكتور سهيل أبو عمر<br />وعائلته الكريمة</p>
+                <p className={`leading-relaxed ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-5`}>{groomFather}<br />وعائلته الكريمة</p>
                 <p className={`text-[20px] md:text-[22px] ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} font-bold leading-tight whitespace-pre-line ${aref.className}`}>{groomFullDisplay}</p>
               </div>
               <div className={`w-1.5 h-1.5 rotate-45 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'} mt-7 mx-2 opacity-60`}></div>
               <div className="flex-1 text-center flex flex-col items-center">
                 <p className={`${isBurgundy ? 'text-[#63121E]/70' : 'text-[#8A7968]'} text-[11px] mb-3`}>والد العروس</p>
-                <p className={`leading-relaxed ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-5`}>المهندس علي أبو نضال<br />وعائلته الكريمة</p>
+                <p className={`leading-relaxed ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-5`}>{brideFather}<br />وعائلته الكريمة</p>
                 <p className={`text-[20px] md:text-[22px] ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} font-bold leading-tight whitespace-pre-line ${aref.className}`}>{brideFullDisplay}</p>
               </div>
             </div>
@@ -682,16 +716,35 @@ export default function WeddingClassic({ customData } = {}) {
             {/* Live Countdown Timer */}
             <FadeIn>
               <h3 className={`text-3xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-8 font-bold ${aref.className}`}>يبدأ الاحتفال بعد</h3>
-              <div className="flex justify-center gap-3 mb-10 w-full px-4">
-                {[
-                  { label: 'يوم', value: timeLeft.days },
-                  { label: 'ساعة', value: timeLeft.hours },
-                  { label: 'دقيقة', value: timeLeft.minutes },
-                  { label: 'ثانية', value: timeLeft.seconds },
-                ].map((item, idx) => (
-                  <div key={idx} className={`w-[65px] h-[75px] ${isBurgundy ? 'bg-[#FDFBF7] border border-[#E6C79C]/60 shadow-[0_4px_15px_rgba(230,199,156,0.2)]' : 'bg-[#FDFBF9] border border-[#C49A6C]/30 shadow-sm'} rounded-xl flex flex-col items-center justify-center`}>
-                    <span className={`text-2xl font-bold font-sans ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-1`}>{toArabic(item.value.toString().padStart(2, '0'))}</span>
-                    <span className={`text-[11px] font-bold ${isBurgundy ? 'text-[#4A0E17]/80' : 'text-[#8A7968]'}`}>{item.label}</span>
+              <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-10 w-full max-w-md px-2 sm:px-4 mx-auto">
+                {(isBurgundy
+                  ? [
+                      { label: 'ثانية', value: timeLeft.seconds },
+                      { label: 'دقيقة', value: timeLeft.minutes },
+                      { label: 'ساعة', value: timeLeft.hours },
+                      { label: 'يوم', value: timeLeft.days },
+                    ]
+                  : [
+                      { label: 'يوم', value: timeLeft.days },
+                      { label: 'ساعة', value: timeLeft.hours },
+                      { label: 'دقيقة', value: timeLeft.minutes },
+                      { label: 'ثانية', value: timeLeft.seconds },
+                    ]
+                ).map((item, idx) => (
+                  <div
+                    key={idx}
+                    className={`w-full h-[72px] sm:h-[80px] ${
+                      isBurgundy
+                        ? 'bg-[#FDFBF7] border border-[#E6C79C]/60 shadow-[0_4px_15px_rgba(230,199,156,0.2)]'
+                        : 'bg-[#FDFBF9] border border-[#C49A6C]/30 shadow-sm'
+                    } rounded-xl flex flex-col items-center justify-center p-1`}
+                  >
+                    <span className={`text-xl sm:text-2xl font-bold font-sans ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-1`}>
+                      {toArabic(item.value.toString().padStart(2, '0'))}
+                    </span>
+                    <span className={`text-[11px] sm:text-xs font-bold ${isBurgundy ? 'text-[#4A0E17]/80' : 'text-[#8A7968]'}`}>
+                      {item.label}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -724,15 +777,7 @@ export default function WeddingClassic({ customData } = {}) {
                     />
                   </motion.div>
 
-                  {[
-                    { time: '9:00 – 9:20', event: 'استقبال الضيوف', desc: 'استقبال وترحيب بالضيوف مع موسيقى هادئة وضيافة خفيفة.' },
-                    { time: '9:20 – 9:35', event: 'دخول العروسين 🤍', desc: 'دخول العروسين وسط أجواء احتفالية وموسيقى خاصة.' },
-                    { time: '9:35 – 9:50', event: 'الرقصة الأولى', desc: 'لحظة رومانسية خاصة للعروسين.' },
-                    { time: '9:50 – 10:10', event: 'فرحة الأهل', desc: 'رقص واحتفال مع الأهل والمقرّبين.' },
-                    { time: '10:10 – 10:40', event: 'أجواء الحفل 💃🏻🕺🏻', desc: 'موسيقى ورقص واحتفال مع جميع الحضور.' },
-                    { time: '10:40 – 10:50', event: 'ضيافة ومشروبات ☕️', desc: 'تقديم الضيافة والمشروبات للضيوف.' },
-                    { time: '10:50 – 11:00', event: 'الختام 🤍', desc: 'آخر لحظات الاحتفال، صور جماعية، وتوديع الضيوف.' },
-                  ].map((prog, idx) => (
+                  {scheduleTimeline.map((prog, idx) => (
                     <div key={idx} className="flex flex-row-reverse items-start py-8 relative z-10">
                       {/* Left Side: Event Title & Description */}
                       <div className="flex-1 text-right pr-4">
@@ -825,19 +870,25 @@ export default function WeddingClassic({ customData } = {}) {
                   {customData ? `#${groomFirst.replace(/\s+/g, '_')}_و${brideFirst.replace(/\s+/g, '_')}` : '#عمر_وآيات'}
                 </p>
 
-                <p className={`text-[12px] ${isBurgundy ? 'text-[#4A0E17]/70' : 'text-[#8A7968]'} mb-4`}>للاستفسار والتأكيد</p>
-                <div className="flex justify-center mb-10">
-                  <a
-                    href="https://wa.me/9647700000000"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`border ${isBurgundy ? 'border-[#E6C79C]/60 text-[#4A0E17] hover:bg-[#F7E7CE]/40' : 'border-[#C49A6C]/50 text-[#5A4F46] hover:bg-[#F5EBE1]'} rounded-full px-6 py-2 text-[13px] bg-transparent flex items-center gap-2 transition-colors`}
-                  >
-                    أبو عمر <Phone size={14} className={isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} />
-                  </a>
-                </div>
+                {!isBurgundy && !customData?.hideContact && (
+                  <>
+                    <p className="text-[12px] text-[#8A7968] mb-4">للاستفسار والتأكيد</p>
+                    <div className="flex justify-center mb-10">
+                      <a
+                        href="https://wa.me/9647700000000"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="border border-[#C49A6C]/50 text-[#5A4F46] hover:bg-[#F5EBE1] rounded-full px-6 py-2 text-[13px] bg-transparent flex items-center gap-2 transition-colors"
+                      >
+                        أبو عمر <Phone size={14} className="text-[#C49A6C]" />
+                      </a>
+                    </div>
+                  </>
+                )}
 
-                <p className={`text-[13px] ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-8`}>{familyNames}</p>
+                <p className={`text-base sm:text-lg font-bold ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-8 tracking-wide`}>
+                  {familyNames}
+                </p>
               </div>
             </FadeIn>
           </div>

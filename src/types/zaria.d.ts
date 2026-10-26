@@ -280,8 +280,12 @@ export interface CustomInvitationData {
   youtubeVideoId?: string;
   /** Optional start timestamp in seconds for the background YouTube song (e.g. 65 for 1:05). */
   youtubeStartSeconds?: number;
-  /** Optional family names displayed in the invitation footer (e.g. 'عائلة السخون & عائلة قبها'). */
+  /** Optional family names displayed in the invitation footer (e.g. 'عائلة السخن & عائلة قبها'). */
   familyNames?: string;
+  /** Optional groom father name (e.g. 'الدكتور سهيل السخن'). */
+  groomFather?: string;
+  /** Optional bride father name (e.g. 'المهندس علي قبها'). */
+  brideFather?: string;
   /** Optional custom note(s) (e.g., 'جنة الأطفال منازلهم' or newline-separated notes). */
   customNote?: string;
   /** Creation timestamp. */
@@ -308,6 +312,10 @@ export interface CustomInvitationData {
   hideRsvp?: boolean;
   /** Whether to hide the guest wishes/comments section ("كلمات المهنئين"). */
   hideWishes?: boolean;
+  /** Whether to hide the contact / RSVP phone button ("للاستفسار والتأكيد"). */
+  hideContact?: boolean;
+  /** Optional custom Quranic verse or blessing at the top of the invitation card. */
+  quranVerse?: string;
   /** Permanent demo congratulatory wishes shown in "كلمات المهنئين" for this client. */
   initialWishes?: { name: string; message: string }[];
 }
