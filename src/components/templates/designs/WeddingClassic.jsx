@@ -128,7 +128,7 @@ const CalligraphicWaw = ({
   alt = 'و',
 }) => (
   <svg
-    viewBox="0 0 160 188"
+    viewBox="0 0 90 135"
     className={`${className} inline-block select-none pointer-events-none transition-transform`}
     style={{
       color,
@@ -138,7 +138,7 @@ const CalligraphicWaw = ({
     role="img"
   >
     <path
-      d="M 16,6 L 14,7 L 9,12 L 9,21 L 10,23 L 13,27 L 16,29 L 17,31 L 17,39 L 16,44 L 13,49 L 13,54 L 15,57 L 20,63 L 20,66 L 19,67 L 19,70 L 20,72 L 23,75 L 24,77 L 24,82 L 23,84 L 21,86 L 20,90 L 20,94 L 21,97 L 25,105 L 28,109 L 39,119 L 40,120 L 43,123 L 44,124 L 47,127 L 48,128 L 51,131 L 52,132 L 55,135 L 56,136 L 59,139 L 60,140 L 75,155 L 76,156 L 84,165 L 86,167 L 94,174 L 97,175 L 100,178 L 106,180 L 110,180 L 111,179 L 116,179 L 118,178 L 123,174 L 135,163 L 140,158 L 153,143 L 158,139 L 159,133 L 155,135 L 149,140 L 138,150 L 127,160 L 125,163 L 120,167 L 117,169 L 115,170 L 113,171 L 105,171 L 102,170 L 100,169 L 95,166 L 65,135 L 64,134 L 61,131 L 60,130 L 59,130 L 55,126 L 53,124 L 52,122 L 52,117 L 57,112 L 62,109 L 68,106 L 71,103 L 79,99 L 82,96 L 91,90 L 93,90 L 97,86 L 99,86 L 103,82 L 105,82 L 109,78 L 111,77 L 114,76 L 114,75 L 115,74 L 119,72 L 116,72 L 113,75 L 109,76 L 107,78 L 105,79 L 103,79 L 101,81 L 99,82 L 92,83 L 84,83 L 80,78 L 77,75 L 76,74 L 73,71 L 72,70 L 68,66 L 65,63 L 62,62 L 61,58 L 63,55 L 68,48 L 72,43 L 78,37 L 80,33 L 79,31 L 81,30 L 81,27 L 84,24 L 84,22 L 82,21 L 77,20 L 73,17 L 67,16 L 62,16 L 61,19 L 55,25 L 52,27 L 46,27 L 46,26 L 46,23 L 46,21 L 57,11 L 52,10 L 50,12 L 48,13 L 43,14 L 36,14 L 34,15 L 31,18 L 29,19 L 26,19 L 24,18 L 20,14 L 19,12 L 19,9 L 20,8 L 20,6 Z M 111,123 L 109,124 L 107,125 L 98,134 L 96,137 L 96,139 L 97,141 L 99,143 L 105,143 L 118,130 L 118,126 L 116,124 L 113,123 Z M 91,101 L 89,102 L 84,106 L 77,113 L 75,117 L 76,119 L 78,121 L 80,122 L 83,122 L 85,121 L 91,115 L 96,109 L 97,107 L 97,104 L 94,101 Z"
+      d="M58 8 C68 8 80 16 82 30 C84 46 72 58 54 62 C48 74 38 92 22 110 C14 118 6 123 2 125 C0 126 1 120 6 114 C18 96 28 78 34 60 C26 54 22 42 24 30 C27 16 38 8 52 8 C54 8 56 8 58 8 Z M50 20 C42 20 34 26 34 36 C34 46 42 50 48 50 C58 50 66 44 66 34 C66 24 58 20 50 20 Z"
       fill="currentColor"
       fillRule="evenodd"
     />
@@ -867,71 +867,134 @@ export default function WeddingClassic({ customData } = {}) {
               <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
             </div>
 
-            {/* Event Details Section for isBurgundy: Date -> Venue -> Map Location */}
+            {/* Rich Visual Calendar & Location Sections for isBurgundy */}
             {isBurgundy && (
-              <div className="w-full flex flex-col items-center text-center mb-8 px-2 sm:px-4">
-                {/* 1. التاريخ والوقت (Date & Time First) */}
-                <div className="flex flex-col items-center w-full max-w-sm mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-6 h-px bg-[#E6C79C]/60" />
-                    <span className="text-xs font-bold text-[#63121E] tracking-widest">التاريخ والوقت</span>
-                    <span className="w-6 h-px bg-[#E6C79C]/60" />
+              <>
+                {/* 1. Visual "احفظ الموعد 🤍" Calendar Card Widget */}
+                <FadeIn>
+                  <div className="flex items-center justify-center gap-2 mb-6">
+                    <span className="text-xl">🤍</span>
+                    <h3 className={`text-3xl font-bold ${aref.className} text-[#63121E]`}>
+                      احفظ الموعد
+                    </h3>
                   </div>
 
-                  <p
-                    className="text-base sm:text-lg font-bold text-[#4A0E17] mb-1 leading-relaxed"
-                    style={{ fontFamily: 'var(--font-amiri), serif' }}
-                  >
-                    الإثنين، 16 نوفمبر 2026 — الساعة 8:00 مساءً
-                  </p>
+                  <div className="bg-[#FDFBF7] shadow-[0_10px_30px_rgba(74,14,23,0.15)] border border-[#E6C79C]/80 rounded-2xl w-full max-w-sm overflow-hidden relative">
+                    {/* Ring notches */}
+                    <div className="absolute top-0 left-1/4 w-3 h-4 bg-[#E6C79C] rounded-full border border-[#D4AF37] -translate-y-1/2 z-10 shadow-sm"></div>
+                    <div className="absolute top-0 right-1/4 w-3 h-4 bg-[#E6C79C] rounded-full border border-[#D4AF37] -translate-y-1/2 z-10 shadow-sm"></div>
 
-                  <button
-                    type="button"
-                    onClick={handleSmartCalendarAdd}
-                    className="mt-3 py-2.5 px-6 rounded-full font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] border border-[#E6C79C]/50 hover:shadow-[0_4px_20px_rgba(74,14,23,0.35)] cursor-pointer"
-                  >
-                    <span>📅</span>
-                    <span>أضف الموعد إلى تقويم هاتفك</span>
-                  </button>
-                </div>
+                    {/* Top Header Bar */}
+                    <div className="bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] py-3 text-center font-bold text-lg pt-4 tracking-wide border-b border-[#E6C79C]/40">
+                      {calendarMonthYear}
+                    </div>
 
-                {/* Subtle Divider between Date and Venue */}
-                <div className="flex items-center justify-center gap-2 my-5 w-1/2 opacity-50">
+                    {/* Center of the card */}
+                    <div className="p-6 flex flex-col items-center relative">
+                      <p className="text-[#63121E] font-bold text-lg mb-1">{calendarWeekday}</p>
+                      <p
+                        className="text-7xl sm:text-8xl text-[#63121E] font-light mb-2 leading-none"
+                        style={{ fontFamily: 'var(--font-amiri), serif' }}
+                      >
+                        {calendarDay}
+                      </p>
+                      <p className="text-[#4A0E17]/85 font-bold text-sm">{arabicTime}</p>
+                    </div>
+
+                    {/* Dashed divider & Calendar Action Buttons */}
+                    <div className="border-t border-dashed border-[#E6C79C]/60 bg-[#FDFBF7]/90 px-4 sm:px-6 py-6 flex flex-col items-center gap-3 w-full">
+                      {/* Primary Smart One-Click Calendar Button */}
+                      <button
+                        type="button"
+                        onClick={handleSmartCalendarAdd}
+                        className="w-full py-3.5 px-6 rounded-full font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] border border-[#E6C79C]/50 hover:shadow-[0_4px_20px_rgba(74,14,23,0.35)] cursor-pointer"
+                      >
+                        <span>📅</span>
+                        <span>أضف الموعد إلى تقويم هاتفك بضغطة</span>
+                      </button>
+
+                      {/* Direct Calendar Options */}
+                      <div className="flex gap-2.5 w-full justify-center pt-1">
+                        <a
+                          href={googleCalUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 text-center border border-[#63121E] text-[#63121E] hover:bg-[#63121E] hover:text-[#F7E7CE] rounded-full py-2 text-xs font-bold transition-all shadow-sm block"
+                        >
+                          تقويم جوجل
+                        </a>
+                        <button
+                          type="button"
+                          onClick={handleAppleCalendar}
+                          className="flex-1 border border-[#63121E] text-[#63121E] hover:bg-[#63121E] hover:text-[#F7E7CE] rounded-full py-2 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                        >
+                          تقويم آيفون (Apple)
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </FadeIn>
+
+                {/* Divider between Calendar and Location */}
+                <div className="flex items-center justify-center gap-2 my-10 w-2/3 opacity-60">
                   <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
                   <div className="w-1.5 h-1.5 rotate-45 bg-[#E6C79C]"></div>
                   <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
                 </div>
 
-                {/* 2. المكان (Venue Name Second) & 3. الموقع (Location Map Link Third) */}
-                <div className="flex flex-col items-center w-full max-w-sm">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-6 h-px bg-[#E6C79C]/60" />
-                    <span className="text-xs font-bold text-[#63121E] tracking-widest">المكان</span>
-                    <span className="w-6 h-px bg-[#E6C79C]/60" />
+                {/* 2. Visual "الموقع" Section with Embedded Google Map */}
+                <FadeIn>
+                  <h3 className={`text-3xl sm:text-4xl text-[#63121E] mb-6 font-bold ${aref.className}`}>الموقع</h3>
+
+                  {/* Embedded Google Map iframe */}
+                  <div className="w-full max-w-sm sm:max-w-md h-52 bg-[#FDFBF7] rounded-2xl mb-6 border border-[#E6C79C]/80 shadow-md relative overflow-hidden group">
+                    <iframe
+                      title="موقع الحفل - قاعات النعمان"
+                      src="https://www.google.com/maps?q=قاعات+النعمان+عمان&output=embed"
+                      className="w-full h-full border-0"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=قاعات+النعمان+عمان"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="فتح في خرائط جوجل"
+                      className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-white hover:scale-105 transition-all border border-[#E6C79C]/40"
+                    >
+                      <MapPin size={18} className="text-[#63121E]" />
+                    </a>
                   </div>
 
-                  <p
-                    className="text-xl sm:text-2xl font-bold text-[#63121E] mb-1"
-                    style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}
-                  >
-                    {venueName}
-                  </p>
-                  <p className="text-xs sm:text-sm text-[#4A0E17]/70 mb-4 font-semibold">
-                    عمان — الأردن
-                  </p>
+                  {/* Underneath: Date, Time, Venue Name, Subtitle */}
+                  <div className="text-center font-bold text-[14px] leading-relaxed mb-6 text-[#4A0E17]">
+                    <p className="mb-2 text-base font-semibold">{arabicDate}</p>
+                    <p className="text-[#4A0E17]/75 mb-4 text-xs sm:text-sm font-semibold">{arabicTime}</p>
+                    <p className={`text-[#63121E] mb-2 font-bold text-2xl sm:text-3xl ${aref.className}`}>
+                      قاعات النعمان
+                    </p>
+                    <p className="text-[#4A0E17]/70 text-xs sm:text-sm font-semibold">عمان — الأردن</p>
+                  </div>
 
-                  {/* Location Map Link Button directly beneath the venue name */}
+                  {/* Pill Button: الخريطة */}
                   <a
-                    href={locationUrl}
+                    href="https://www.google.com/maps/search/?api=1&query=قاعات+النعمان+عمان"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="py-2.5 px-8 rounded-full text-xs sm:text-sm font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] to-[#4A0E17] text-[#F7E7CE] border border-[#E6C79C]/50 hover:from-[#4A0E17] hover:to-[#2D070D] inline-flex items-center gap-2"
+                    className="py-2.5 px-8 rounded-full text-xs sm:text-sm font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] to-[#4A0E17] text-[#F7E7CE] border border-[#E6C79C]/50 hover:from-[#4A0E17] hover:to-[#2D070D] inline-flex items-center gap-2 mb-2"
                   >
                     <MapPin size={16} className="text-[#E6C79C]" />
-                    <span>الموقع على الخريطة</span>
+                    <span>الخريطة</span>
                   </a>
+                </FadeIn>
+
+                {/* Divider between Location and Countdown */}
+                <div className="flex items-center justify-center gap-2 my-10 w-2/3 opacity-60">
+                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
+                  <div className="w-1.5 h-1.5 rotate-45 bg-[#E6C79C]"></div>
+                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
                 </div>
-              </div>
+              </>
             )}
 
             {/* Live Countdown Timer */}
