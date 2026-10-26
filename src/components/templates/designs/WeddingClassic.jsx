@@ -116,35 +116,6 @@ const ScrollHeart = ({ className = 'w-6 h-6 text-[#C49A6C]', color }) => (
   </svg>
 );
 
-/**
- * Ornate vertical calligraphic Arabic "Waw" (حرف الواو المزخرف المتداخل رأسيًا)
- * Renders the custom calligraphic vector shape matching the royal invitation design,
- * styled in warm champagne-gold (#D4AF37) for the dark hero screen or deep burgundy (#5A1821) between fathers' names.
- */
-const CalligraphicWaw = ({
-  className = 'h-10 w-auto',
-  color = '#D4AF37',
-  dropShadow = true,
-  alt = 'و',
-}) => (
-  <svg
-    viewBox="0 0 90 135"
-    className={`${className} inline-block select-none pointer-events-none transition-transform`}
-    style={{
-      color,
-      filter: dropShadow ? 'drop-shadow(0 2px 8px rgba(0,0,0,0.45))' : 'none',
-    }}
-    aria-label={alt}
-    role="img"
-  >
-    <path
-      d="M58 8 C68 8 80 16 82 30 C84 46 72 58 54 62 C48 74 38 92 22 110 C14 118 6 123 2 125 C0 126 1 120 6 114 C18 96 28 78 34 60 C26 54 22 42 24 30 C27 16 38 8 52 8 C54 8 56 8 58 8 Z M50 20 C42 20 34 26 34 36 C34 46 42 50 48 50 C58 50 66 44 66 34 C66 24 58 20 50 20 Z"
-      fill="currentColor"
-      fillRule="evenodd"
-    />
-  </svg>
-);
-
 const DEFAULT_CLASSIC_WISHES = [
   { name: 'أم محمد', message: 'ألف مبروك 🤍 بالرفاه والبنين إن شاء الله، فرحتكم فرحتنا', avatarColor: 'bg-[#A888B5]', avatarLetter: 'أ' },
   { name: 'سارة', message: 'عقبال ما نفرح بيكم بأحلى المناسبات، دعوة بغاية الذوق 🤩', avatarColor: 'bg-[#6B4B75]', avatarLetter: 'س' },
@@ -509,7 +480,7 @@ export default function WeddingClassic({ customData } = {}) {
 
                 <span className={`${isBurgundy ? 'text-[#E6C79C]' : 'text-[#E8DCC8]'} font-['Aref_Ruqaa'] text-xl mb-3 opacity-90 tracking-wide`} style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7)' }}>دعوة زفاف</span>
                 <span className="text-white font-['Aref_Ruqaa'] text-3xl md:text-5xl mb-8 font-bold leading-relaxed px-4 text-center" style={{ textShadow: '0 4px 14px rgba(0,0,0,0.8)' }}>
-                  {customData ? `${groomFirst} & ${brideFirst}` : 'عمر و آيات'}
+                  {isBurgundy ? 'المهندس عمر & الدكتورة آيات' : (customData ? `${groomFirst} & ${brideFirst}` : 'عمر و آيات')}
                 </span>
 
                 <div className="flex items-center gap-4 mb-2">
@@ -550,7 +521,7 @@ export default function WeddingClassic({ customData } = {}) {
         ) : (
         <video
           ref={heroVideoRef}
-          className={`absolute inset-0 w-full h-full object-cover object-center z-0 ${isBurgundy ? 'opacity-100' : 'opacity-75'}`}
+          className={`absolute inset-0 w-full h-[100dvh] object-cover object-center z-0 ${isBurgundy ? 'opacity-100' : 'opacity-75'} transform-gpu`}
           src={customData?.backgroundMedia || '/hero.mp4'}
           poster={customData?.backgroundPoster || '/hero_poster.jpg'}
           autoPlay
@@ -604,43 +575,29 @@ export default function WeddingClassic({ customData } = {}) {
             <span className={`w-12 h-[1px] bg-gradient-to-l from-transparent ${isBurgundy ? 'to-[#E6C79C]' : 'to-[#d4b886]'}`} />
           </motion.div>
 
+          {/* Groom Name */}
           <motion.h1
-            className={`text-4xl sm:text-5xl md:text-7xl font-['Aref_Ruqaa'] ${isBurgundy ? 'text-[#FDFBF7]' : 'text-white'} mb-4`}
+            className={`text-4xl sm:text-5xl md:text-7xl font-['Aref_Ruqaa'] ${isBurgundy ? 'text-[#FDFBF7]' : 'text-white'} mb-2`}
             style={{ textShadow: '0 3px 12px rgba(0,0,0,0.95), 0 6px 25px rgba(0,0,0,0.8)' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1.6 }}
           >
-            {groomFirst}
+            {isBurgundy ? 'المهندس عمر' : groomFirst}
           </motion.h1>
 
-          {isBurgundy ? (
-            <motion.div
-              className="flex items-center justify-center gap-3 my-2"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 1.9 }}
-            >
-              <span className="w-8 sm:w-14 h-[1px] bg-gradient-to-r from-transparent to-[#E6C79C]/70" />
-              <CalligraphicWaw
-                className="h-12 w-auto my-2"
-                color="#D4AF37"
-                dropShadow={true}
-              />
-              <span className="w-8 sm:w-14 h-[1px] bg-gradient-to-l from-transparent to-[#E6C79C]/70" />
-            </motion.div>
-          ) : (
-            <motion.div
-              className={`text-2xl md:text-3xl font-light ${isBurgundy ? 'text-[#E6C79C]' : 'text-[#d4b886]'} mb-4`}
-              style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9)' }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 1.9 }}
-            >
-              &amp;
-            </motion.div>
-          )}
+          {/* Separator: Classic luxury serif & symbol, NO SVG, NO "و" */}
+          <motion.div
+            className={`font-serif italic ${isBurgundy ? 'text-3xl sm:text-4xl text-[#D4AF37] my-2' : 'text-2xl md:text-3xl font-light text-[#d4b886] mb-4'} select-none`}
+            style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1.9 }}
+          >
+            &amp;
+          </motion.div>
 
+          {/* Bride Name */}
           <motion.h1
             className={`text-4xl sm:text-5xl md:text-7xl font-['Aref_Ruqaa'] ${isBurgundy ? 'text-[#FDFBF7]' : 'text-white'} mb-12`}
             style={{ textShadow: '0 3px 12px rgba(0,0,0,0.95), 0 6px 25px rgba(0,0,0,0.8)' }}
@@ -648,7 +605,7 @@ export default function WeddingClassic({ customData } = {}) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 2.2 }}
           >
-            {brideFirst}
+            {isBurgundy ? 'الدكتورة آيات' : brideFirst}
           </motion.h1>
 
           <motion.p
@@ -700,12 +657,407 @@ export default function WeddingClassic({ customData } = {}) {
 
       {/* Main Invitation Content Container */}
       <div className={`mx-auto max-w-md w-full ${isBurgundy ? 'bg-gradient-to-b from-[#2D070D] via-[#4A0E17] to-[#2D070D] text-[#F7E7CE]' : 'bg-[#F5EBE1] text-[#5A4F46]'} relative pb-24 overflow-x-hidden pt-12 px-4 shadow-2xl transition-colors duration-500`}>
+        {isBurgundy ? (
+          /* =========================================================================
+             OMAR & AYAT EXCLUSIVE ORDERED ARCHITECTURE (Sections A -> B -> C -> D -> E -> F)
+             ========================================================================= */
+          <>
+            {/* Section A: Invitation Card ("بطاقة دعوة") */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="relative w-full bg-[#FDFBF7] text-[#4A0E17] border border-[#E6C79C]/60 shadow-[0_20px_60px_rgba(45,7,13,0.4)] flex flex-col items-center pt-10 pb-12 px-3 sm:px-6 max-w-full overflow-hidden"
+            >
+              {/* Decorative Frame Corners */}
+              <div className="absolute -top-[1px] -left-[1px] bg-[#FDFBF7] p-1"><ElegantCorner className="w-5 h-5" color={accentGold} /></div>
+              <div className="absolute -top-[1px] -right-[1px] bg-[#FDFBF7] p-1"><ElegantCorner className="w-5 h-5 rotate-90" color={accentGold} /></div>
+              <div className="absolute -bottom-[1px] -left-[1px] bg-[#FDFBF7] p-1"><ElegantCorner className="w-5 h-5 -rotate-90" color={accentGold} /></div>
+              <div className="absolute -bottom-[1px] -right-[1px] bg-[#FDFBF7] p-1"><ElegantCorner className="w-5 h-5 rotate-180" color={accentGold} /></div>
+
+              {/* Framed Content Wrapper */}
+              <div className="relative z-20 flex flex-col items-center w-full">
+                {/* Quranic Verse at Top of Card */}
+                <div className="w-full max-w-full overflow-hidden px-5 sm:px-8 mb-8 text-center">
+                  <p
+                    className="text-[#4A0E17] font-bold text-sm sm:text-base leading-loose text-center"
+                    style={{ fontFamily: 'var(--font-amiri), serif' }}
+                  >
+                    ﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَلِكَ لَآيَاتٍ لِّقَوْمٍ{' '}
+                    <span className="whitespace-nowrap inline-block">يَتَفَكَّرُونَ&nbsp;﴾</span>
+                  </p>
+                </div>
+
+                {/* Divider */}
+                <div className="flex items-center justify-center gap-2 mb-10 w-2/3 opacity-60">
+                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
+                  <div className="w-1.5 h-1.5 rotate-45 bg-[#E6C79C]"></div>
+                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
+                </div>
+
+                {/* Invitation Heading */}
+                <h3 className={`text-4xl text-[#63121E] mb-8 font-bold ${aref.className}`}>بطاقة دعوة</h3>
+
+                {/* Structured Invitation Text */}
+                <div className="w-full flex flex-col items-center text-center px-1 sm:px-4 mb-6">
+                  {/* Row 1: يتشرف بكل ودّ ومحبة */}
+                  <p
+                    className="text-lg sm:text-xl text-[#4A0E17] font-semibold mb-5 tracking-wide"
+                    style={{ fontFamily: 'var(--font-amiri), serif' }}
+                  >
+                    يتشرف بكل ودّ ومحبة
+                  </p>
+
+                  {/* Row 2 (Fathers' Names in 3-column grid): الدكتور سهيل السخن & المهندس علي قبها */}
+                  <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 w-full mb-6 px-1 text-[#4A0E17]">
+                    <div className="text-center">
+                      <p
+                        className="text-lg sm:text-xl font-bold leading-snug whitespace-nowrap"
+                        style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}
+                      >
+                        {groomFather}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-center px-1">
+                      <span className="font-serif italic text-2xl text-[#5A1821] mx-2 select-none">&amp;</span>
+                    </div>
+                    <div className="text-center">
+                      <p
+                        className="text-lg sm:text-xl font-bold leading-snug whitespace-nowrap"
+                        style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}
+                      >
+                        {brideFather}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Row 3: بدعوتكم لحضور حفل زفاف */}
+                  <p
+                    className="my-7 text-lg sm:text-xl text-[#4A0E17] font-semibold tracking-wide"
+                    style={{ fontFamily: 'var(--font-amiri), serif' }}
+                  >
+                    بدعوتكم لحضور حفل زفاف
+                  </p>
+
+                  {/* Row 4 (Couple Titles & Names in 2-column grid) */}
+                  <div className="grid grid-cols-2 gap-6 w-full mt-4 pt-2 items-start text-center px-1 sm:px-4">
+                    {/* Right Column: Groom */}
+                    <div className="flex flex-col items-center text-center">
+                      <div
+                        className="text-base sm:text-lg text-[#63121E]/85 font-bold mb-6 tracking-wide"
+                        style={{ fontFamily: 'var(--font-amiri), serif' }}
+                      >
+                        ابنه المهندس
+                      </div>
+                      <div
+                        className="text-4xl sm:text-5xl font-bold leading-relaxed pt-2 text-[#63121E] tracking-wider select-none"
+                        style={{
+                          fontFamily: 'var(--font-aref-ruqaa), serif',
+                          textShadow: '0 2px 8px rgba(99,18,30,0.15)',
+                        }}
+                      >
+                        عُمَر
+                      </div>
+                    </div>
+
+                    {/* Left Column: Bride */}
+                    <div className="flex flex-col items-center text-center">
+                      <div
+                        className="text-base sm:text-lg text-[#63121E]/85 font-bold mb-6 tracking-wide"
+                        style={{ fontFamily: 'var(--font-amiri), serif' }}
+                      >
+                        ابنته الدكتورة
+                      </div>
+                      <div
+                        className="text-4xl sm:text-5xl font-bold leading-relaxed pt-2 text-[#63121E] tracking-wider select-none"
+                        style={{
+                          fontFamily: 'var(--font-aref-ruqaa), serif',
+                          textShadow: '0 2px 8px rgba(99,18,30,0.15)',
+                        }}
+                      >
+                        آيَات
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Divider Line */}
+                <div className="flex items-center justify-center gap-2 my-8 w-2/3 opacity-60">
+                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
+                  <div className="w-1.5 h-1.5 rotate-45 bg-[#E6C79C]"></div>
+                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
+                </div>
+
+                {/* التاريخ والوقت (as clean text with clock/calendar icon, NOT calendar button) */}
+                <div className="text-center font-bold text-sm sm:text-base leading-relaxed text-[#4A0E17] mb-2">
+                  <p className="flex items-center justify-center gap-2 font-semibold">
+                    <span>🗓️</span>
+                    <span>الإثنين، 16 نوفمبر 2026 — الساعة 8:00 مساءً</span>
+                  </p>
+                </div>
+
+                {/* Divider Line */}
+                <div className="flex items-center justify-center gap-2 my-6 w-1/2 opacity-60">
+                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
+                  <div className="w-1.5 h-1.5 rotate-45 bg-[#E6C79C]"></div>
+                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
+                </div>
+
+                {/* المكان */}
+                <div className="text-center font-bold text-[#4A0E17] mb-6">
+                  <p className={`text-2xl sm:text-3xl text-[#63121E] font-bold mb-1 ${aref.className}`}>
+                    قاعات النعمان - عمّان
+                  </p>
+                  <p className="text-xs sm:text-sm text-[#4A0E17]/75 font-semibold">
+                    عمان — الأردن
+                  </p>
+                </div>
+
+                {/* Direct pill link/button: 📍 الموقع على الخريطة */}
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=قاعات+النعمان+عمان"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2.5 px-8 rounded-full text-xs sm:text-sm font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] to-[#4A0E17] text-[#F7E7CE] border border-[#E6C79C]/50 hover:from-[#4A0E17] hover:to-[#2D070D] inline-flex items-center gap-2"
+                >
+                  <MapPin size={16} className="text-[#E6C79C]" />
+                  <span>الموقع على الخريطة</span>
+                </a>
+              </div>
+            </motion.div>
+
+            {/* Section B: Countdown Timer ("يبدأ الاحتفال بعد") */}
+            <FadeIn>
+              <div className="w-full flex flex-col items-center mt-12 mb-8">
+                <h3 className={`text-3xl sm:text-4xl text-[#F7E7CE] mb-8 font-bold ${aref.className}`}>
+                  يبدأ الاحتفال بعد
+                </h3>
+                <div className="grid grid-cols-4 gap-2 px-4 max-w-md w-full mx-auto">
+                  {[
+                    { label: 'يوم', value: timeLeft.days },
+                    { label: 'ساعة', value: timeLeft.hours },
+                    { label: 'دقيقة', value: timeLeft.minutes },
+                    { label: 'ثانية', value: timeLeft.seconds },
+                  ].map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="w-full h-[76px] sm:h-[84px] bg-[#FDFBF7] border border-[#E6C79C]/60 shadow-[0_4px_15px_rgba(230,199,156,0.2)] rounded-xl flex flex-col items-center justify-center p-1"
+                    >
+                      <span className="text-2xl sm:text-3xl font-bold font-sans text-[#63121E] mb-1">
+                        {toArabic(item.value.toString().padStart(2, '0'))}
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-bold text-[#4A0E17]/80">
+                        {item.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Section C: Location Section with Embedded Map ("الموقع") */}
+            <FadeIn>
+              <div className="w-full flex flex-col items-center mt-8 mb-12 px-4">
+                <h3 className={`text-3xl sm:text-4xl text-[#F7E7CE] mb-6 font-bold ${aref.className}`}>
+                  الموقع
+                </h3>
+
+                {/* Embedded Google Map iframe */}
+                <div className="w-full max-w-sm sm:max-w-md h-56 bg-[#FDFBF7] rounded-2xl mb-6 border border-[#E6C79C]/80 shadow-md relative overflow-hidden group">
+                  <iframe
+                    title="موقع الحفل - قاعات النعمان"
+                    src="https://www.google.com/maps?q=قاعات+النعمان+عمان&output=embed"
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=قاعات+النعمان+عمان"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="فتح في خرائط جوجل"
+                    className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-white hover:scale-105 transition-all border border-[#E6C79C]/40"
+                  >
+                    <MapPin size={18} className="text-[#63121E]" />
+                  </a>
+                </div>
+
+                {/* Details below map */}
+                <div className="text-center font-bold text-[14px] leading-relaxed mb-6 text-[#F7E7CE]">
+                  <p className="mb-2 text-base font-semibold">يوم الإثنين، 16 تشرين الثاني 2026</p>
+                  <p className="text-[#F7E7CE]/80 mb-4 text-xs sm:text-sm font-semibold">الساعة الثامنة مساءً</p>
+                  <p className={`text-[#E6C79C] mb-2 font-bold text-2xl sm:text-3xl ${aref.className}`}>
+                    قاعات النعمان
+                  </p>
+                  <p className="text-[#F7E7CE]/70 text-xs sm:text-sm font-semibold">عمان — الأردن</p>
+                </div>
+
+                {/* Pill Button: الخريطة */}
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=قاعات+النعمان+عمان"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2.5 px-8 rounded-full text-xs sm:text-sm font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] to-[#4A0E17] text-[#F7E7CE] border border-[#E6C79C]/50 hover:from-[#4A0E17] hover:to-[#2D070D] inline-flex items-center gap-2"
+                >
+                  <MapPin size={16} className="text-[#E6C79C]" />
+                  <span>الخريطة</span>
+                </a>
+              </div>
+            </FadeIn>
+
+            {/* Section D: 4-Photo Gallery ("لحظاتنا") */}
+            <FadeIn>
+              <div className="w-full flex flex-col items-center mt-6 mb-12">
+                <h3 className={`text-3xl sm:text-4xl text-[#F7E7CE] mb-8 font-bold ${aref.className}`}>
+                  لحظاتنا
+                </h3>
+
+                <div className="px-4 w-full max-w-md mx-auto">
+                  <div className="grid grid-cols-2 gap-3.5">
+                    {galleryPhotos.map((imgSrc, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: idx * 0.1 }}
+                        onClick={() => setActivePhoto(imgSrc)}
+                        className="relative rounded-2xl overflow-hidden shadow-md border border-[#E6C79C]/40 cursor-pointer group aspect-[3/4] bg-black/10"
+                      >
+                        <Image
+                          src={imgSrc}
+                          alt={`Memory ${idx + 1}`}
+                          fill
+                          sizes="(max-width: 768px) 50vw, 300px"
+                          className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Section E: Save the Date Calendar Card Widget ("احفظ الموعد 🤍") */}
+            <FadeIn>
+              <div className="w-full flex flex-col items-center mt-6 mb-16 px-4">
+                <div className="flex items-center justify-center gap-2 mb-6">
+                  <span className="text-xl">🤍</span>
+                  <h3 className={`text-3xl sm:text-4xl text-[#F7E7CE] font-bold ${aref.className}`}>
+                    احفظ الموعد
+                  </h3>
+                </div>
+
+                <div className="bg-[#FDFBF7] shadow-[0_10px_30px_rgba(74,14,23,0.35)] border border-[#E6C79C]/80 rounded-2xl w-full max-w-sm overflow-hidden relative">
+                  {/* Ring notches */}
+                  <div className="absolute top-0 left-1/4 w-3 h-4 bg-[#E6C79C] rounded-full border border-[#D4AF37] -translate-y-1/2 z-10 shadow-sm"></div>
+                  <div className="absolute top-0 right-1/4 w-3 h-4 bg-[#E6C79C] rounded-full border border-[#D4AF37] -translate-y-1/2 z-10 shadow-sm"></div>
+
+                  {/* Top Header Bar */}
+                  <div className="bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] py-3 text-center font-bold text-lg pt-4 tracking-wide border-b border-[#E6C79C]/40">
+                    تشرين الثاني 2026
+                  </div>
+
+                  {/* Center of the card */}
+                  <div className="p-6 flex flex-col items-center relative">
+                    <p className="text-[#63121E] font-bold text-lg mb-1">الإثنين</p>
+                    <p
+                      className="text-7xl sm:text-8xl text-[#63121E] font-light mb-2 leading-none"
+                      style={{ fontFamily: 'var(--font-amiri), serif' }}
+                    >
+                      16
+                    </p>
+                    <p className="text-[#4A0E17]/85 font-bold text-sm">الساعة 8 مساءً</p>
+                  </div>
+
+                  {/* Dashed divider & Calendar Action Buttons */}
+                  <div className="border-t border-dashed border-[#E6C79C]/60 bg-[#FDFBF7]/90 px-4 sm:px-6 py-6 flex flex-col items-center gap-3 w-full">
+                    {/* Primary Smart One-Click Calendar Button */}
+                    <button
+                      type="button"
+                      onClick={handleSmartCalendarAdd}
+                      className="w-full py-3.5 px-6 rounded-full font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] border border-[#E6C79C]/50 hover:shadow-[0_4px_20px_rgba(74,14,23,0.35)] cursor-pointer"
+                    >
+                      <span>📅</span>
+                      <span>أضف الموعد إلى تقويم هاتفك بضغطة</span>
+                    </button>
+
+                    {/* Direct Calendar Options */}
+                    <div className="flex gap-2.5 w-full justify-center pt-1">
+                      <a
+                        href={googleCalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 text-center border border-[#63121E] text-[#63121E] hover:bg-[#63121E] hover:text-[#F7E7CE] rounded-full py-2 text-xs font-bold transition-all shadow-sm block"
+                      >
+                        تقويم جوجل
+                      </a>
+                      <button
+                        type="button"
+                        onClick={handleAppleCalendar}
+                        className="flex-1 border border-[#63121E] text-[#63121E] hover:bg-[#63121E] hover:text-[#F7E7CE] rounded-full py-2 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                      >
+                        تقويم آيفون (Apple)
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Section F: Notes ("ملاحظات") & Footer */}
+            <FadeIn>
+              <div className="w-full flex flex-col items-center mt-6 mb-12 px-4">
+                {/* Heading: ملاحظات */}
+                <h3 className={`text-3xl sm:text-4xl text-[#F7E7CE] mb-8 font-bold ${aref.className}`}>
+                  ملاحظات
+                </h3>
+
+                {/* 2 bullet items */}
+                <ul className="text-sm sm:text-base font-bold flex flex-col gap-5 text-right w-full max-w-sm px-4 text-[#F7E7CE]">
+                  <li className="flex items-center justify-center gap-3 text-center">
+                    <DiamondBullet className="w-3.5 h-3.5 shrink-0 opacity-80" color={accentGold} />
+                    <span>نوماً هنيئاً لأطفالكم</span>
+                  </li>
+                  <li className="flex items-center justify-center gap-3 text-center">
+                    <DiamondBullet className="w-3.5 h-3.5 shrink-0 opacity-80" color={accentGold} />
+                    <span>يمنع التصوير في صالة النساء</span>
+                  </li>
+                </ul>
+
+                {/* Divider */}
+                <div className="flex items-center justify-center gap-2 my-10 w-2/3 opacity-60">
+                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
+                  <div className="w-1.5 h-1.5 rotate-45 bg-[#E6C79C]"></div>
+                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
+                </div>
+
+                {/* Footer Signature */}
+                <div className="text-center w-full font-bold">
+                  <h3 className={`text-3xl mb-4 text-[#F7E7CE] ${aref.className}`}>
+                    حضوركم يزيّن فرحتنا
+                  </h3>
+                  <p className="text-[#E6C79C] font-sans text-sm mb-8 tracking-wider">
+                    #عمر_وآيات
+                  </p>
+                  <p className="text-lg sm:text-xl font-bold text-[#F7E7CE] mb-6 tracking-wide" style={{ fontFamily: 'var(--font-amiri), serif' }}>
+                    عائلة السخن &amp; عائلة قبها
+                  </p>
+                </div>
+              </div>
+            </FadeIn>
+          </>
+        ) : (
+          /* =========================================================================
+             ORIGINAL MASTER SHOWCASE TEMPLATE LAYOUT (100% Verbatim & Untouched)
+             ========================================================================= */
+          <>
         {/* Ornamental Framed Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className={`relative w-full ${isBurgundy ? 'bg-[#FDFBF7] text-[#4A0E17] border border-[#E6C79C]/60 shadow-[0_20px_60px_rgba(45,7,13,0.4)]' : 'bg-[#FDFBF9] text-[#5A4F46] border border-[#C49A6C]/30 shadow-sm'} flex flex-col items-center pt-10 pb-12 px-3 sm:px-6 max-w-full overflow-hidden`}
+          className={`relative w-full ${isBurgundy ? 'bg-[#FDFBF7] text-[#4A0E17] border border-[#E6C79C]/60 shadow-[0_20px_60px_rgba(45,7,13,0.4)]' : 'bg-[#FDFBF9] text-[#5A4F46] border border-[#C49A6C]/30 shadow-sm'} flex flex-col items-center pt-10 pb-12 px-2`}
         >
           {/* Decorative Frame Corners */}
           <div className={`absolute -top-[1px] -left-[1px] ${isBurgundy ? 'bg-[#FDFBF7]' : 'bg-[#FDFBF9]'} p-1`}><ElegantCorner className="w-5 h-5" color={accentGold} /></div>
@@ -715,26 +1067,10 @@ export default function WeddingClassic({ customData } = {}) {
 
           {/* Framed Content Wrapper */}
           <div className="relative z-20 flex flex-col items-center w-full">
-            {/* Opening Quranic Verse / Blessing */}
-            <div className="w-full max-w-full overflow-hidden px-2 sm:px-6 mb-8 text-center">
-              <p
-                className={`${
-                  isBurgundy
-                    ? 'text-[#4A0E17] font-bold text-[13.5px] sm:text-[15px] md:text-base leading-[2.2]'
-                    : 'text-[#5A4F46] font-medium text-[15px] sm:text-base md:text-lg leading-[2.2] sm:leading-loose'
-                } text-center`}
-                style={{ fontFamily: 'var(--font-amiri), serif' }}
-              >
-                {isBurgundy ? (
-                  <>
-                    ﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَلِكَ لَآيَاتٍ لِّقَوْمٍ{' '}
-                    <span className="whitespace-nowrap inline-block">يَتَفَكَّرُونَ&nbsp;﴾</span>
-                  </>
-                ) : (
-                  customData?.quranVerse || 'اللّهُمَّ بارِكْ لهُما وبارِكْ عليهِما واجمَعْ بينهُما في خَيْرٍ'
-                )}
-              </p>
-            </div>
+            {/* Opening Blessing / Dua */}
+            <p className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} text-[18px] md:text-xl mb-10 leading-loose text-center px-4 font-medium`}>
+              اللّهُمَّ بارِكْ لهُما وبارِكْ عليهِما واجمَعْ بينهُما في خَيْرٍ
+            </p>
 
             {/* Divider */}
             <div className="flex items-center justify-center gap-2 mb-10 w-2/3 opacity-60">
@@ -743,122 +1079,26 @@ export default function WeddingClassic({ customData } = {}) {
               <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
             </div>
 
-            {/* Invitation Heading & Structured Card Content */}
+            {/* Invitation Heading & Welcome Text */}
             <h3 className={`text-4xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-8 font-bold ${aref.className}`}>بطاقة دعوة</h3>
+            <p className={`text-[14px] leading-[2.2] mb-12 ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} text-center px-4 max-w-[300px]`}>
+              {welcomeMessage}
+            </p>
 
-            {isBurgundy ? (
-              <div className="w-full flex flex-col items-center text-center px-1 sm:px-4 mb-10">
-                {/* Row 1 (Top line): يتشرف بكل ودّ ومحبة */}
-                <p
-                  className="text-lg sm:text-xl text-[#4A0E17] font-semibold mb-6 tracking-wide"
-                  style={{ fontFamily: 'var(--font-amiri), serif' }}
-                >
-                  يتشرف بكل ودّ ومحبة
-                </p>
-
-                {/* Row 2 (Fathers' Names): 3-column layout */}
-                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 w-full mb-8 px-1 text-[#4A0E17]">
-                  {/* Right side: Groom's father */}
-                  <div className="text-center">
-                    <p
-                      className="text-lg sm:text-xl font-bold leading-snug whitespace-nowrap"
-                      style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}
-                    >
-                      {groomFather}
-                    </p>
-                  </div>
-
-                  {/* Center: The decorative calligraphic Waw */}
-                  <div className="flex items-center justify-center px-1">
-                    <CalligraphicWaw
-                      className="h-8 w-auto"
-                      color="#5A1821"
-                      dropShadow={false}
-                    />
-                  </div>
-
-                  {/* Left side: Bride's father */}
-                  <div className="text-center">
-                    <p
-                      className="text-lg sm:text-xl font-bold leading-snug whitespace-nowrap"
-                      style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}
-                    >
-                      {brideFather}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Row 3 (Middle Connector — Clearly Separated): بدعوتكم لحضور حفل زفاف */}
-                <p
-                  className="my-8 py-2 text-lg sm:text-xl text-[#4A0E17] font-semibold tracking-wide"
-                  style={{ fontFamily: 'var(--font-amiri), serif' }}
-                >
-                  بدعوتكم لحضور حفل زفاف
-                </p>
-
-                {/* Row 4 (Couple Titles & Names — With Anti-Overlap Spacing) */}
-                <div className="grid grid-cols-2 gap-6 w-full mt-6 pt-2 items-start text-center px-1 sm:px-4">
-                  {/* Right Column: Groom */}
-                  <div className="flex flex-col items-center text-center">
-                    <div
-                      className="text-base sm:text-lg text-[#63121E]/85 font-bold mb-6 tracking-wide"
-                      style={{ fontFamily: 'var(--font-amiri), serif' }}
-                    >
-                      ابنه المهندس
-                    </div>
-                    <div
-                      className="text-4xl sm:text-5xl font-bold leading-relaxed pt-2 text-[#63121E] tracking-wider select-none"
-                      style={{
-                        fontFamily: 'var(--font-aref-ruqaa), serif',
-                        textShadow: '0 2px 8px rgba(99,18,30,0.15)',
-                      }}
-                    >
-                      عُمَر
-                    </div>
-                  </div>
-
-                  {/* Left Column: Bride */}
-                  <div className="flex flex-col items-center text-center">
-                    <div
-                      className="text-base sm:text-lg text-[#63121E]/85 font-bold mb-6 tracking-wide"
-                      style={{ fontFamily: 'var(--font-amiri), serif' }}
-                    >
-                      ابنته الدكتورة
-                    </div>
-                    <div
-                      className="text-4xl sm:text-5xl font-bold leading-relaxed pt-2 text-[#63121E] tracking-wider select-none"
-                      style={{
-                        fontFamily: 'var(--font-aref-ruqaa), serif',
-                        textShadow: '0 2px 8px rgba(99,18,30,0.15)',
-                      }}
-                    >
-                      آيَات
-                    </div>
-                  </div>
-                </div>
+            {/* Parents & Couple Names */}
+            <div className="flex justify-between items-start text-[14px] font-bold w-full px-2 mb-12 mt-4">
+              <div className="flex-1 text-center flex flex-col items-center">
+                <p className={`${isBurgundy ? 'text-[#63121E]/70' : 'text-[#8A7968]'} text-[11px] mb-3`}>والد العريس</p>
+                <p className={`leading-relaxed ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-5`}>الدكتور سهيل أبو عمر<br />وعائلته الكريمة</p>
+                <p className={`text-[20px] md:text-[22px] ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} font-bold leading-tight whitespace-pre-line ${aref.className}`}>{groomFullDisplay}</p>
               </div>
-            ) : (
-              <>
-                <p className={`text-[14px] leading-[2.2] mb-12 text-[#5A4F46] text-center px-4 max-w-[300px]`}>
-                  {welcomeMessage}
-                </p>
-
-                {/* Parents & Couple Names */}
-                <div className="flex justify-between items-start text-[14px] font-bold w-full px-2 mb-12 mt-4">
-                  <div className="flex-1 text-center flex flex-col items-center">
-                    <p className="text-[#8A7968] text-[11px] mb-3">والد العريس</p>
-                    <p className="leading-relaxed text-[#5A4F46] mb-5">{groomFather}<br />وعائلته الكريمة</p>
-                    <p className={`text-[20px] md:text-[22px] text-[#C49A6C] font-bold leading-tight whitespace-pre-line ${aref.className}`}>{groomFullDisplay}</p>
-                  </div>
-                  <div className="w-1.5 h-1.5 rotate-45 bg-[#C49A6C] mt-7 mx-2 opacity-60"></div>
-                  <div className="flex-1 text-center flex flex-col items-center">
-                    <p className="text-[#8A7968] text-[11px] mb-3">والد العروس</p>
-                    <p className="leading-relaxed text-[#5A4F46] mb-5">{brideFather}<br />وعائلته الكريمة</p>
-                    <p className={`text-[20px] md:text-[22px] text-[#C49A6C] font-bold leading-tight whitespace-pre-line ${aref.className}`}>{brideFullDisplay}</p>
-                  </div>
-                </div>
-              </>
-            )}
+              <div className={`w-1.5 h-1.5 rotate-45 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'} mt-7 mx-2 opacity-60`}></div>
+              <div className="flex-1 text-center flex flex-col items-center">
+                <p className={`${isBurgundy ? 'text-[#63121E]/70' : 'text-[#8A7968]'} text-[11px] mb-3`}>والد العروس</p>
+                <p className={`leading-relaxed ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-5`}>المهندس علي أبو نضال<br />وعائلته الكريمة</p>
+                <p className={`text-[20px] md:text-[22px] ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} font-bold leading-tight whitespace-pre-line ${aref.className}`}>{brideFullDisplay}</p>
+              </div>
+            </div>
 
             {/* Divider */}
             <div className="flex items-center justify-center gap-2 mb-10 w-2/3 opacity-60">
@@ -866,263 +1106,117 @@ export default function WeddingClassic({ customData } = {}) {
               <div className={`w-1.5 h-1.5 rotate-45 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
               <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
             </div>
-
-            {/* Rich Visual Calendar & Location Sections for isBurgundy */}
-            {isBurgundy && (
-              <>
-                {/* 1. Visual "احفظ الموعد 🤍" Calendar Card Widget */}
-                <FadeIn>
-                  <div className="flex items-center justify-center gap-2 mb-6">
-                    <span className="text-xl">🤍</span>
-                    <h3 className={`text-3xl font-bold ${aref.className} text-[#63121E]`}>
-                      احفظ الموعد
-                    </h3>
-                  </div>
-
-                  <div className="bg-[#FDFBF7] shadow-[0_10px_30px_rgba(74,14,23,0.15)] border border-[#E6C79C]/80 rounded-2xl w-full max-w-sm overflow-hidden relative">
-                    {/* Ring notches */}
-                    <div className="absolute top-0 left-1/4 w-3 h-4 bg-[#E6C79C] rounded-full border border-[#D4AF37] -translate-y-1/2 z-10 shadow-sm"></div>
-                    <div className="absolute top-0 right-1/4 w-3 h-4 bg-[#E6C79C] rounded-full border border-[#D4AF37] -translate-y-1/2 z-10 shadow-sm"></div>
-
-                    {/* Top Header Bar */}
-                    <div className="bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] py-3 text-center font-bold text-lg pt-4 tracking-wide border-b border-[#E6C79C]/40">
-                      {calendarMonthYear}
-                    </div>
-
-                    {/* Center of the card */}
-                    <div className="p-6 flex flex-col items-center relative">
-                      <p className="text-[#63121E] font-bold text-lg mb-1">{calendarWeekday}</p>
-                      <p
-                        className="text-7xl sm:text-8xl text-[#63121E] font-light mb-2 leading-none"
-                        style={{ fontFamily: 'var(--font-amiri), serif' }}
-                      >
-                        {calendarDay}
-                      </p>
-                      <p className="text-[#4A0E17]/85 font-bold text-sm">{arabicTime}</p>
-                    </div>
-
-                    {/* Dashed divider & Calendar Action Buttons */}
-                    <div className="border-t border-dashed border-[#E6C79C]/60 bg-[#FDFBF7]/90 px-4 sm:px-6 py-6 flex flex-col items-center gap-3 w-full">
-                      {/* Primary Smart One-Click Calendar Button */}
-                      <button
-                        type="button"
-                        onClick={handleSmartCalendarAdd}
-                        className="w-full py-3.5 px-6 rounded-full font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] border border-[#E6C79C]/50 hover:shadow-[0_4px_20px_rgba(74,14,23,0.35)] cursor-pointer"
-                      >
-                        <span>📅</span>
-                        <span>أضف الموعد إلى تقويم هاتفك بضغطة</span>
-                      </button>
-
-                      {/* Direct Calendar Options */}
-                      <div className="flex gap-2.5 w-full justify-center pt-1">
-                        <a
-                          href={googleCalUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 text-center border border-[#63121E] text-[#63121E] hover:bg-[#63121E] hover:text-[#F7E7CE] rounded-full py-2 text-xs font-bold transition-all shadow-sm block"
-                        >
-                          تقويم جوجل
-                        </a>
-                        <button
-                          type="button"
-                          onClick={handleAppleCalendar}
-                          className="flex-1 border border-[#63121E] text-[#63121E] hover:bg-[#63121E] hover:text-[#F7E7CE] rounded-full py-2 text-xs font-bold transition-all shadow-sm cursor-pointer"
-                        >
-                          تقويم آيفون (Apple)
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </FadeIn>
-
-                {/* Divider between Calendar and Location */}
-                <div className="flex items-center justify-center gap-2 my-10 w-2/3 opacity-60">
-                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
-                  <div className="w-1.5 h-1.5 rotate-45 bg-[#E6C79C]"></div>
-                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
-                </div>
-
-                {/* 2. Visual "الموقع" Section with Embedded Google Map */}
-                <FadeIn>
-                  <h3 className={`text-3xl sm:text-4xl text-[#63121E] mb-6 font-bold ${aref.className}`}>الموقع</h3>
-
-                  {/* Embedded Google Map iframe */}
-                  <div className="w-full max-w-sm sm:max-w-md h-52 bg-[#FDFBF7] rounded-2xl mb-6 border border-[#E6C79C]/80 shadow-md relative overflow-hidden group">
-                    <iframe
-                      title="موقع الحفل - قاعات النعمان"
-                      src="https://www.google.com/maps?q=قاعات+النعمان+عمان&output=embed"
-                      className="w-full h-full border-0"
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    />
-                    <a
-                      href="https://www.google.com/maps/search/?api=1&query=قاعات+النعمان+عمان"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="فتح في خرائط جوجل"
-                      className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-white hover:scale-105 transition-all border border-[#E6C79C]/40"
-                    >
-                      <MapPin size={18} className="text-[#63121E]" />
-                    </a>
-                  </div>
-
-                  {/* Underneath: Date, Time, Venue Name, Subtitle */}
-                  <div className="text-center font-bold text-[14px] leading-relaxed mb-6 text-[#4A0E17]">
-                    <p className="mb-2 text-base font-semibold">{arabicDate}</p>
-                    <p className="text-[#4A0E17]/75 mb-4 text-xs sm:text-sm font-semibold">{arabicTime}</p>
-                    <p className={`text-[#63121E] mb-2 font-bold text-2xl sm:text-3xl ${aref.className}`}>
-                      قاعات النعمان
-                    </p>
-                    <p className="text-[#4A0E17]/70 text-xs sm:text-sm font-semibold">عمان — الأردن</p>
-                  </div>
-
-                  {/* Pill Button: الخريطة */}
-                  <a
-                    href="https://www.google.com/maps/search/?api=1&query=قاعات+النعمان+عمان"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="py-2.5 px-8 rounded-full text-xs sm:text-sm font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] to-[#4A0E17] text-[#F7E7CE] border border-[#E6C79C]/50 hover:from-[#4A0E17] hover:to-[#2D070D] inline-flex items-center gap-2 mb-2"
-                  >
-                    <MapPin size={16} className="text-[#E6C79C]" />
-                    <span>الخريطة</span>
-                  </a>
-                </FadeIn>
-
-                {/* Divider between Location and Countdown */}
-                <div className="flex items-center justify-center gap-2 my-10 w-2/3 opacity-60">
-                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
-                  <div className="w-1.5 h-1.5 rotate-45 bg-[#E6C79C]"></div>
-                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
-                </div>
-              </>
-            )}
 
             {/* Live Countdown Timer */}
             <FadeIn>
               <h3 className={`text-3xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-8 font-bold ${aref.className}`}>يبدأ الاحتفال بعد</h3>
-              <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-10 w-full max-w-md px-2 sm:px-4 mx-auto">
-                {(isBurgundy
-                  ? [
-                      { label: 'ثانية', value: timeLeft.seconds },
-                      { label: 'دقيقة', value: timeLeft.minutes },
-                      { label: 'ساعة', value: timeLeft.hours },
-                      { label: 'يوم', value: timeLeft.days },
-                    ]
-                  : [
-                      { label: 'يوم', value: timeLeft.days },
-                      { label: 'ساعة', value: timeLeft.hours },
-                      { label: 'دقيقة', value: timeLeft.minutes },
-                      { label: 'ثانية', value: timeLeft.seconds },
-                    ]
-                ).map((item, idx) => (
-                  <div
-                    key={idx}
-                    className={`w-full h-[72px] sm:h-[80px] ${
-                      isBurgundy
-                        ? 'bg-[#FDFBF7] border border-[#E6C79C]/60 shadow-[0_4px_15px_rgba(230,199,156,0.2)]'
-                        : 'bg-[#FDFBF9] border border-[#C49A6C]/30 shadow-sm'
-                    } rounded-xl flex flex-col items-center justify-center p-1`}
-                  >
-                    <span className={`text-xl sm:text-2xl font-bold font-sans ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-1`}>
-                      {toArabic(item.value.toString().padStart(2, '0'))}
-                    </span>
-                    <span className={`text-[11px] sm:text-xs font-bold ${isBurgundy ? 'text-[#4A0E17]/80' : 'text-[#8A7968]'}`}>
-                      {item.label}
-                    </span>
+              <div className="flex justify-center gap-3 mb-10 w-full px-4">
+                {[
+                  { label: 'يوم', value: timeLeft.days },
+                  { label: 'ساعة', value: timeLeft.hours },
+                  { label: 'دقيقة', value: timeLeft.minutes },
+                  { label: 'ثانية', value: timeLeft.seconds },
+                ].map((item, idx) => (
+                  <div key={idx} className={`w-[65px] h-[75px] ${isBurgundy ? 'bg-[#FDFBF7] border border-[#E6C79C]/60 shadow-[0_4px_15px_rgba(230,199,156,0.2)]' : 'bg-[#FDFBF9] border border-[#C49A6C]/30 shadow-sm'} rounded-xl flex flex-col items-center justify-center`}>
+                    <span className={`text-2xl font-bold font-sans ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-1`}>{toArabic(item.value.toString().padStart(2, '0'))}</span>
+                    <span className={`text-[11px] font-bold ${isBurgundy ? 'text-[#4A0E17]/80' : 'text-[#8A7968]'}`}>{item.label}</span>
                   </div>
                 ))}
               </div>
             </FadeIn>
 
-            {/* Program Timeline & Venue (Master templates only - completely hidden for isBurgundy) */}
-            {!isBurgundy && (
-              <>
-                {/* Divider */}
-                <div className="flex items-center justify-center gap-2 mb-10 w-2/3 opacity-60">
-                  <div className="h-[1px] flex-1 bg-[#C49A6C]"></div>
-                  <div className="w-1.5 h-1.5 rotate-45 bg-[#C49A6C]"></div>
-                  <div className="h-[1px] flex-1 bg-[#C49A6C]"></div>
-                </div>
+            {/* Divider */}
+            <div className="flex items-center justify-center gap-2 mb-10 w-2/3 opacity-60">
+              <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+              <div className={`w-1.5 h-1.5 rotate-45 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+              <div className={`h-[1px] flex-1 ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'}`}></div>
+            </div>
 
-                {/* Program Timeline Section */}
-                <FadeIn>
-                  <div className="w-full flex flex-col items-center py-10 relative">
-                    <h3 className={`text-4xl text-[#C49A6C] mb-12 font-bold z-10 ${aref.className} text-center`}>برنامج الحفل</h3>
+            {/* Program Timeline Section */}
+            <FadeIn>
+              <div className="w-full flex flex-col items-center py-10 relative">
+                <h3 className={`text-4xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-12 font-bold z-10 ${aref.className} text-center`}>برنامج الحفل</h3>
 
-                    <div className="relative w-full flex flex-col px-0 max-w-sm z-10" ref={timelineRef}>
-                      {/* Vertical Track Line */}
-                      <div className="absolute right-[95px] md:right-[105px] top-6 bottom-6 w-px bg-[#C49A6C]/30"></div>
+                <div className="relative w-full flex flex-col px-0 max-w-sm z-10" ref={timelineRef}>
+                  {/* Vertical Track Line */}
+                  <div className={`absolute right-[95px] md:right-[105px] top-6 bottom-6 w-px ${isBurgundy ? 'bg-[#E6C79C]/40' : 'bg-[#C49A6C]/30'}`}></div>
 
-                      {/* Scroll-Linked Heart Indicator */}
-                      <motion.div
-                        className="absolute right-[95px] md:right-[105px] translate-x-1/2 flex items-center justify-center z-20"
-                        style={{ top: diamondTop }}
-                      >
-                        <ScrollHeart
-                          className="w-6 h-6 drop-shadow-[0_0_8px_rgba(212,175,55,0.5)]"
-                          color={metallicGold}
-                        />
-                      </motion.div>
-
-                      {scheduleTimeline.map((prog, idx) => (
-                        <div key={idx} className="flex flex-row-reverse items-start py-8 relative z-10">
-                          {/* Left Side: Event Title & Description */}
-                          <div className="flex-1 text-right pr-4">
-                            <h4 className="text-[#5A4F46] text-[22px] font-bold mb-2 font-['Aref_Ruqaa']" style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}>{prog.event}</h4>
-                            <p className="text-[#8A7968] text-[14px] leading-relaxed">{prog.desc}</p>
-                          </div>
-
-                          {/* Middle: Static Point on Track */}
-                          <div className="w-[50px] shrink-0 flex flex-col items-center justify-start pt-3">
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#C49A6C] opacity-70 shadow-[0_0_8px_rgba(230,199,156,0.4)]"></div>
-                          </div>
-
-                          {/* Right Side: Time Slot */}
-                          <div className="w-[70px] md:w-[80px] shrink-0 text-left pt-2 pl-2">
-                            <span className="text-[#8A7968] opacity-90 text-[13px] font-bold tracking-wider font-sans" dir="ltr">{prog.time}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </FadeIn>
-
-                <div className="mb-14"></div>
-
-                {/* Venue Location & Embedded Google Map */}
-                <FadeIn>
-                  <h3 className={`text-4xl text-[#C49A6C] mb-8 font-bold ${aref.className}`}>الموقع</h3>
-                  <div className={`w-full max-w-[300px] h-48 bg-[#EFE7DD] rounded-xl mb-6 border border-[#C49A6C]/30 shadow-sm relative overflow-hidden group`}>
-                    <iframe
-                      title={`موقع الحفل - ${venueName}`}
-                      src={mapEmbedUrl}
-                      className="w-full h-full border-0"
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    />
-                    <a href={locationUrl} target="_blank" rel="noopener noreferrer" aria-label="فتح في خرائط جوجل" className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-white hover:scale-105 transition-all">
-                      <MapPin size={18} className="text-[#C49A6C]" />
-                    </a>
-                  </div>
-
-                  <div className="text-center font-bold text-[14px] leading-relaxed mb-8 text-[#5A4F46]">
-                    <p className="mb-3">{arabicDate}</p>
-                    <p className="text-[#8A7968] mb-6 text-[12px]">{arabicTime}</p>
-                    <p className={`text-[#C49A6C] mb-3 font-normal text-2xl ${aref.className}`}>{venueName}</p>
-                    <p className="text-[#8A7968] text-[13px]">عمان — الأردن</p>
-                  </div>
-
-                  <a
-                    href={locationUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-[#C49A6C] text-white hover:bg-[#A88461] px-8 py-2.5 rounded-full text-[13px] font-bold shadow-md transition-all inline-block mb-4"
+                  {/* Scroll-Linked Heart Indicator */}
+                  <motion.div
+                    className="absolute right-[95px] md:right-[105px] translate-x-1/2 flex items-center justify-center z-20"
+                    style={{ top: diamondTop }}
                   >
-                    الخريطة
-                  </a>
-                </FadeIn>
-              </>
-            )}
+                    <ScrollHeart
+                      className="w-6 h-6 drop-shadow-[0_0_8px_rgba(212,175,55,0.5)]"
+                      color={metallicGold}
+                    />
+                  </motion.div>
+
+                  {[
+                    { time: '9:00 – 9:20', event: 'استقبال الضيوف', desc: 'استقبال وترحيب بالضيوف مع موسيقى هادئة وضيافة خفيفة.' },
+                    { time: '9:20 – 9:35', event: 'دخول العروسين 🤍', desc: 'دخول العروسين وسط أجواء احتفالية وموسيقى خاصة.' },
+                    { time: '9:35 – 9:50', event: 'الرقصة الأولى', desc: 'لحظة رومانسية خاصة للعروسين.' },
+                    { time: '9:50 – 10:10', event: 'فرحة الأهل', desc: 'رقص واحتفال مع الأهل والمقرّبين.' },
+                    { time: '10:10 – 10:40', event: 'أجواء الحفل 💃🏻🕺🏻', desc: 'موسيقى ورقص واحتفال مع جميع الحضور.' },
+                    { time: '10:40 – 10:50', event: 'ضيافة ومشروبات ☕️', desc: 'تقديم الضيافة والمشروبات للضيوف.' },
+                    { time: '10:50 – 11:00', event: 'الختام 🤍', desc: 'آخر لحظات الاحتفال، صور جماعية، وتوديع الضيوف.' },
+                  ].map((prog, idx) => (
+                    <div key={idx} className="flex flex-row-reverse items-start py-8 relative z-10">
+                      {/* Left Side: Event Title & Description */}
+                      <div className="flex-1 text-right pr-4">
+                        <h4 className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} text-[22px] font-bold mb-2 font-['Aref_Ruqaa']`} style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}>{prog.event}</h4>
+                        <p className={`${isBurgundy ? 'text-[#4A0E17]/80' : 'text-[#8A7968]'} text-[14px] leading-relaxed`}>{prog.desc}</p>
+                      </div>
+
+                      {/* Middle: Static Point on Track */}
+                      <div className="w-[50px] shrink-0 flex flex-col items-center justify-start pt-3">
+                        <div className={`w-1.5 h-1.5 rounded-full ${isBurgundy ? 'bg-[#E6C79C]' : 'bg-[#C49A6C]'} opacity-70 shadow-[0_0_8px_rgba(230,199,156,0.4)]`}></div>
+                      </div>
+
+                      {/* Right Side: Time Slot */}
+                      <div className="w-[70px] md:w-[80px] shrink-0 text-left pt-2 pl-2">
+                        <span className={`${isBurgundy ? 'text-[#63121E]' : 'text-[#8A7968]'} opacity-90 text-[13px] font-bold tracking-wider font-sans`} dir="ltr">{prog.time}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
+
+            <div className="mb-14"></div>
+
+            {/* Venue Location & Embedded Google Map */}
+            <FadeIn>
+              <h3 className={`text-4xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-8 font-bold ${aref.className}`}>الموقع</h3>
+              <div className={`w-full max-w-[300px] h-48 bg-[#EFE7DD] rounded-xl mb-6 border ${isBurgundy ? 'border-[#E6C79C]/50' : 'border-[#C49A6C]/30'} shadow-sm relative overflow-hidden group`}>
+                <iframe
+                  title={`موقع الحفل - ${venueName}`}
+                  src={mapEmbedUrl}
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+                <a href={locationUrl} target="_blank" rel="noopener noreferrer" aria-label="فتح في خرائط جوجل" className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-white hover:scale-105 transition-all">
+                  <MapPin size={18} className={isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} />
+                </a>
+              </div>
+
+              <div className={`text-center font-bold text-[14px] leading-relaxed mb-8 ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'}`}>
+                <p className="mb-3">{arabicDate}</p>
+                <p className={`${isBurgundy ? 'text-[#4A0E17]/70' : 'text-[#8A7968]'} mb-6 text-[12px]`}>{arabicTime}</p>
+                <p className={`${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} mb-3 font-normal text-2xl ${aref.className}`}>{venueName}</p>
+                <p className={`${isBurgundy ? 'text-[#4A0E17]/70' : 'text-[#8A7968]'} text-[13px]`}>عمان — الأردن</p>
+              </div>
+
+              <a
+                href={locationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${isBurgundy ? 'bg-gradient-to-r from-[#63121E] to-[#4A0E17] text-[#F7E7CE] border border-[#E6C79C]/40 hover:from-[#4A0E17] hover:to-[#2D070D]' : 'bg-[#C49A6C] text-white hover:bg-[#A88461]'} px-8 py-2.5 rounded-full text-[13px] font-bold shadow-md transition-all inline-block mb-4`}
+              >
+                الخريطة
+              </a>
+            </FadeIn>
 
             {/* Divider */}
             <div className="flex items-center justify-center gap-2 my-10 w-2/3 opacity-60">
@@ -1159,25 +1253,19 @@ export default function WeddingClassic({ customData } = {}) {
                   {customData ? `#${groomFirst.replace(/\s+/g, '_')}_و${brideFirst.replace(/\s+/g, '_')}` : '#عمر_وآيات'}
                 </p>
 
-                {!isBurgundy && !customData?.hideContact && (
-                  <>
-                    <p className="text-[12px] text-[#8A7968] mb-4">للاستفسار والتأكيد</p>
-                    <div className="flex justify-center mb-10">
-                      <a
-                        href="https://wa.me/9647700000000"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="border border-[#C49A6C]/50 text-[#5A4F46] hover:bg-[#F5EBE1] rounded-full px-6 py-2 text-[13px] bg-transparent flex items-center gap-2 transition-colors"
-                      >
-                        أبو عمر <Phone size={14} className="text-[#C49A6C]" />
-                      </a>
-                    </div>
-                  </>
-                )}
+                <p className={`text-[12px] ${isBurgundy ? 'text-[#4A0E17]/70' : 'text-[#8A7968]'} mb-4`}>للاستفسار والتأكيد</p>
+                <div className="flex justify-center mb-10">
+                  <a
+                    href="https://wa.me/9647700000000"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`border ${isBurgundy ? 'border-[#E6C79C]/60 text-[#4A0E17] hover:bg-[#F7E7CE]/40' : 'border-[#C49A6C]/50 text-[#5A4F46] hover:bg-[#F5EBE1]'} rounded-full px-6 py-2 text-[13px] bg-transparent flex items-center gap-2 transition-colors`}
+                  >
+                    أبو عمر <Phone size={14} className={isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} />
+                  </a>
+                </div>
 
-                <p className={`text-base sm:text-lg font-bold ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-8 tracking-wide`}>
-                  {familyNames}
-                </p>
+                <p className={`text-[13px] ${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} mb-8`}>{familyNames}</p>
               </div>
             </FadeIn>
           </div>
@@ -1216,68 +1304,78 @@ export default function WeddingClassic({ customData } = {}) {
           </div>
         </div>
 
-        {/* Save the Date Calendar Card (Master templates only - integrated directly under card for isBurgundy) */}
-        {!isBurgundy && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="w-full flex flex-col items-center mt-12 mb-16 px-6"
-          >
-            <div className="flex items-center gap-2 mb-8">
-              <span className="text-xl">🤍</span>
-              <h3 className={`text-2xl text-[#A67C52] font-bold ${aref.className}`}>
-                احفظ الموعد
-              </h3>
+        {/* Save the Date Calendar Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="w-full flex flex-col items-center mt-12 mb-16 px-6"
+        >
+          <div className="flex items-center gap-2 mb-8">
+            <span className="text-xl">🤍</span>
+            <h3 className={`text-2xl ${isBurgundy ? 'text-[#F7E7CE]' : 'text-[#A67C52]'} font-bold ${aref.className}`}>
+              احفظ الموعد
+            </h3>
+          </div>
+
+          <div className={`${isBurgundy ? 'bg-[#FDFBF7] shadow-[0_15px_40px_rgba(45,7,13,0.35)] border border-[#E6C79C]/50' : 'bg-[#FDFBF9] shadow-[0_10px_30px_rgba(166,124,82,0.15)] border border-[#A67C52]/20'} rounded-2xl w-full max-w-sm overflow-hidden relative`}>
+            <div className="absolute top-0 left-1/4 w-3 h-4 bg-gray-200 rounded-full border border-gray-300 -translate-y-1/2 z-10 shadow-sm"></div>
+            <div className="absolute top-0 right-1/4 w-3 h-4 bg-gray-200 rounded-full border border-gray-300 -translate-y-1/2 z-10 shadow-sm"></div>
+
+            <div className={`${isBurgundy ? 'bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE]' : 'bg-[#A67C52] text-white'} py-3 text-center font-bold text-lg pt-4`}>
+              {calendarMonthYear}
             </div>
 
-            <div className="bg-[#FDFBF9] shadow-[0_10px_30px_rgba(166,124,82,0.15)] border border-[#A67C52]/20 rounded-2xl w-full max-w-sm overflow-hidden relative">
-              <div className="absolute top-0 left-1/4 w-3 h-4 bg-gray-200 rounded-full border border-gray-300 -translate-y-1/2 z-10 shadow-sm"></div>
-              <div className="absolute top-0 right-1/4 w-3 h-4 bg-gray-200 rounded-full border border-gray-300 -translate-y-1/2 z-10 shadow-sm"></div>
+            <div className="p-6 flex flex-col items-center relative">
+              <p className={`${isBurgundy ? 'text-[#63121E]' : 'text-[#A67C52]'} font-bold text-lg mb-1`}>{calendarWeekday}</p>
+              <p className={`text-8xl ${isBurgundy ? 'text-[#63121E]' : 'text-[#C49A6C]'} font-light mb-2 leading-none`}>{calendarDay}</p>
+              <p className={`${isBurgundy ? 'text-[#4A0E17]' : 'text-[#5A4F46]'} font-bold text-sm`}>{arabicTime}</p>
+            </div>
 
-              <div className="bg-[#A67C52] text-white py-3 text-center font-bold text-lg pt-4">
-                {calendarMonthYear}
-              </div>
+            <div className={`border-t border-dashed ${isBurgundy ? 'border-[#E6C79C]/40 bg-[#F7E7CE]/20' : 'border-[#A67C52]/30 bg-white/50'} px-6 py-6 flex flex-col items-center gap-3`}>
+              {/* Primary Smart One-Click Calendar Button */}
+              <button
+                type="button"
+                onClick={handleSmartCalendarAdd}
+                className={`w-full py-3.5 px-6 rounded-full font-bold text-[14px] shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                  isBurgundy
+                    ? 'bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] border border-[#E6C79C]/50 hover:shadow-[0_4px_20px_rgba(74,14,23,0.4)]'
+                    : 'bg-[#A67C52] text-white hover:bg-[#8e653d]'
+                }`}
+              >
+                <span>📅</span>
+                <span>أضف الموعد إلى تقويم هاتفك بضغطة</span>
+              </button>
 
-              <div className="p-6 flex flex-col items-center relative">
-                <p className="text-[#A67C52] font-bold text-lg mb-1">{calendarWeekday}</p>
-                <p className="text-8xl text-[#C49A6C] font-light mb-2 leading-none">{calendarDay}</p>
-                <p className="text-[#5A4F46] font-bold text-sm">{arabicTime}</p>
-              </div>
-
-              <div className="border-t border-dashed border-[#A67C52]/30 bg-white/50 px-6 py-6 flex flex-col items-center gap-3">
-                {/* Primary Smart One-Click Calendar Button */}
+              {/* Direct Calendar Options */}
+              <div className="flex gap-2.5 w-full justify-center pt-1">
+                <a
+                  href={googleCalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex-1 text-center border ${
+                    isBurgundy
+                      ? 'border-[#63121E]/60 text-[#63121E] bg-white/70 hover:bg-[#63121E] hover:text-[#F7E7CE]'
+                      : 'border-[#A67C52] text-[#A67C52] hover:bg-[#A67C52] hover:text-white'
+                  } rounded-full py-2 text-xs font-bold transition-all shadow-sm block`}
+                >
+                  تقويم جوجل
+                </a>
                 <button
                   type="button"
-                  onClick={handleSmartCalendarAdd}
-                  className="w-full py-3.5 px-6 rounded-full font-bold text-[14px] shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] bg-[#A67C52] text-white hover:bg-[#8e653d]"
+                  onClick={handleAppleCalendar}
+                  className={`flex-1 border ${
+                    isBurgundy
+                      ? 'border-[#63121E]/60 text-[#63121E] bg-white/70 hover:bg-[#63121E] hover:text-[#F7E7CE]'
+                      : 'border-[#A67C52] text-[#A67C52] hover:bg-[#A67C52] hover:text-white'
+                  } rounded-full py-2 text-xs font-bold transition-all shadow-sm`}
                 >
-                  <span>📅</span>
-                  <span>أضف الموعد إلى تقويم هاتفك بضغطة</span>
+                  تقويم آيفون (Apple)
                 </button>
-
-                {/* Direct Calendar Options */}
-                <div className="flex gap-2.5 w-full justify-center pt-1">
-                  <a
-                    href={googleCalUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 text-center border border-[#A67C52] text-[#A67C52] hover:bg-[#A67C52] hover:text-white rounded-full py-2 text-xs font-bold transition-all shadow-sm block"
-                  >
-                    تقويم جوجل
-                  </a>
-                  <button
-                    type="button"
-                    onClick={handleAppleCalendar}
-                    className="flex-1 border border-[#A67C52] text-[#A67C52] hover:bg-[#A67C52] hover:text-white rounded-full py-2 text-xs font-bold transition-all shadow-sm"
-                  >
-                    تقويم آيفون (Apple)
-                  </button>
-                </div>
               </div>
             </div>
-          </motion.div>
-        )}
+          </div>
+        </motion.div>
 
         {/* RSVP Form Section ("تأكيد الحضور") - Omitted if hideRsvp is true */}
         {!customData?.hideRsvp && (
@@ -1449,6 +1547,8 @@ export default function WeddingClassic({ customData } = {}) {
                 </motion.div>
               ))}
             </div>
+          </>
+        )}
           </>
         )}
       </div>
