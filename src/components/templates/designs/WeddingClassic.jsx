@@ -656,183 +656,145 @@ export default function WeddingClassic({ customData } = {}) {
       </section>
 
       {/* Main Invitation Content Container */}
-      <div className={`mx-auto max-w-md w-full ${isBurgundy ? 'bg-gradient-to-b from-[#2D070D] via-[#4A0E17] to-[#2D070D] text-[#F7E7CE]' : 'bg-[#F5EBE1] text-[#5A4F46]'} relative pb-24 overflow-x-hidden pt-12 px-4 shadow-2xl transition-colors duration-500`}>
+      <div className={`mx-auto max-w-md w-full ${isBurgundy ? 'bg-[#FAF6F0] text-[#5A1821] shadow-[0_15px_60px_rgba(45,7,13,0.35)]' : 'bg-[#F5EBE1] text-[#5A4F46]'} relative pb-24 overflow-x-hidden pt-10 px-4 sm:px-6 shadow-2xl transition-colors duration-500`}>
         {isBurgundy ? (
           /* =========================================================================
-             OMAR & AYAT EXCLUSIVE ORDERED ARCHITECTURE (Sections A -> B -> C -> D -> E -> F)
+             OMAR & AYAT EXCLUSIVE CONTINUOUS CREAM SHEET (Sections 2 -> 9)
              ========================================================================= */
           <>
-            {/* Section A: Invitation Card ("بطاقة دعوة") */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className="relative w-full bg-[#FDFBF7] text-[#4A0E17] border border-[#E6C79C]/60 shadow-[0_20px_60px_rgba(45,7,13,0.4)] flex flex-col items-center pt-10 pb-12 px-3 sm:px-6 max-w-full overflow-hidden"
-            >
-              {/* Decorative Frame Corners */}
-              <div className="absolute -top-[1px] -left-[1px] bg-[#FDFBF7] p-1"><ElegantCorner className="w-5 h-5" color={accentGold} /></div>
-              <div className="absolute -top-[1px] -right-[1px] bg-[#FDFBF7] p-1"><ElegantCorner className="w-5 h-5 rotate-90" color={accentGold} /></div>
-              <div className="absolute -bottom-[1px] -left-[1px] bg-[#FDFBF7] p-1"><ElegantCorner className="w-5 h-5 -rotate-90" color={accentGold} /></div>
-              <div className="absolute -bottom-[1px] -right-[1px] bg-[#FDFBF7] p-1"><ElegantCorner className="w-5 h-5 rotate-180" color={accentGold} /></div>
+            {/* Elegant Corner Ornaments for the Cream Sheet */}
+            <div className="absolute top-2 left-2 pointer-events-none opacity-80"><ElegantCorner className="w-5 h-5" color={accentGold} /></div>
+            <div className="absolute top-2 right-2 pointer-events-none opacity-80"><ElegantCorner className="w-5 h-5 rotate-90" color={accentGold} /></div>
+            <div className="absolute bottom-2 left-2 pointer-events-none opacity-80"><ElegantCorner className="w-5 h-5 -rotate-90" color={accentGold} /></div>
+            <div className="absolute bottom-2 right-2 pointer-events-none opacity-80"><ElegantCorner className="w-5 h-5 rotate-180" color={accentGold} /></div>
 
-              {/* Framed Content Wrapper */}
-              <div className="relative z-20 flex flex-col items-center w-full">
-                {/* Quranic Verse at Top of Card */}
-                <div className="w-full max-w-full overflow-hidden px-5 sm:px-8 mb-8 text-center">
-                  <p
-                    className="text-[#4A0E17] font-bold text-sm sm:text-base leading-loose text-center"
-                    style={{ fontFamily: 'var(--font-amiri), serif' }}
-                  >
-                    ﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَلِكَ لَآيَاتٍ لِّقَوْمٍ{' '}
-                    <span className="whitespace-nowrap inline-block">يَتَفَكَّرُونَ&nbsp;﴾</span>
-                  </p>
-                </div>
-
-                {/* Divider */}
-                <div className="flex items-center justify-center gap-2 mb-10 w-2/3 opacity-60">
-                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
-                  <div className="w-1.5 h-1.5 rotate-45 bg-[#E6C79C]"></div>
-                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
-                </div>
-
-                {/* Invitation Heading */}
-                <h3 className={`text-4xl text-[#63121E] mb-8 font-bold ${aref.className}`}>بطاقة دعوة</h3>
-
-                {/* Structured Invitation Text */}
-                <div className="w-full flex flex-col items-center text-center px-1 sm:px-4 mb-6">
-                  {/* Row 1: يتشرف بكل ودّ ومحبة */}
-                  <p
-                    className="text-lg sm:text-xl text-[#4A0E17] font-semibold mb-5 tracking-wide"
-                    style={{ fontFamily: 'var(--font-amiri), serif' }}
-                  >
-                    يتشرف بكل ودّ ومحبة
-                  </p>
-
-                  {/* Row 2 (Fathers' Names in 3-column grid): الدكتور سهيل السخن & المهندس علي قبها */}
-                  <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 w-full mb-6 px-1 text-[#4A0E17]">
-                    <div className="text-center">
-                      <p
-                        className="text-lg sm:text-xl font-bold leading-snug whitespace-nowrap"
-                        style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}
-                      >
-                        {groomFather}
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-center px-1">
-                      <span className="font-serif italic text-2xl text-[#5A1821] mx-2 select-none">&amp;</span>
-                    </div>
-                    <div className="text-center">
-                      <p
-                        className="text-lg sm:text-xl font-bold leading-snug whitespace-nowrap"
-                        style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}
-                      >
-                        {brideFather}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Row 3: بدعوتكم لحضور حفل زفاف */}
-                  <p
-                    className="my-7 text-lg sm:text-xl text-[#4A0E17] font-semibold tracking-wide"
-                    style={{ fontFamily: 'var(--font-amiri), serif' }}
-                  >
-                    بدعوتكم لحضور حفل زفاف
-                  </p>
-
-                  {/* Row 4 (Couple Titles & Names in 2-column grid) */}
-                  <div className="grid grid-cols-2 gap-6 w-full mt-4 pt-2 items-start text-center px-1 sm:px-4">
-                    {/* Right Column: Groom */}
-                    <div className="flex flex-col items-center text-center">
-                      <div
-                        className="text-base sm:text-lg text-[#63121E]/85 font-bold mb-6 tracking-wide"
-                        style={{ fontFamily: 'var(--font-amiri), serif' }}
-                      >
-                        ابنه المهندس
-                      </div>
-                      <div
-                        className="text-4xl sm:text-5xl font-bold leading-relaxed pt-2 text-[#63121E] tracking-wider select-none"
-                        style={{
-                          fontFamily: 'var(--font-aref-ruqaa), serif',
-                          textShadow: '0 2px 8px rgba(99,18,30,0.15)',
-                        }}
-                      >
-                        عُمَر
-                      </div>
-                    </div>
-
-                    {/* Left Column: Bride */}
-                    <div className="flex flex-col items-center text-center">
-                      <div
-                        className="text-base sm:text-lg text-[#63121E]/85 font-bold mb-6 tracking-wide"
-                        style={{ fontFamily: 'var(--font-amiri), serif' }}
-                      >
-                        ابنته الدكتورة
-                      </div>
-                      <div
-                        className="text-4xl sm:text-5xl font-bold leading-relaxed pt-2 text-[#63121E] tracking-wider select-none"
-                        style={{
-                          fontFamily: 'var(--font-aref-ruqaa), serif',
-                          textShadow: '0 2px 8px rgba(99,18,30,0.15)',
-                        }}
-                      >
-                        آيَات
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Divider Line */}
-                <div className="flex items-center justify-center gap-2 my-8 w-2/3 opacity-60">
-                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
-                  <div className="w-1.5 h-1.5 rotate-45 bg-[#E6C79C]"></div>
-                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
-                </div>
-
-                {/* التاريخ والوقت (as clean text with clock/calendar icon, NOT calendar button) */}
-                <div className="text-center font-bold text-sm sm:text-base leading-relaxed text-[#4A0E17] mb-2">
-                  <p className="flex items-center justify-center gap-2 font-semibold">
-                    <span>🗓️</span>
-                    <span>الإثنين، 16 نوفمبر 2026 — الساعة 8:00 مساءً</span>
-                  </p>
-                </div>
-
-                {/* Divider Line */}
-                <div className="flex items-center justify-center gap-2 my-6 w-1/2 opacity-60">
-                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
-                  <div className="w-1.5 h-1.5 rotate-45 bg-[#E6C79C]"></div>
-                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
-                </div>
-
-                {/* المكان */}
-                <div className="text-center font-bold text-[#4A0E17] mb-6">
-                  <p className={`text-2xl sm:text-3xl text-[#63121E] font-bold mb-1 ${aref.className}`}>
-                    قاعات النعمان - عمّان
-                  </p>
-                  <p className="text-xs sm:text-sm text-[#4A0E17]/75 font-semibold">
-                    عمان — الأردن
-                  </p>
-                </div>
-
-                {/* Direct pill link/button: 📍 الموقع على الخريطة */}
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=قاعات+النعمان+عمان"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="py-2.5 px-8 rounded-full text-xs sm:text-sm font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] to-[#4A0E17] text-[#F7E7CE] border border-[#E6C79C]/50 hover:from-[#4A0E17] hover:to-[#2D070D] inline-flex items-center gap-2"
-                >
-                  <MapPin size={16} className="text-[#E6C79C]" />
-                  <span>الموقع على الخريطة</span>
-                </a>
-              </div>
-            </motion.div>
-
-            {/* Section B: Countdown Timer ("يبدأ الاحتفال بعد") */}
+            {/* (2) Quranic Verse (Strictly 2 Balanced Lines & Inward Brackets) */}
             <FadeIn>
-              <div className="w-full flex flex-col items-center mt-12 mb-8">
-                <h3 className={`text-3xl sm:text-4xl text-[#F7E7CE] mb-8 font-bold ${aref.className}`}>
+              <div className="w-full text-center px-1 sm:px-4 pt-2">
+                <p
+                  className="text-[#5A1821] font-bold text-[13px] sm:text-[15px] leading-relaxed text-center"
+                  style={{ fontFamily: 'var(--font-amiri), serif' }}
+                >
+                  <span className="block whitespace-nowrap">
+                    ﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنْفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا
+                  </span>
+                  <span className="block whitespace-nowrap mt-1">
+                    وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً إِنَّ فِي ذَلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ ﴾
+                  </span>
+                </p>
+              </div>
+            </FadeIn>
+
+            {/* Gold Diamond Divider: ─── ◆ ─── */}
+            <div className="flex items-center justify-center gap-3 my-8 sm:my-10 w-3/4 max-w-xs mx-auto opacity-75">
+              <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+              <span className="text-[#D4AF37] text-xs select-none">◆</span>
+              <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+            </div>
+
+            {/* (3) Invitation Card ("بطاقة دعوة") — NO Duplicate Date/Location Here! */}
+            <FadeIn>
+              <div className="w-full flex flex-col items-center text-center px-1 sm:px-4">
+                <h3 className={`text-3xl sm:text-4xl text-[#5A1821] mb-6 font-bold ${aref.className}`}>
+                  بطاقة دعوة
+                </h3>
+
+                {/* Row 1: يتشرف بكل ودّ ومحبة */}
+                <p
+                  className="text-lg sm:text-xl text-[#5A1821] font-semibold mb-5 tracking-wide"
+                  style={{ fontFamily: 'var(--font-amiri), serif' }}
+                >
+                  يتشرف بكل ودّ ومحبة
+                </p>
+
+                {/* Row 2: الدكتور سهيل السخن & المهندس علي قبها */}
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 w-full mb-7 px-1 text-[#5A1821]">
+                  <div className="text-center">
+                    <p
+                      className="text-lg sm:text-xl font-bold leading-snug whitespace-nowrap"
+                      style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}
+                    >
+                      {groomFather}
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-center px-1">
+                    <span className="font-serif italic text-2xl text-[#5A1821] mx-2 select-none">&amp;</span>
+                  </div>
+                  <div className="text-center">
+                    <p
+                      className="text-lg sm:text-xl font-bold leading-snug whitespace-nowrap"
+                      style={{ fontFamily: 'var(--font-aref-ruqaa), serif' }}
+                    >
+                      {brideFather}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Row 3: بدعوتكم لحضور حفل زفاف */}
+                <p
+                  className="my-7 text-lg sm:text-xl text-[#5A1821] font-semibold tracking-wide"
+                  style={{ fontFamily: 'var(--font-amiri), serif' }}
+                >
+                  بدعوتكم لحضور حفل زفاف
+                </p>
+
+                {/* Row 4 (2 Columns with generous spacing so diacritics never touch titles) */}
+                <div className="grid grid-cols-2 gap-6 w-full mt-2 items-start text-center px-1 sm:px-4">
+                  {/* Right Column: Groom */}
+                  <div className="flex flex-col items-center text-center">
+                    <div
+                      className="text-base sm:text-lg text-[#5A1821]/85 font-bold mb-4 tracking-wide"
+                      style={{ fontFamily: 'var(--font-amiri), serif' }}
+                    >
+                      ابنه المهندس
+                    </div>
+                    <div
+                      className="text-4xl sm:text-5xl font-bold pt-2 leading-normal text-[#5A1821] tracking-wider select-none"
+                      style={{
+                        fontFamily: 'var(--font-aref-ruqaa), serif',
+                        textShadow: '0 2px 8px rgba(90,24,33,0.12)',
+                      }}
+                    >
+                      عُمَر
+                    </div>
+                  </div>
+
+                  {/* Left Column: Bride */}
+                  <div className="flex flex-col items-center text-center">
+                    <div
+                      className="text-base sm:text-lg text-[#5A1821]/85 font-bold mb-4 tracking-wide"
+                      style={{ fontFamily: 'var(--font-amiri), serif' }}
+                    >
+                      ابنته الدكتورة
+                    </div>
+                    <div
+                      className="text-4xl sm:text-5xl font-bold pt-2 leading-normal text-[#5A1821] tracking-wider select-none"
+                      style={{
+                        fontFamily: 'var(--font-aref-ruqaa), serif',
+                        textShadow: '0 2px 8px rgba(90,24,33,0.12)',
+                      }}
+                    >
+                      آيَات
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Gold Diamond Divider: ─── ◆ ─── */}
+            <div className="flex items-center justify-center gap-3 my-8 sm:my-10 w-3/4 max-w-xs mx-auto opacity-75">
+              <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+              <span className="text-[#D4AF37] text-xs select-none">◆</span>
+              <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+            </div>
+
+            {/* (4) Countdown Timer ("يبدأ الاحتفال بعد") — Left-to-Right Order (من الشمال إلى اليمين) */}
+            <FadeIn>
+              <div className="w-full flex flex-col items-center">
+                <h3 className={`text-2xl sm:text-3xl text-[#5A1821] mb-6 font-bold ${aref.className} text-center`}>
                   يبدأ الاحتفال بعد
                 </h3>
-                <div className="grid grid-cols-4 gap-2 px-4 max-w-md w-full mx-auto">
+                <div dir="ltr" className="grid grid-cols-4 gap-2 sm:gap-3 max-w-md w-full mx-auto px-1 sm:px-2">
                   {[
                     { label: 'يوم', value: timeLeft.days },
                     { label: 'ساعة', value: timeLeft.hours },
@@ -841,12 +803,12 @@ export default function WeddingClassic({ customData } = {}) {
                   ].map((item, idx) => (
                     <div
                       key={idx}
-                      className="w-full h-[76px] sm:h-[84px] bg-[#FDFBF7] border border-[#E6C79C]/60 shadow-[0_4px_15px_rgba(230,199,156,0.2)] rounded-xl flex flex-col items-center justify-center p-1"
+                      className="w-full h-[76px] sm:h-[84px] bg-[#FDFBF7] border border-[#E6C79C] shadow-sm rounded-xl flex flex-col items-center justify-center p-1"
                     >
-                      <span className="text-2xl sm:text-3xl font-bold font-sans text-[#63121E] mb-1">
+                      <span className="text-2xl sm:text-3xl font-bold font-sans text-[#5A1821] mb-1">
                         {toArabic(item.value.toString().padStart(2, '0'))}
                       </span>
-                      <span className="text-[11px] sm:text-xs font-bold text-[#4A0E17]/80">
+                      <span className="text-[11px] sm:text-xs font-bold text-[#5A1821]/80">
                         {item.label}
                       </span>
                     </div>
@@ -855,15 +817,22 @@ export default function WeddingClassic({ customData } = {}) {
               </div>
             </FadeIn>
 
-            {/* Section C: Location Section with Embedded Map ("الموقع") */}
+            {/* Gold Diamond Divider: ─── ◆ ─── */}
+            <div className="flex items-center justify-center gap-3 my-8 sm:my-10 w-3/4 max-w-xs mx-auto opacity-75">
+              <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+              <span className="text-[#D4AF37] text-xs select-none">◆</span>
+              <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+            </div>
+
+            {/* (5) Location Section ("الموقع") — With Date 16/11/2026 */}
             <FadeIn>
-              <div className="w-full flex flex-col items-center mt-8 mb-12 px-4">
-                <h3 className={`text-3xl sm:text-4xl text-[#F7E7CE] mb-6 font-bold ${aref.className}`}>
+              <div className="w-full flex flex-col items-center px-1 sm:px-2">
+                <h3 className={`text-3xl sm:text-4xl text-[#5A1821] mb-6 font-bold ${aref.className}`}>
                   الموقع
                 </h3>
 
-                {/* Embedded Google Map iframe */}
-                <div className="w-full max-w-sm sm:max-w-md h-56 bg-[#FDFBF7] rounded-2xl mb-6 border border-[#E6C79C]/80 shadow-md relative overflow-hidden group">
+                {/* Embedded Google Map iframe card */}
+                <div className="w-full max-w-sm sm:max-w-md h-56 bg-white rounded-2xl mb-6 border border-[#E6C79C] shadow-md relative overflow-hidden group">
                   <iframe
                     title="موقع الحفل - قاعات النعمان"
                     src="https://www.google.com/maps?q=قاعات+النعمان+عمان&output=embed"
@@ -876,20 +845,20 @@ export default function WeddingClassic({ customData } = {}) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="فتح في خرائط جوجل"
-                    className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-white hover:scale-105 transition-all border border-[#E6C79C]/40"
+                    className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-white hover:scale-105 transition-all border border-[#E6C79C]/50"
                   >
-                    <MapPin size={18} className="text-[#63121E]" />
+                    <MapPin size={18} className="text-[#5A1821]" />
                   </a>
                 </div>
 
                 {/* Details below map */}
-                <div className="text-center font-bold text-[14px] leading-relaxed mb-6 text-[#F7E7CE]">
+                <div className="text-center font-bold text-sm leading-relaxed mb-6 text-[#5A1821]">
                   <p className="mb-2 text-base font-semibold">يوم الإثنين، 16 تشرين الثاني 2026</p>
-                  <p className="text-[#F7E7CE]/80 mb-4 text-xs sm:text-sm font-semibold">الساعة الثامنة مساءً</p>
-                  <p className={`text-[#E6C79C] mb-2 font-bold text-2xl sm:text-3xl ${aref.className}`}>
+                  <p className="text-[#5A1821]/80 mb-4 text-xs sm:text-sm font-semibold">الساعة الثامنة مساءً</p>
+                  <p className={`text-[#5A1821] mb-2 font-bold text-2xl sm:text-3xl ${aref.className}`}>
                     قاعات النعمان
                   </p>
-                  <p className="text-[#F7E7CE]/70 text-xs sm:text-sm font-semibold">عمان — الأردن</p>
+                  <p className="text-[#5A1821]/70 text-xs sm:text-sm font-semibold">عمان — الأردن</p>
                 </div>
 
                 {/* Pill Button: الخريطة */}
@@ -897,7 +866,7 @@ export default function WeddingClassic({ customData } = {}) {
                   href="https://www.google.com/maps/search/?api=1&query=قاعات+النعمان+عمان"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="py-2.5 px-8 rounded-full text-xs sm:text-sm font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] to-[#4A0E17] text-[#F7E7CE] border border-[#E6C79C]/50 hover:from-[#4A0E17] hover:to-[#2D070D] inline-flex items-center gap-2"
+                  className="py-2.5 px-8 rounded-full text-xs sm:text-sm font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] to-[#4A0E17] text-[#FAF6F0] border border-[#E6C79C]/50 hover:from-[#4A0E17] hover:to-[#2D070D] inline-flex items-center gap-2"
                 >
                   <MapPin size={16} className="text-[#E6C79C]" />
                   <span>الخريطة</span>
@@ -905,24 +874,58 @@ export default function WeddingClassic({ customData } = {}) {
               </div>
             </FadeIn>
 
-            {/* Section D: 4-Photo Gallery ("لحظاتنا") */}
+            {/* Gold Diamond Divider: ─── ◆ ─── */}
+            <div className="flex items-center justify-center gap-3 my-8 sm:my-10 w-3/4 max-w-xs mx-auto opacity-75">
+              <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+              <span className="text-[#D4AF37] text-xs select-none">◆</span>
+              <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+            </div>
+
+            {/* (6) Notes Section ("ملاحظات") — Immediately After Location */}
             <FadeIn>
-              <div className="w-full flex flex-col items-center mt-6 mb-12">
-                <h3 className={`text-3xl sm:text-4xl text-[#F7E7CE] mb-8 font-bold ${aref.className}`}>
+              <div className="w-full flex flex-col items-center px-2">
+                <h3 className={`text-3xl sm:text-4xl text-[#5A1821] mb-6 font-bold ${aref.className}`}>
+                  ملاحظات
+                </h3>
+
+                <ul className="text-sm sm:text-base font-bold flex flex-col gap-4 text-center w-full max-w-sm px-4 text-[#5A1821]">
+                  <li className="flex items-center justify-center gap-3 text-center">
+                    <DiamondBullet className="w-3.5 h-3.5 shrink-0 opacity-80" color={accentGold} />
+                    <span>نوماً هنيئاً لأطفالكم</span>
+                  </li>
+                  <li className="flex items-center justify-center gap-3 text-center">
+                    <DiamondBullet className="w-3.5 h-3.5 shrink-0 opacity-80" color={accentGold} />
+                    <span>يمنع التصوير في صالة النساء</span>
+                  </li>
+                </ul>
+              </div>
+            </FadeIn>
+
+            {/* Gold Diamond Divider: ─── ◆ ─── */}
+            <div className="flex items-center justify-center gap-3 my-8 sm:my-10 w-3/4 max-w-xs mx-auto opacity-75">
+              <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+              <span className="text-[#D4AF37] text-xs select-none">◆</span>
+              <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+            </div>
+
+            {/* (7) 4-Photo Gallery (2x2 Portrait Grid) */}
+            <FadeIn>
+              <div className="w-full flex flex-col items-center px-1 sm:px-2">
+                <h3 className={`text-3xl sm:text-4xl text-[#5A1821] mb-6 font-bold ${aref.className}`}>
                   لحظاتنا
                 </h3>
 
-                <div className="px-4 w-full max-w-md mx-auto">
-                  <div className="grid grid-cols-2 gap-3.5">
+                <div className="w-full max-w-md mx-auto px-1 sm:px-2">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     {galleryPhotos.map((imgSrc, idx) => (
                       <motion.div
                         key={idx}
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5, delay: idx * 0.1 }}
                         onClick={() => setActivePhoto(imgSrc)}
-                        className="relative rounded-2xl overflow-hidden shadow-md border border-[#E6C79C]/40 cursor-pointer group aspect-[3/4] bg-black/10"
+                        className="relative rounded-2xl overflow-hidden shadow-sm border border-[#E6C79C]/80 cursor-pointer group aspect-[3/4] bg-black/5"
                       >
                         <Image
                           src={imgSrc}
@@ -938,45 +941,52 @@ export default function WeddingClassic({ customData } = {}) {
               </div>
             </FadeIn>
 
-            {/* Section E: Save the Date Calendar Card Widget ("احفظ الموعد 🤍") */}
+            {/* Gold Diamond Divider: ─── ◆ ─── */}
+            <div className="flex items-center justify-center gap-3 my-8 sm:my-10 w-3/4 max-w-xs mx-auto opacity-75">
+              <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+              <span className="text-[#D4AF37] text-xs select-none">◆</span>
+              <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+            </div>
+
+            {/* (8) Save the Date Calendar Card ("احفظ الموعد 🤍") — At the Very End Before Footer */}
             <FadeIn>
-              <div className="w-full flex flex-col items-center mt-6 mb-16 px-4">
+              <div className="w-full flex flex-col items-center px-1 sm:px-2">
                 <div className="flex items-center justify-center gap-2 mb-6">
                   <span className="text-xl">🤍</span>
-                  <h3 className={`text-3xl sm:text-4xl text-[#F7E7CE] font-bold ${aref.className}`}>
+                  <h3 className={`text-3xl sm:text-4xl text-[#5A1821] font-bold ${aref.className}`}>
                     احفظ الموعد
                   </h3>
                 </div>
 
-                <div className="bg-[#FDFBF7] shadow-[0_10px_30px_rgba(74,14,23,0.35)] border border-[#E6C79C]/80 rounded-2xl w-full max-w-sm overflow-hidden relative">
+                <div className="bg-[#FDFBF7] shadow-[0_10px_30px_rgba(90,24,33,0.12)] border border-[#E6C79C] rounded-2xl w-full max-w-sm overflow-hidden relative">
                   {/* Ring notches */}
                   <div className="absolute top-0 left-1/4 w-3 h-4 bg-[#E6C79C] rounded-full border border-[#D4AF37] -translate-y-1/2 z-10 shadow-sm"></div>
                   <div className="absolute top-0 right-1/4 w-3 h-4 bg-[#E6C79C] rounded-full border border-[#D4AF37] -translate-y-1/2 z-10 shadow-sm"></div>
 
                   {/* Top Header Bar */}
-                  <div className="bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] py-3 text-center font-bold text-lg pt-4 tracking-wide border-b border-[#E6C79C]/40">
+                  <div className="bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#FAF6F0] py-3 text-center font-bold text-lg pt-4 tracking-wide border-b border-[#E6C79C]/40">
                     تشرين الثاني 2026
                   </div>
 
                   {/* Center of the card */}
                   <div className="p-6 flex flex-col items-center relative">
-                    <p className="text-[#63121E] font-bold text-lg mb-1">الإثنين</p>
+                    <p className="text-[#5A1821] font-bold text-lg mb-1">الإثنين</p>
                     <p
-                      className="text-7xl sm:text-8xl text-[#63121E] font-light mb-2 leading-none"
+                      className="text-7xl sm:text-8xl text-[#5A1821] font-light mb-2 leading-none"
                       style={{ fontFamily: 'var(--font-amiri), serif' }}
                     >
                       16
                     </p>
-                    <p className="text-[#4A0E17]/85 font-bold text-sm">الساعة 8 مساءً</p>
+                    <p className="text-[#5A1821]/85 font-bold text-sm">الساعة الثامنة مساءً</p>
                   </div>
 
                   {/* Dashed divider & Calendar Action Buttons */}
-                  <div className="border-t border-dashed border-[#E6C79C]/60 bg-[#FDFBF7]/90 px-4 sm:px-6 py-6 flex flex-col items-center gap-3 w-full">
+                  <div className="border-t border-dashed border-[#E6C79C]/80 bg-[#FAF6F0]/80 px-4 sm:px-6 py-6 flex flex-col items-center gap-3 w-full">
                     {/* Primary Smart One-Click Calendar Button */}
                     <button
                       type="button"
                       onClick={handleSmartCalendarAdd}
-                      className="w-full py-3.5 px-6 rounded-full font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] border border-[#E6C79C]/50 hover:shadow-[0_4px_20px_rgba(74,14,23,0.35)] cursor-pointer"
+                      className="w-full py-3.5 px-6 rounded-full font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#FAF6F0] border border-[#E6C79C]/50 hover:shadow-[0_4px_20px_rgba(90,24,33,0.35)] cursor-pointer"
                     >
                       <span>📅</span>
                       <span>أضف الموعد إلى تقويم هاتفك بضغطة</span>
@@ -988,14 +998,14 @@ export default function WeddingClassic({ customData } = {}) {
                         href={googleCalUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 text-center border border-[#63121E] text-[#63121E] hover:bg-[#63121E] hover:text-[#F7E7CE] rounded-full py-2 text-xs font-bold transition-all shadow-sm block"
+                        className="flex-1 text-center border border-[#5A1821] text-[#5A1821] hover:bg-[#5A1821] hover:text-[#FAF6F0] rounded-full py-2 text-xs font-bold transition-all shadow-sm block"
                       >
                         تقويم جوجل
                       </a>
                       <button
                         type="button"
                         onClick={handleAppleCalendar}
-                        className="flex-1 border border-[#63121E] text-[#63121E] hover:bg-[#63121E] hover:text-[#F7E7CE] rounded-full py-2 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                        className="flex-1 border border-[#5A1821] text-[#5A1821] hover:bg-[#5A1821] hover:text-[#FAF6F0] rounded-full py-2 text-xs font-bold transition-all shadow-sm cursor-pointer"
                       >
                         تقويم آيفون (Apple)
                       </button>
@@ -1005,48 +1015,26 @@ export default function WeddingClassic({ customData } = {}) {
               </div>
             </FadeIn>
 
-            {/* Section F: Notes ("ملاحظات") & Footer */}
+            {/* Gold Diamond Divider: ─── ◆ ─── */}
+            <div className="flex items-center justify-center gap-3 my-8 sm:my-10 w-3/4 max-w-xs mx-auto opacity-75">
+              <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+              <span className="text-[#D4AF37] text-xs select-none">◆</span>
+              <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-[#D4AF37] to-[#D4AF37]"></div>
+            </div>
+
+            {/* (9) Closing Footer */}
             <FadeIn>
-              <div className="w-full flex flex-col items-center mt-6 mb-12 px-4">
-                {/* Heading: ملاحظات */}
-                <h3 className={`text-3xl sm:text-4xl text-[#F7E7CE] mb-8 font-bold ${aref.className}`}>
-                  ملاحظات
+              <div className="w-full flex flex-col items-center px-2 text-center font-bold">
+                <h3 className={`text-3xl mb-4 text-[#5A1821] ${aref.className}`}>
+                  حضوركم يزيّن فرحتنا
                 </h3>
-
-                {/* 2 bullet items */}
-                <ul className="text-sm sm:text-base font-bold flex flex-col gap-5 text-right w-full max-w-sm px-4 text-[#F7E7CE]">
-                  <li className="flex items-center justify-center gap-3 text-center">
-                    <DiamondBullet className="w-3.5 h-3.5 shrink-0 opacity-80" color={accentGold} />
-                    <span>نوماً هنيئاً لأطفالكم</span>
-                  </li>
-                  <li className="flex items-center justify-center gap-3 text-center">
-                    <DiamondBullet className="w-3.5 h-3.5 shrink-0 opacity-80" color={accentGold} />
-                    <span>يمنع التصوير في صالة النساء</span>
-                  </li>
-                </ul>
-
-                {/* Divider */}
-                <div className="flex items-center justify-center gap-2 my-10 w-2/3 opacity-60">
-                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
-                  <div className="w-1.5 h-1.5 rotate-45 bg-[#E6C79C]"></div>
-                  <div className="h-[1px] flex-1 bg-[#E6C79C]"></div>
-                </div>
-
-                {/* Footer Signature */}
-                <div className="text-center w-full font-bold">
-                  <h3 className={`text-3xl mb-4 text-[#F7E7CE] ${aref.className}`}>
-                    حضوركم يزيّن فرحتنا
-                  </h3>
-                  <p className="text-[#E6C79C] font-sans text-sm mb-8 tracking-wider">
-                    #عمر_وآيات
-                  </p>
-                  <p className="text-lg sm:text-xl font-bold text-[#F7E7CE] mb-6 tracking-wide" style={{ fontFamily: 'var(--font-amiri), serif' }}>
-                    عائلة السخن &amp; عائلة قبها
-                  </p>
-                </div>
+                <p className="text-lg sm:text-xl font-bold text-[#5A1821] tracking-wide" style={{ fontFamily: 'var(--font-amiri), serif' }}>
+                  عائلة السخن &amp; عائلة قبها
+                </p>
               </div>
             </FadeIn>
           </>
+
         ) : (
           /* =========================================================================
              ORIGINAL MASTER SHOWCASE TEMPLATE LAYOUT (100% Verbatim & Untouched)
