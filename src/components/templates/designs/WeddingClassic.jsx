@@ -672,13 +672,13 @@ export default function WeddingClassic({ customData } = {}) {
             <FadeIn>
               <div className="w-full text-center px-1 sm:px-4 pt-2">
                 <p
-                  className="text-[#F7E7CE] font-bold text-[13px] sm:text-[15px] leading-relaxed text-center"
+                  className="text-[#F7E7CE] font-bold text-[15px] min-[390px]:text-[16.5px] sm:text-[18.5px] md:text-xl leading-relaxed sm:leading-loose text-center"
                   style={{ fontFamily: 'var(--font-amiri), serif', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}
                 >
                   <span className="block whitespace-nowrap">
                     ﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنْفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا
                   </span>
-                  <span className="block whitespace-nowrap mt-1">
+                  <span className="block whitespace-nowrap mt-1 sm:mt-1.5">
                     وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً إِنَّ فِي ذَلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ ﴾
                   </span>
                 </p>
@@ -694,7 +694,7 @@ export default function WeddingClassic({ customData } = {}) {
 
             {/* (3) Invitation Card ("بطاقة دعوة") — NO Duplicate Date/Location Here! */}
             <FadeIn>
-              <div className="w-full bg-[#3B0A11]/70 border border-[#E6C79C]/40 rounded-2xl p-6 sm:p-8 shadow-[0_15px_40px_rgba(0,0,0,0.4)] backdrop-blur-sm flex flex-col items-center text-center">
+              <div className="w-full flex flex-col items-center text-center px-1 sm:px-4">
                 <h3 className={`text-3xl sm:text-4xl text-[#E6C79C] mb-6 font-bold ${aref.className}`} style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
                   بطاقة دعوة
                 </h3>
