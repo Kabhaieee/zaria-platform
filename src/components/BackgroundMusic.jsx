@@ -53,11 +53,15 @@ export default function BackgroundMusic({ youtubeUrl, autoPlay = false, startSec
    * @param {Array<unknown>} [args=[]] - Optional command arguments.
    */
   const sendPlayerCommand = useCallback((func, args = []) => {
-    if (iframeRef.current && iframeRef.current.contentWindow) {
-      iframeRef.current.contentWindow.postMessage(
-        JSON.stringify({ event: 'command', func, args }),
-        'https://www.youtube.com'
-      );
+    try {
+      if (iframeRef.current && iframeRef.current.contentWindow) {
+        iframeRef.current.contentWindow.postMessage(
+          JSON.stringify({ event: 'command', func, args }),
+          '*'
+        );
+      }
+    } catch {
+      // Safe guard against cross-origin or detached iframe errors
     }
   }, []);
 
@@ -103,22 +107,37 @@ export default function BackgroundMusic({ youtubeUrl, autoPlay = false, startSec
 
     window.addEventListener('start-wedding-music', handleStartMusic);
 
-    // For templates without a door preloader, start music on the first user interaction
-    const handleFirstInteraction = (e) => {
-      if (!autoPlay || userToggledRef.current || playingRef.current) return;
-      if (buttonRef.current && buttonRef.current.contains(e.target)) return;
-      startPlayback();
-    };
-
+    // Auto-play immediately on link open, with retries and universal interaction fallback
     if (autoPlay) {
-      window.addEventListener('click', handleFirstInteraction, { passive: true });
-      window.addEventListener('touchstart', handleFirstInteraction, { passive: true });
+      startPlayback();
+      const t1 = setTimeout(startPlayback, 500);
+      const t2 = setTimeout(startPlayback, 1200);
+      const t3 = setTimeout(startPlayback, 2200);
+
+      const handleFirstInteraction = (e) => {
+        if (userToggledRef.current || playingRef.current) return;
+        if (buttonRef.current && buttonRef.current.contains(e?.target)) return;
+        startPlayback();
+      };
+
+      const interactionEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'scroll', 'keydown'];
+      interactionEvents.forEach((evt) =>
+        window.addEventListener(evt, handleFirstInteraction, { passive: true })
+      );
+
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+        clearTimeout(t3);
+        window.removeEventListener('start-wedding-music', handleStartMusic);
+        interactionEvents.forEach((evt) =>
+          window.removeEventListener(evt, handleFirstInteraction)
+        );
+      };
     }
 
     return () => {
       window.removeEventListener('start-wedding-music', handleStartMusic);
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('touchstart', handleFirstInteraction);
     };
   }, [autoPlay, startPlayback]);
 

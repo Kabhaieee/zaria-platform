@@ -1608,6 +1608,7 @@ export default function WeddingClassic({ customData } = {}) {
       {/* Floating Background Music Controller */}
       <BackgroundMusic
         youtubeUrl={youtubeUrl}
+        autoPlay={isBurgundy || !customData?.introMedia}
         startSeconds={customData?.youtubeStartSeconds || 0}
       />
 
