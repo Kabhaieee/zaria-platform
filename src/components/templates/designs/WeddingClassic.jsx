@@ -1053,7 +1053,7 @@ export default function WeddingClassic({ customData } = {}) {
                       className="w-full py-3.5 px-6 rounded-full font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#63121E] via-[#4A0E17] to-[#63121E] text-[#F7E7CE] border border-[#E6C79C]/50 hover:shadow-[0_4px_20px_rgba(90,24,33,0.35)] cursor-pointer"
                     >
                       <span>📅</span>
-                      <span>أضف الموعد إلى تقويم هاتفك بضغطة</span>
+                      <span>أضف الموعد إلى تقويم هاتفك</span>
                     </button>
 
                     {/* Direct Calendar Options */}
