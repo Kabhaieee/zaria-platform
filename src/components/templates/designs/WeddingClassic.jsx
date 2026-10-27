@@ -654,16 +654,16 @@ export default function WeddingClassic({ customData } = {}) {
             {isBurgundy ? 'المهندس عمر' : groomFirst}
           </motion.h1>
 
-          {/* Separator: Calligraphic Arabic letter 'و' for isBurgundy, classic & for showcase */}
+          {/* Separator: Standard clean Arabic letter 'و' for isBurgundy, classic & for showcase */}
           {isBurgundy ? (
             <motion.div
-              className="select-none"
+              className="select-none text-center my-2"
               style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 1.9 }}
             >
-              <span className={`block font-['Aref_Ruqaa',_'Amiri',_serif] ${aref.className} text-4xl sm:text-5xl text-[#D4AF37] my-3 leading-none`}>
+              <span className="block text-2xl sm:text-3xl text-[#E6C79C] font-normal leading-none">
                 و
               </span>
             </motion.div>
@@ -800,7 +800,7 @@ export default function WeddingClassic({ customData } = {}) {
                     </p>
                   </div>
                   <div className="flex items-center justify-center px-1">
-                    <span className={`font-['Aref_Ruqaa',_'Amiri',_serif] ${aref.className} text-2xl sm:text-3xl text-[#E6C79C] mx-3 select-none`}>
+                    <span className="text-xl sm:text-2xl text-[#E6C79C] mx-3 select-none font-normal">
                       و
                     </span>
                   </div>
@@ -874,39 +874,19 @@ export default function WeddingClassic({ customData } = {}) {
 
             {/* (4) Date & Location Section ("الموقع") — Placed Directly Under "بطاقة دعوة", BEFORE Countdown! */}
             <FadeIn>
-              <div className="w-full flex flex-col items-center px-1 sm:px-2">
+              <div className="w-full flex flex-col items-center px-1 sm:px-2 text-center">
                 <h3 className={`text-3xl sm:text-4xl text-[#E6C79C] mb-6 font-bold ${aref.className}`} style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
                   الموقع
                 </h3>
 
-                {/* Embedded Google Map iframe card */}
-                <div className="w-full max-w-sm sm:max-w-md h-56 bg-white rounded-2xl mb-6 border border-[#E6C79C]/50 shadow-md relative overflow-hidden group">
-                  <iframe
-                    title="موقع الحفل - قاعات النعمان"
-                    src="https://www.google.com/maps?q=قاعات+النعمان+عمان&output=embed"
-                    className="w-full h-full border-0"
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                  <a
-                    href="https://www.google.com/maps/search/?api=1&query=قاعات+النعمان+عمان"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="فتح في خرائط جوجل"
-                    className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-white hover:scale-105 transition-all border border-[#E6C79C]/50"
-                  >
-                    <MapPin size={18} className="text-[#63121E]" />
-                  </a>
-                </div>
-
-                {/* Details below map */}
+                {/* Details */}
                 <div className="text-center font-bold text-sm leading-relaxed mb-6 text-[#F7E7CE]">
-                  <p className="mb-2 text-base font-semibold">يوم الإثنين، 16 تشرين الثاني 2026</p>
+                  <p className="mb-2 text-base sm:text-lg font-semibold">يوم الإثنين، 16 تشرين الثاني 2026</p>
                   <p className="text-[#F7E7CE]/80 mb-4 text-xs sm:text-sm font-semibold">الساعة الثامنة مساءً</p>
                   <p className={`text-[#E6C79C] mb-2 font-bold text-2xl sm:text-3xl ${aref.className}`}>
                     قاعات النعمان
                   </p>
-                  <p className="text-[#F7E7CE]/70 text-xs sm:text-sm font-semibold">عمان — الأردن</p>
+                  <p className="text-[#F7E7CE]/70 text-xs sm:text-sm font-semibold mb-6">عمان — الأردن</p>
                 </div>
 
                 {/* Pill Button: الخريطة */}
