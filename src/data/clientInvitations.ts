@@ -61,7 +61,7 @@ export const CLIENT_INVITATIONS: readonly CustomInvitationData[] = [
     youtubeStartSeconds: 65,
 
     // أسماء العائلات الداعية في أسفل الدعوة (مصححة إملائياً)
-    familyNames: 'عائلة السخن & عائلة قبها',
+    familyNames: 'عائلة السخن و عائلة قبها',
 
     // ملاحظات الضيوف بالترتيب المطلوب
     customNote: 'نوماً هنيئاً لأطفالكم\nيمنع التصوير في صالة النساء',
