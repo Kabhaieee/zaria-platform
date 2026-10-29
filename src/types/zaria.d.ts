@@ -341,3 +341,38 @@ export interface FadeInWrapperProps {
   /** Optional additional CSS classes. */
   className?: string;
 }
+
+
+/**
+ * Database row representation for the `guestbook_wishes` table.
+ */
+export interface GuestbookWishRow {
+  /** Unique UUID / primary key. */
+  id: string;
+  /** Event/Invitation slug identifier (e.g., 'omar-ayat'). */
+  slug: string;
+  /** Name of the sender ("الاسم الكريم"). */
+  guest_name: string;
+  /** Congratulatory wish or message ("كلمتكم للعروسين"). */
+  message: string;
+  /** ISO 8601 creation timestamp. */
+  created_at: string;
+}
+
+/**
+ * Database row representation for the `rsvp_responses` table.
+ */
+export interface RSVPResponseRow {
+  /** Unique UUID / primary key. */
+  id: string;
+  /** Event/Invitation slug identifier (e.g., 'omar-ayat'). */
+  slug: string;
+  /** Name of the guest ("الاسم الكريم"). */
+  guest_name: string;
+  /** Whether the guest is attending (true/false). */
+  attending: boolean;
+  /** Number of attending guests. */
+  guests_count: number;
+  /** ISO 8601 creation timestamp. */
+  created_at: string;
+}
