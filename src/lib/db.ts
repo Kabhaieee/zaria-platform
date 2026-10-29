@@ -19,6 +19,7 @@ import {
   appendRSVPToGoogleSheet,
   appendWishToGoogleSheet,
   fetchWishesFromGoogleSheet,
+  recordDeleteInCloudBackup,
 } from '@/lib/googleSheets';
 import { addRSVPForSlug, getRSVPsBySlug, sanitizeSlug } from '@/lib/invitationStore';
 import type { GuestbookWishRow, RSVPResponseRow } from '@/types/zaria';
@@ -372,6 +373,7 @@ export async function deleteGuestbookWishes(options: {
     db.guestbook_wishes = [];
   }
   writeFallbackDb(db);
+  await recordDeleteInCloudBackup({ slug: cleanSlug, id: targetId });
   return Math.max(0, beforeCount - db.guestbook_wishes.length);
 }
 
