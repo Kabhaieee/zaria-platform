@@ -21,19 +21,19 @@ interface StoreSchema {
 }
 
 const DATA_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'clientInvitationsRuntime.json');
-const TMP_FILE_PATH = path.join(os.tmpdir(), 'zaria-client-invitations.json');
+const TMP_FILE_PATH = path.join(os.tmpdir(), 'zaria-client-invitations-v2.json');
 
 // Global in-memory store singleton (persists across hot-reloads and serverless invocations)
 const globalForStore = globalThis as unknown as {
-  __zariaInvitationStore?: StoreSchema;
+  __zariaInvitationStoreV2?: StoreSchema;
 };
 
 /**
  * Reads the current store from disk (`/tmp` or `src/data`) or initializes from the bundled seed data.
  */
 function readLocalStore(): StoreSchema {
-  if (globalForStore.__zariaInvitationStore) {
-    return globalForStore.__zariaInvitationStore;
+  if (globalForStore.__zariaInvitationStoreV2) {
+    return globalForStore.__zariaInvitationStoreV2;
   }
 
   // 1. Check writable /tmp store first (used in serverless environments like Vercel)
@@ -42,7 +42,7 @@ function readLocalStore(): StoreSchema {
       const rawTmp = fs.readFileSync(TMP_FILE_PATH, 'utf-8');
       const parsedTmp = JSON.parse(rawTmp) as StoreSchema;
       if (Array.isArray(parsedTmp.invitations) && Array.isArray(parsedTmp.rsvps)) {
-        globalForStore.__zariaInvitationStore = parsedTmp;
+        globalForStore.__zariaInvitationStoreV2 = parsedTmp;
         return parsedTmp;
       }
     }
@@ -56,7 +56,7 @@ function readLocalStore(): StoreSchema {
       const raw = fs.readFileSync(DATA_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(raw) as StoreSchema;
       if (Array.isArray(parsed.invitations) && Array.isArray(parsed.rsvps)) {
-        globalForStore.__zariaInvitationStore = parsed;
+        globalForStore.__zariaInvitationStoreV2 = parsed;
         return parsed;
       }
     }
@@ -64,18 +64,18 @@ function readLocalStore(): StoreSchema {
     // Fallback to seed store if filesystem is read-only
   }
 
-  globalForStore.__zariaInvitationStore = {
+  globalForStore.__zariaInvitationStoreV2 = {
     invitations: [...((seedStore.invitations || []) as CustomInvitationData[])],
     rsvps: [...((seedStore.rsvps || []) as ClientRSVPEntry[])],
   };
-  return globalForStore.__zariaInvitationStore;
+  return globalForStore.__zariaInvitationStoreV2;
 }
 
 /**
  * Writes updated store state to disk (when writable) and updates the in-memory singleton.
  */
 function writeLocalStore(store: StoreSchema): void {
-  globalForStore.__zariaInvitationStore = store;
+  globalForStore.__zariaInvitationStoreV2 = store;
   const serialized = JSON.stringify(store, null, 2);
   try {
     fs.writeFileSync(DATA_FILE_PATH, serialized, 'utf-8');

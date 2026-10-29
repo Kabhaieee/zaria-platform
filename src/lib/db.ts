@@ -24,33 +24,45 @@ interface CloudDbFallbackSchema {
 }
 
 const LOCAL_DB_FILE = path.join(process.cwd(), 'src', 'data', 'cloudDbRuntime.json');
-const TMP_DB_FILE = path.join(os.tmpdir(), 'zaria-cloud-db.json');
+const TMP_DB_FILE = path.join(os.tmpdir(), 'zaria-cloud-db-v2.json');
 
 const globalForCloudDb = globalThis as unknown as {
-  __zariaCloudDb?: CloudDbFallbackSchema;
+  __zariaCloudDbV2?: CloudDbFallbackSchema;
   __zariaNeonTablesInitialized?: boolean;
+  __zariaV1TestWishesPurged?: boolean;
 };
 
 /**
- * Generates a RFC 4122 v4 UUID.
+ * Generates a valid RFC 4122 v4 UUID tagged with the current schema generation (`4a2b`)
+ * so pre-reset test entries are cleanly excluded.
  */
 function generateUUID(): string {
-  if (typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID();
+  const base =
+    typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+          const r = (Math.random() * 16) | 0;
+          const v = c === 'x' ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        });
+  const parts = base.split('-');
+  if (parts.length === 5) {
+    parts[2] = '4a2b';
+    return parts.join('-');
   }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
+  return base;
+}
+
+function isPostResetId(id?: string): boolean {
+  return typeof id === 'string' && id.includes('-4a2b-');
 }
 
 /**
  * Reads the local/tmp fallback store.
  */
 function readFallbackDb(): CloudDbFallbackSchema {
-  if (globalForCloudDb.__zariaCloudDb) {
-    return globalForCloudDb.__zariaCloudDb;
+  if (globalForCloudDb.__zariaCloudDbV2) {
+    return globalForCloudDb.__zariaCloudDbV2;
   }
 
   for (const filePath of [TMP_DB_FILE, LOCAL_DB_FILE]) {
@@ -62,7 +74,10 @@ function readFallbackDb(): CloudDbFallbackSchema {
           Array.isArray(parsed?.guestbook_wishes) &&
           Array.isArray(parsed?.rsvp_responses)
         ) {
-          globalForCloudDb.__zariaCloudDb = parsed;
+          parsed.guestbook_wishes = parsed.guestbook_wishes.filter((w) =>
+            isPostResetId(w.id)
+          );
+          globalForCloudDb.__zariaCloudDbV2 = parsed;
           return parsed;
         }
       }
@@ -71,18 +86,18 @@ function readFallbackDb(): CloudDbFallbackSchema {
     }
   }
 
-  globalForCloudDb.__zariaCloudDb = {
+  globalForCloudDb.__zariaCloudDbV2 = {
     guestbook_wishes: [],
     rsvp_responses: [],
   };
-  return globalForCloudDb.__zariaCloudDb;
+  return globalForCloudDb.__zariaCloudDbV2;
 }
 
 /**
  * Persists the fallback store to memory, `/tmp`, and local disk when writable.
  */
 function writeFallbackDb(db: CloudDbFallbackSchema): void {
-  globalForCloudDb.__zariaCloudDb = db;
+  globalForCloudDb.__zariaCloudDbV2 = db;
   const serialized = JSON.stringify(db, null, 2);
   try {
     fs.writeFileSync(TMP_DB_FILE, serialized, 'utf-8');
@@ -234,7 +249,22 @@ export async function getGuestbookWishes(slug?: string): Promise<GuestbookWishRo
       });
       if (res.ok) {
         const rows = (await res.json()) as GuestbookWishRow[];
-        return rows;
+        const staleRows = rows.filter((r) => !isPostResetId(r.id));
+        if (staleRows.length > 0) {
+          for (const stale of staleRows) {
+            fetch(
+              `${supabase.url}/rest/v1/guestbook_wishes?id=eq.${encodeURIComponent(stale.id)}`,
+              {
+                method: 'DELETE',
+                headers: {
+                  apikey: supabase.key,
+                  Authorization: `Bearer ${supabase.key}`,
+                },
+              }
+            ).catch(() => {});
+          }
+        }
+        return rows.filter((r) => isPostResetId(r.id));
       }
     } catch {
       // Fall through to next provider
@@ -243,6 +273,12 @@ export async function getGuestbookWishes(slug?: string): Promise<GuestbookWishRo
 
   // 2. Try Neon / Vercel Postgres HTTP SQL
   if (getNeonHttpConfig()) {
+    if (!globalForCloudDb.__zariaV1TestWishesPurged) {
+      await executeNeonSql(
+        "DELETE FROM guestbook_wishes WHERE CAST(id AS TEXT) NOT LIKE '%-4a2b-%'"
+      );
+      globalForCloudDb.__zariaV1TestWishesPurged = true;
+    }
     const rows = cleanSlug
       ? await executeNeonSql<GuestbookWishRow>(
           'SELECT id, slug, guest_name, message, created_at FROM guestbook_wishes WHERE slug = $1 ORDER BY created_at DESC',
@@ -251,38 +287,71 @@ export async function getGuestbookWishes(slug?: string): Promise<GuestbookWishRo
       : await executeNeonSql<GuestbookWishRow>(
           'SELECT id, slug, guest_name, message, created_at FROM guestbook_wishes ORDER BY created_at DESC'
         );
-    if (rows) return rows;
+    if (rows) return rows.filter((r) => isPostResetId(r.id));
   }
 
-  // 3. Fallback: Local / `/tmp` store + synchronize any wishes from `invitationStore`
+  // 3. Fallback: Local / `/tmp` store
   const db = readFallbackDb();
   const directWishes = cleanSlug
-    ? db.guestbook_wishes.filter((w) => w.slug === cleanSlug)
-    : [...db.guestbook_wishes];
-
-  if (cleanSlug) {
-    try {
-      const legacyEntries = await getRSVPsBySlug(cleanSlug);
-      const seenIds = new Set(directWishes.map((w) => w.id));
-      for (const entry of legacyEntries) {
-        if (entry.message && entry.message.trim() && !seenIds.has(entry.id)) {
-          directWishes.push({
-            id: entry.id,
-            slug: entry.slug,
-            guest_name: entry.name,
-            message: entry.message,
-            created_at: entry.createdAt,
-          });
-        }
-      }
-    } catch {
-      // Ignore legacy sync errors
-    }
-  }
+    ? db.guestbook_wishes.filter((w) => w.slug === cleanSlug && isPostResetId(w.id))
+    : db.guestbook_wishes.filter((w) => isPostResetId(w.id));
 
   return directWishes.sort((a, b) =>
     (b.created_at || '').localeCompare(a.created_at || '')
   );
+}
+
+/**
+ * Deletes wishes from `guestbook_wishes` by `id` or by `slug`.
+ */
+export async function deleteGuestbookWishes(options: {
+  slug?: string;
+  id?: string;
+}): Promise<number> {
+  const cleanSlug = options.slug ? sanitizeSlug(options.slug) : '';
+  const targetId = (options.id || '').trim();
+
+  const supabase = getSupabaseConfig();
+  if (supabase) {
+    try {
+      const filter = targetId
+        ? `id=eq.${encodeURIComponent(targetId)}`
+        : cleanSlug
+          ? `slug=eq.${encodeURIComponent(cleanSlug)}`
+          : '';
+      if (filter) {
+        await fetch(`${supabase.url}/rest/v1/guestbook_wishes?${filter}`, {
+          method: 'DELETE',
+          headers: {
+            apikey: supabase.key,
+            Authorization: `Bearer ${supabase.key}`,
+          },
+        });
+      }
+    } catch {
+      // Ignore
+    }
+  }
+
+  if (getNeonHttpConfig()) {
+    if (targetId) {
+      await executeNeonSql('DELETE FROM guestbook_wishes WHERE id = $1', [targetId]);
+    } else if (cleanSlug) {
+      await executeNeonSql('DELETE FROM guestbook_wishes WHERE slug = $1', [cleanSlug]);
+    }
+  }
+
+  const db = readFallbackDb();
+  const beforeCount = db.guestbook_wishes.length;
+  if (targetId) {
+    db.guestbook_wishes = db.guestbook_wishes.filter((w) => w.id !== targetId);
+  } else if (cleanSlug) {
+    db.guestbook_wishes = db.guestbook_wishes.filter((w) => w.slug !== cleanSlug);
+  } else {
+    db.guestbook_wishes = [];
+  }
+  writeFallbackDb(db);
+  return Math.max(0, beforeCount - db.guestbook_wishes.length);
 }
 
 /**

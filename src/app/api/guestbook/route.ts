@@ -7,7 +7,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createGuestbookWish, getGuestbookWishes } from '@/lib/db';
+import {
+  createGuestbookWish,
+  deleteGuestbookWishes,
+  getGuestbookWishes,
+} from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -84,6 +88,30 @@ export async function POST(req: NextRequest) {
         error: (error as Error).message || 'تعذر حفظ الكلمة حالياً، يرجى المحاولة مرة أخرى.',
       },
       { status: 400 }
+    );
+  }
+}
+
+/**
+ * DELETE /api/guestbook?slug=omar-ayat or DELETE /api/guestbook?id=...
+ * Deletes guestbook wishes by `id` or clears all wishes for a `slug`.
+ */
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const slug = searchParams.get('slug') || undefined;
+    const id = searchParams.get('id') || undefined;
+
+    await deleteGuestbookWishes({ slug, id });
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: (error as Error).message || 'تعذر حذف التهاني حالياً.',
+      },
+      { status: 500 }
     );
   }
 }
