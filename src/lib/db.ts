@@ -15,6 +15,11 @@ import crypto from 'crypto';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import {
+  appendRSVPToGoogleSheet,
+  appendWishToGoogleSheet,
+  fetchWishesFromGoogleSheet,
+} from '@/lib/googleSheets';
 import { addRSVPForSlug, getRSVPsBySlug, sanitizeSlug } from '@/lib/invitationStore';
 import type { GuestbookWishRow, RSVPResponseRow } from '@/types/zaria';
 
@@ -290,11 +295,27 @@ export async function getGuestbookWishes(slug?: string): Promise<GuestbookWishRo
     if (rows) return rows.filter((r) => isPostResetId(r.id));
   }
 
-  // 3. Fallback: Local / `/tmp` store
+  // 3. Fallback: Local / `/tmp` store + Google Sheets backup recovery
   const db = readFallbackDb();
   const directWishes = cleanSlug
     ? db.guestbook_wishes.filter((w) => w.slug === cleanSlug && isPostResetId(w.id))
     : db.guestbook_wishes.filter((w) => isPostResetId(w.id));
+
+  // 4. Merge any wishes stored in Google Sheets backup (in case of server restart or DB error)
+  try {
+    const sheetWishes = await fetchWishesFromGoogleSheet(cleanSlug || undefined);
+    if (Array.isArray(sheetWishes) && sheetWishes.length > 0) {
+      const seenIds = new Set(directWishes.map((w) => w.id));
+      for (const sw of sheetWishes) {
+        if (sw.guest_name && sw.message && !seenIds.has(sw.id)) {
+          directWishes.push(sw);
+          seenIds.add(sw.id);
+        }
+      }
+    }
+  } catch {
+    // Ignore Google Sheets recovery errors
+  }
 
   return directWishes.sort((a, b) =>
     (b.created_at || '').localeCompare(a.created_at || '')
@@ -420,6 +441,9 @@ export async function createGuestbookWish(input: {
   const db = readFallbackDb();
   db.guestbook_wishes.unshift(row);
   writeFallbackDb(db);
+
+  // 4. Backup immediately to Google Sheets (so every comment has a safe copy in Google Sheets)
+  await appendWishToGoogleSheet(row);
 
   try {
     await addRSVPForSlug(cleanSlug, {
@@ -615,7 +639,11 @@ export async function createRSVPResponse(input: {
     }
     db.guestbook_wishes.unshift(wishRow);
     writeFallbackDb(db);
+    await appendWishToGoogleSheet(wishRow);
   }
+
+  // Backup RSVP to Google Sheets
+  await appendRSVPToGoogleSheet(row);
 
   try {
     await addRSVPForSlug(cleanSlug, {
